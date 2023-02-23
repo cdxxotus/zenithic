@@ -16,79 +16,6 @@ The framework has a core library size of under 50KB and no dependencies, and it 
 - **Server-side rendering**: Supported
 - **Browser support:** Latest versions of all major browsers
 
-## File structure
-- src/
-  - components/
-    - Button.js
-    - DatePicker.js
-    - Input.js
-    - Item.js
-    - List.js
-    - Select.js
-    - TextArea.js
-  - directives/
-    - bind.js
-    - cloak.js
-    - for.js
-    - if.js
-    - model.js
-    - on.js
-    - once.js
-    - pre.js
-    - show.js
-    - index.js
-  - filters/
-    - capitalize.js
-    - currency.js
-    - date.js
-    - limitTo.js
-    - lowercase.js
-    - orderBy.js
-    - uppercase.js
-    - index.js
-  - mixins/
-    - clickOutside.js
-    - draggable.js
-    - focus.js
-    - form.js
-    - tooltip.js
-    - transition.js
-    - validator.js
-    - index.js
-  - router/
-    - history.js
-    - index.js
-    - router.js
-    - routes.js
-    - utils.js
-  - store/
-    - actions.js
-    - getters.js
-    - modules.js
-    - mutations.js
-    - state.js
-    - store.js
-    - index.js
-  - utils/
-    - ajax.js
-    - date.js
-    - dom.js
-    - log.js
-    - number.js
-    - url.js
-    - utils.js
-    - index.js
-  - core.js
-  - config.js
-  - index.js
-- .babelrc
-- .editorconfig
-- .eslintrc
-- .gitignore
-- .nvmrc
-- package.json
-- webpack.config.js
-
 ## Usage
 
 To get started, install Zenithic using npm or yarn:
@@ -372,8 +299,82 @@ const loginForm = {
 ```
 
 ## Directives
-Directives are functions that can be used to extend HTML elements.
-For example, the following code registers a new v-scroll directive that updates a component's data property when the user scrolls the page:
+Directives are special attributes that can be used to apply reactive behavior to an HTML element in Zenithic applications. They are prefixed with`v-` followed by the directive name. For example, `v-if`, `v-for`, `v-bind`, `v-on`, etc.
+
+Directives enable developers to declaratively apply reactive behavior to elements in the DOM, which makes it easier to reason about the application's behavior and state. Directives can be used to manipulate DOM elements, listen to events, conditionally render content, and more.
+
+### Common directives
+
+#### v-bind
+The `v-bind` directive is used to dynamically bind an attribute or property of an HTML element to an expression. This can be used to bind the `src` attribute of an `img` element to a dynamic value, bind the `class` attribute to a computed class name, or bind a custom attribute to a data property. The expression can be a JavaScript expression or a data property name enclosed in double curly braces.
+
+```html
+<img v-bind:src="imageSrc">
+
+<div v-bind:class="{ active: isActive }"></div>
+
+<input v-bind:custom-attribute="customValue">
+```
+
+#### v-model
+The `v-model` directive is used to create two-way data bindings between form inputs and data properties. This means that changes to the input element will automatically update the data property, and changes to the data property will automatically update the input element. The input element must be one of `input`, `select`, or `textarea`.
+
+```html
+<input v-model="message">
+```
+
+### v-if, v-else-if, v-else
+The `v-if` directive is used to conditionally render an element based on a condition. If the condition is true, the element will be rendered; otherwise, it will be removed from the DOM. The `v-else-if` and `v-else` directives can be used to chain multiple conditions together.
+
+```html
+<div v-if="isDisplayed">
+  This is displayed if isDisplayed is true.
+</div>
+
+<div v-else-if="isLoading">
+  This is displayed if isDisplayed is false and isLoading is true.
+</div>
+
+<div v-else>
+  This is displayed if isDisplayed and isLoading are both false.
+</div>
+```
+
+#### v-for
+The `v-for` directive is used to render a list of items based on an array. The directive takes the form of `v-for="(item, index) in items"`, where item is the current `item` in the iteration, `index` is the index of the current item, and `items` is the array being iterated over. The directive can also take the form of `v-for="(value, key, index) in object"`, where `value` is the value of the current property, `key` is the key of the current property, and `index` is the index of the current property.
+
+```html
+<ul>
+  <li v-for="(item, index) in items" :key="index">
+    {{ item }}
+  </li>
+</ul>
+```
+
+#### v-on
+The `v-on` directive is used to listen to DOM events and trigger methods or inline expressions. The directive takes the form of `v-on:event="method"` or `v-on:event="expression"`, where `event` is the name of the DOM event (e.g., click, input, submit, etc.), `method` is the name of the method to call when the event is triggered, and `expression` is a JavaScript expression that will be executed when the event is triggered.
+
+```html
+<button v-on:click="incrementCounter">Increment</button>
+```
+
+In the example above, we use the `v-on:click` directive to bind a click event listener to the button element. When the button is clicked, the `incrementCounter` method on the component instance will be executed.
+
+You can also use shorthand syntax for `v-on` by prefixing the event name with the `@` symbol:
+
+```html
+<button @click="incrementCounter">Increment</button>
+```
+
+This is equivalent to the previous example.
+
+You can pass arguments to the method using the special `$event` variable:
+
+```html
+<button v-on:click="logEvent($event)">Log Event</button>
+```
+
+### Registering a custom directive
 
 ```js
 app.registerDirective('scroll', {
