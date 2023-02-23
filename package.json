@@ -1,0 +1,24 @@
+{
+    "name": "zenithic",
+    "version": "0.0.1",
+    "description": "Lightweight JavaScript framework for creating performant and responsive applications.",
+    "main": "index.js",
+    "scripts": {
+      "dev": "webpack --mode development",
+      "build": "webpack --mode production",
+      "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "keywords": [
+      "zenithic",
+      "javascript",
+      "framework"
+    ],
+    "author": "",
+    "license": "MIT",
+    "dependencies": {
+      "babel-core": "^7.8.4",
+      "babel-loader": "^7.8.4",
+      "babel-preset-env": "^7.8.4",
+      "webpack": "^4.41.5"
+    }
+  }
