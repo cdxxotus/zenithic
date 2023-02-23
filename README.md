@@ -231,8 +231,6 @@ const modal = {
 
 ### draggable
 
-The draggable mixin adds drag and drop functionality to a component. This can be useful for components like sliders or sortable lists.
-
 ```js
 import { draggable } from "zenithic";
 
