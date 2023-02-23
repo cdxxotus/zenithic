@@ -196,10 +196,8 @@ Here are some examples of mixins in Zenithic:
 The clickOutside mixin adds a click outside event to a component. This can be useful for components like modals, which should close when the user clicks outside of them.
 
 ```js
-import { clickOutside } from "zenithic";
-
 const modal = {
-  mixins: [clickOutside],
+  mixins: ['clickOutside'],
 
   mounted() {
     this.addClickOutsideEvent();
@@ -232,10 +230,8 @@ const modal = {
 ### draggable
 
 ```js
-import { draggable } from "zenithic";
-
 export default {
-  mixins: [draggable],
+  mixins: ['draggable'],
   template: `
       <div class="draggable" @mousedown="handleMouseDown" :style="{ transform: translate(${dragX}px, ${dragY}px) }">
           Draggable Element
@@ -249,10 +245,8 @@ export default {
 The form mixin provides form validation and submission functionality to a component. This can be useful for components like login or registration forms.
 
 ```js
-import { form } from "zenithic";
-
 const loginForm = {
-  mixins: [form],
+  mixins: ['form'],
 
   data() {
     return {
