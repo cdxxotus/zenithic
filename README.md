@@ -239,7 +239,7 @@ import { draggable } from "zenithic";
 export default {
   mixins: [draggable],
   template: `
-      <div class="draggable" @mousedown="handleMouseDown" :style="{ transform: \translate(${dragX}px, ${dragY}px)` }">
+      <div class="draggable" @mousedown="handleMouseDown" :style="{ transform: translate(${dragX}px, ${dragY}px) }">
           Draggable Element
       </div>
  `,
