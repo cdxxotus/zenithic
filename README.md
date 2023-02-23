@@ -234,31 +234,141 @@ This filter splits the input string into an array, reverses the array, and then 
 
 
 ## Mixins
-Mixins are reusable components that can be shared across components.
+Mixins are a way to share functionality between components without inheritance. A mixin is an object containing properties that can be merged with the properties of a component. The properties of a mixin are added to the component, and if there are conflicts, the properties of the component take precedence.
+
+Here are some examples of mixins in Zenithic:
+
+### clickOutside
+The clickOutside mixin adds a click outside event to a component. This can be useful for components like modals, which should close when the user clicks outside of them.
 
 ```js
-// Define a mixin
-const myMixin = {
-    methods: {
-        myMethod() {
-            // do something
-        }
-    }
-};
+import { clickOutside } from 'zenithic';
 
-// Register the mixin
-app.use(myMixin);
+const modal = {
+  mixins: [clickOutside],
 
-// Use the mixin in a component
-export default {
-    mixins: [myMixin],
-    methods: {
-        // Use the mixin's method
-        myOtherMethod() {
-            this.myMethod();
-        }
-    }
+  mounted() {
+    this.addClickOutsideEvent();
+  },
+
+  beforeDestroy() {
+    this.removeClickOutsideEvent();
+  },
+
+  methods: {
+    close() {
+      this.$emit('close');
+    },
+
+    onClickOutside() {
+      this.close();
+    },
+  },
+
+  template: `
+    <div>
+      <div class="modal">
+        <slot />
+      </div>
+    </div>
+  `,
 };
+```
+
+### draggable
+The draggable mixin adds drag and drop functionality to a component. This can be useful for components like sliders or sortable lists.
+
+```js
+import { draggable } from 'zenithic';
+
+const slider = {
+  mixins: [draggable],
+
+  data() {
+    return {
+      position: 0,
+    };
+  },
+
+  methods: {
+    onDragStart(event) {
+      const thumb = event.target;
+      const thumbRect = thumb.getBoundingClientRect();
+
+      this.dragStartX = event.clientX;
+      this.thumbStartX = thumbRect.left;
+      this.thumbWidth = thumbRect.width;
+    },
+
+    onDrag(event) {
+      const offset = event.clientX - this.dragStartX;
+      const newPosition = this.thumbStartX + offset;
+      const sliderRect = this.$el.getBoundingClientRect();
+      const position = (newPosition - sliderRect.left) / sliderRect.width;
+
+      this.position = Math.max(Math.min(position, 1), 0);
+      this.$emit('input', this.position);
+    },
+  },
+
+  template: `
+    <div class="slider" @mousedown="startDrag">
+      <div class="track">
+        <div class="thumb" :style="{ left: position * 100 + '%' }" @mousedown.stop="startDrag" />
+      </div>
+    </div>
+  `,
+};
+```
+
+### form
+The form mixin provides form validation and submission functionality to a component. This can be useful for components like login or registration forms.
+
+```js
+import { form } from 'zenithic';
+
+const loginForm = {
+  mixins: [form],
+
+  data() {
+    return {
+      email: '',
+      password: '',
+    };
+  },
+
+  methods: {
+    submit() {
+      this.validate().then(() => {
+        // Submit form data to server
+      }).catch(() => {
+        // Handle validation errors
+      });
+    },
+
+    validate() {
+      const rules = {
+        email: { required: true, email: true },
+        password: { required: true, minlength: 8 },
+      };
+
+      return this.runValidation(this.$data, rules);
+    },
+  },
+
+  template: `
+    <form @submit.prevent="submit">
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input id="email" v-model="email">
+        <div v-if="errors.email" class="error">{{ errors.email }}</div>
+      </div>
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" v-model="password">
+      </div>
+    </form>
+  `;
 ```
 
 ## Directives
