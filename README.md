@@ -100,13 +100,13 @@ Filters are functions that can be used to transform data in a template. They are
 
 Zenithic comes with several built-in filters that can be used to format and manipulate data:
 
-- capitalize: Capitalizes the first letter of a string.
-- currency: Formats a number as currency using the specified currency code (e.g., USD, EUR).
-- date: Formats a date using the specified format string (e.g., 'YYYY-MM-DD').
-- limitTo: Limits an array to the specified number of items.
-- lowercase: Converts a string to lowercase.
-- orderBy: Orders an array by the specified property or function.
-- uppercase: Converts a string to uppercase.
+- **capitalize**: Capitalizes the first letter of a string.
+- **currency**: Formats a number as currency using the specified currency code (e.g., USD, EUR).
+- **date**: Formats a date using the specified format string (e.g., 'YYYY-MM-DD').
+- **limitTo**: Limits an array to the specified number of items.
+- **lowercase**: Converts a string to lowercase.
+- **orderBy**: Orders an array by the specified property or function.
+- **uppercase**: Converts a string to uppercase.
 
 To use a filter, simply apply it to an expression in the template using the pipe character (|) followed by the filter name and any optional arguments. For example:
 
