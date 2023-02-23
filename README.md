@@ -467,7 +467,7 @@ Plugins are a powerful feature of Zenithic that allow developers to extend the f
 
 ### Creating a plugin
 
-To create a plugin, you need to define an object that contains one or more of the following properties:
+To create a plugin, you need to define an object that contains the `install` property:
 
 - `install`: A function that will be called when the plugin is installed. The function will receive the Zenithic application instance as its only argument. You can use this function to register new components, directives, filters, or services.
   For example, here's how you could create a simple plugin that adds a new filter to format numbers as percentages:
