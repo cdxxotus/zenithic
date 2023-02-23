@@ -1,3 +1,5 @@
+![visitors](https://visitor-badge.glitch.me/badge?page_id=danielfebrero.zenithic)
+
 # Zenithic
 
 Zenithic is a lightweight, fast, and highly customizable JavaScript framework designed as an alternative to React and other existing competitors. It features a powerful virtual DOM rendering engine, an intuitive and easy-to-learn API, and a flexible and modular architecture that allows developers to use only the features they need.
