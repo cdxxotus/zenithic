@@ -259,43 +259,55 @@ const loginForm = {
 
   data() {
     return {
-      email: '',
-      password: '',
+      form: {
+        fields: {
+          email: {
+            value: '',
+            validators: [
+              (value) => (value ? true : 'Please enter your email'),
+              (value) =>
+                /\S+@\S+\.\S+/.test(value) || 'Please enter a valid email',
+            ],
+            isValid: false,
+          },
+          password: {
+            value: '',
+            validators: [
+              (value) => (value ? true : 'Please enter your password'),
+              (value) =>
+                value.length >= 8 || 'Password must be at least 8 characters',
+            ],
+            isValid: false,
+          },
+        },
+      },
     };
   },
 
   methods: {
-    submit() {
-      this.validate().then(() => {
-        // Submit form data to server
-      }).catch(() => {
-        // Handle validation errors
-      });
+    onSubmit() {
+      this.submitForm();
     },
 
-    validate() {
-      const rules = {
-        email: { required: true, email: true },
-        password: { required: true, minlength: 8 },
-      };
-
-      return this.runValidation(this.$data, rules);
+    onReset() {
+      this.resetForm();
     },
   },
 
   template: `
-    <form @submit.prevent="submit">
-      <div class="form-group">
-        <label for="email">Email</label>
-        <input id="email" v-model="email">
-        <div v-if="errors.email" class="error">{{ errors.email }}</div>
+    <form @submit.prevent="onSubmit" @reset.prevent="onReset">
+      <div v-for="(field, name) in form.fields" :key="name">
+        <label v-if="name === 'email'" for="email">Email:</label>
+        <label v-else-if="name === 'password'" for="password">Password:</label>
+        <input :id="name" v-model="field.value" :type="name" :class="{ invalid: !field.isValid }" />
+        <div class="error-message" v-if="!field.isValid">{{ field.errorMessage }}</div>
       </div>
-      <div class="form-group">
-        <label for="password">Password</label>
-        <input type="password" id="password" v-model="password">
-      </div>
+      <button type="submit">Submit</button>
+      <button type="reset">Reset</button>
     </form>
-  `;
+  `,
+};
+
 ```
 
 ## Directives
