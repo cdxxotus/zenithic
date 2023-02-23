@@ -236,44 +236,14 @@ The draggable mixin adds drag and drop functionality to a component. This can be
 ```js
 import { draggable } from "zenithic";
 
-const slider = {
+export default {
   mixins: [draggable],
-
-  data() {
-    return {
-      position: 0,
-    };
-  },
-
-  methods: {
-    onDragStart(event) {
-      const thumb = event.target;
-      const thumbRect = thumb.getBoundingClientRect();
-
-      this.dragStartX = event.clientX;
-      this.thumbStartX = thumbRect.left;
-      this.thumbWidth = thumbRect.width;
-    },
-
-    onDrag(event) {
-      const offset = event.clientX - this.dragStartX;
-      const newPosition = this.thumbStartX + offset;
-      const sliderRect = this.$el.getBoundingClientRect();
-      const position = (newPosition - sliderRect.left) / sliderRect.width;
-
-      this.position = Math.max(Math.min(position, 1), 0);
-      this.$emit("input", this.position);
-    },
-  },
-
   template: `
-    <div class="slider" @mousedown="startDrag">
-      <div class="track">
-        <div class="thumb" :style="{ left: position * 100 + '%' }" @mousedown.stop="startDrag" />
+      <div class="draggable" @mousedown="handleMouseDown" :style="{ transform: \translate(${dragX}px, ${dragY}px)` }">
+          Draggable Element
       </div>
-    </div>
-  `,
-};
+ `,
+}
 ```
 
 ### form
@@ -750,6 +720,7 @@ package.json
 ## Differences with
 
 ### Vue.js
+
 Vue.js and Zenithic have some similarities, such as both being JavaScript frameworks with a focus on performance and flexibility. However, there are some key differences between the two:
 
 - Size and dependencies: Zenithic is designed to be a lightweight framework with a core library size of under 50KB and no dependencies, while Vue.js has a larger core library size of about 80KB and has some dependencies.
