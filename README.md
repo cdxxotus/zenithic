@@ -542,7 +542,7 @@ app.use(store.createStore());
 Then define your state and mutations:
 
 ```js
-app.store.state.myState = {
+app.store.state = {
     count: 0
 };
 
