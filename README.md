@@ -152,7 +152,7 @@ The name parameter is a string representing the name of the filter, and the filt
 For example, the following code registers a new reverse filter that reverses a string:
 
 ```js
-registerFilter('reverse', (value) => {
+app.registerFilter('reverse', (value) => {
     return value.split('').reverse().join('');
 });
 ```
@@ -468,6 +468,65 @@ app.router.addRoutes([
         component: AboutPage
     }
 ]);
+```
+
+Now you can define links that navigate to different views in your application using the `router-link` component provided by Zenithic:
+```html
+<router-link to="/">Home</router-link>
+<router-link to="/about">About</router-link>
+<router-link to="/contact">Contact</router-link>
+```
+
+The `router-link` component generates an anchor tag that navigates to the specified URL when clicked.
+
+You can render the component that corresponds to the current route using the `router-view` component provided by Zenithic:
+
+```html
+<router-view></router-view>
+```
+
+The router-view component renders the component that corresponds to the current route. If there is no route that matches the current URL, the router-view component renders nothing.
+
+### Route parameters
+Route parameters allow you to pass data to a component when navigating to a route. For example, if you have a route for displaying a product with an ID, you can define a route parameter for the ID and pass it to the component when navigating to the route.
+
+To define a route parameter, you need to include a colon (:) followed by the parameter name in the route path. For example:
+
+```js
+const router = createRouter({
+  routes: [
+    {
+      path: '/product/:id',
+      component: Product
+    }
+  ]
+});
+```
+
+In this example, the `:id` parameter represents the ID of the product. When a user navigates to a URL that matches this route (e.g., `/product/123`), Zenithic passes the ID to the `Product` component as a prop.
+
+To access the route parameter in the component, you need to define a prop with the same name as the parameter:
+
+```js
+const Product = {
+  props: ['id'],
+  // ...
+};
+```
+
+In this example, the `Product` component defines an `id` prop that receives the value of the :id route parameter.
+
+You can also define optional route parameters by enclosing the parameter name in parentheses:
+
+```js
+const router = createRouter({
+  routes: [
+    {
+      path: '/product/:id/:(qty)',
+      component: Product
+    }
+  ]
+});
 ```
 
 ## Store (state management)

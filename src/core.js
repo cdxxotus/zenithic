@@ -351,7 +351,7 @@ const createApp = () => {
 
     // This function registers a component with the framework.
     const registerComponent = (name, component) => {
-        this.components[name] = component;
+        Object.assign(this.components, { [name]: component })
     };
 
     // This function retrieves a component by name.
@@ -360,11 +360,11 @@ const createApp = () => {
     };
 
     const registerDirective = (name, directive) => {
-        this.directives[name] = directive;
+        Object.assign(this.directives, { [name]: directive })
     };
 
     const registerFilter = (name, filter) => {
-        this.filters[name] = filter;
+        Object.assign(this.filters, { [name]: filter })
     };
 
     const app = {
