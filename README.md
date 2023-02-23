@@ -338,28 +338,6 @@ const loginForm = {
 };
 ```
 
-### tooltip
-
-```js
-import { form } from "zenithic";
-
-const divWithTooltip = {
-  mixins: [tooltip],
-
-  data() {
-    return {
-      tooltipText: 'Tooltip text',
-    };
-  },
-
-  template: `
-    <div>
-      Block
-    </div>
-  `,
-};
-```
-
 ## Directives
 
 Directives are special attributes that can be used to apply reactive behavior to an HTML element in Zenithic applications. They are prefixed with`v-` followed by the directive name. For example, `v-if`, `v-for`, `v-bind`, `v-on`, etc.
