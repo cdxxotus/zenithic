@@ -1,26 +1,20 @@
 export function createMutations(config) {
-    const { mutations = {}, modules = {} } = config;
-    const allMutations = {};
+  const { mutations = {}, modules = {} } = config;
+  const allMutations = {};
 
-    Object
-        .keys(modules)
-        .forEach(moduleName => {
-            const module = modules[moduleName];
-            const { mutations = {} } = module;
-            
-            Object
-                .keys(mutations)
-                .forEach(mutationName => {
-                    const mutationFullName = `${ moduleName }/${ mutationName }`;
-                    allMutations[mutationFullName] = mutations[mutationName];
-                });
-        });
+  Object.keys(modules).forEach((moduleName) => {
+    const module = modules[moduleName];
+    const { mutations = {} } = module;
 
-    Object
-        .keys(mutations)
-        .forEach(mutationName => {
-            allMutations[mutationName] = mutations[mutationName];
-        });
-        
-    return allMutations;
+    Object.keys(mutations).forEach((mutationName) => {
+      const mutationFullName = `${moduleName}/${mutationName}`;
+      allMutations[mutationFullName] = mutations[mutationName];
+    });
+  });
+
+  Object.keys(mutations).forEach((mutationName) => {
+    allMutations[mutationName] = mutations[mutationName];
+  });
+
+  return allMutations;
 }

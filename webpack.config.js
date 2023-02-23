@@ -1,20 +1,20 @@
-const path = require('path');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const path = require("path");
+const HtmlWebpackPlugin = require("html-webpack-plugin");
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
-const isDev = process.env.NODE_ENV === 'development';
+const isDev = process.env.NODE_ENV === "development";
 
 module.exports = {
-  entry: './src/index.js',
+  entry: "./src/index.js",
   output: {
-    filename: isDev ? 'bundle.js' : 'bundle.[contenthash].js',
-    path: path.resolve(__dirname, 'dist'),
-    publicPath: '',
+    filename: isDev ? "bundle.js" : "bundle.[contenthash].js",
+    path: path.resolve(__dirname, "dist"),
+    publicPath: "",
   },
-  mode: isDev ? 'development' : 'production',
-  devtool: isDev ? 'eval-source-map' : 'source-map',
+  mode: isDev ? "development" : "production",
+  devtool: isDev ? "eval-source-map" : "source-map",
   devServer: {
-    contentBase: path.join(__dirname, 'dist'),
+    contentBase: path.join(__dirname, "dist"),
     compress: true,
     port: 9000,
     historyApiFallback: true,
@@ -24,33 +24,33 @@ module.exports = {
       {
         test: /\.(js|jsx)$/,
         exclude: /node_modules/,
-        use: ['babel-loader', 'eslint-loader'],
+        use: ["babel-loader", "eslint-loader"],
       },
       {
         test: /\.css$/,
         use: [
-          isDev ? 'style-loader' : MiniCssExtractPlugin.loader,
-          'css-loader',
+          isDev ? "style-loader" : MiniCssExtractPlugin.loader,
+          "css-loader",
         ],
       },
       {
         test: /\.(png|svg|jpg|jpeg|gif)$/i,
-        type: 'asset/resource',
+        type: "asset/resource",
       },
     ],
   },
   plugins: [
     new HtmlWebpackPlugin({
-      template: './public/index.html',
-      filename: 'index.html',
-      favicon: './public/favicon.ico',
+      template: "./public/index.html",
+      filename: "index.html",
+      favicon: "./public/favicon.ico",
     }),
     new MiniCssExtractPlugin({
-      filename: isDev ? '[name].css' : '[name].[contenthash].css',
-      chunkFilename: isDev ? '[id].css' : '[id].[contenthash].css',
+      filename: isDev ? "[name].css" : "[name].[contenthash].css",
+      chunkFilename: isDev ? "[id].css" : "[id].[contenthash].css",
     }),
   ],
   resolve: {
-    extensions: ['.js', '.jsx'],
+    extensions: [".js", ".jsx"],
   },
 };

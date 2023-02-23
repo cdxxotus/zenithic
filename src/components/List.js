@@ -4,5 +4,5 @@ export default {
       <slot :item="item"/>
     </li>
   </ul>`,
-  props: ['items']
-}
+  props: ["items"],
+};

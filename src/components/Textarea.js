@@ -7,20 +7,20 @@ export default {
   props: {
     value: {
       type: String,
-      required: true
+      required: true,
     },
     placeholder: {
       type: String,
-      required: false
+      required: false,
     },
     onInput: {
       type: Function,
-      required: true
-    }
+      required: true,
+    },
   },
   methods: {
     handleInput(e) {
-      this.onInput(e.target.value)
-    }
-  }
-}
+      this.onInput(e.target.value);
+    },
+  },
+};

@@ -1,19 +1,19 @@
 {
-    "env": {
-        "node": true,
-        "browser": true,
-        "es6": true
-    },
-    "parser": "babel-eslint",
-    "extends": "airbnb-base",
-    "rules": {
-        "no-console": "off",
-        "no-restricted-syntax": [
-            "error",
-            {
-                "selector": "CallExpression[callee.object.name='console'][callee.property.name!=/^(log|warn|error|info|trace)$/]",
-                "message": "Unexpected property on console object was called"
-            }
-        ]
-    }
+  "env": {
+    "node": true,
+    "browser": true,
+    "es6": true
+  },
+  "parser": "babel-eslint",
+  "extends": "airbnb-base",
+  "rules": {
+    "no-console": "off",
+    "no-restricted-syntax": [
+      "error",
+      {
+        "selector": "CallExpression[callee.object.name='console'][callee.property.name!=/^(log|warn|error|info|trace)$/]",
+        "message": "Unexpected property on console object was called"
+      }
+    ]
+  }
 }

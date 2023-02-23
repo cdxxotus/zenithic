@@ -7,20 +7,20 @@ export default {
   props: {
     value: {
       type: String,
-      required: true
+      required: true,
     },
     options: {
       type: Array,
-      required: true
+      required: true,
     },
     onChange: {
       type: Function,
-      required: true
-    }
+      required: true,
+    },
   },
   methods: {
     handleChange(e) {
-      this.onChange(e.target.value)
-    }
-  }
-}
+      this.onChange(e.target.value);
+    },
+  },
+};

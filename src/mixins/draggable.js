@@ -1,38 +1,38 @@
 export default {
-    data() {
-        return {
-            isDragging: false,
-            dragX: 0,
-            dragY: 0,
-            initialX: 0,
-            initialY: 0,
-        };
+  data() {
+    return {
+      isDragging: false,
+      dragX: 0,
+      dragY: 0,
+      initialX: 0,
+      initialY: 0,
+    };
+  },
+  methods: {
+    handleMouseDown(event) {
+      this.isDragging = true;
+      this.initialX = event.clientX - this.dragX;
+      this.initialY = event.clientY - this.dragY;
     },
-    methods: {
-        handleMouseDown(event) {
-            this.isDragging = true;
-            this.initialX = event.clientX - this.dragX;
-            this.initialY = event.clientY - this.dragY;
-        },
-        handleMouseMove(event) {
-            if (this.isDragging) {
-                event.preventDefault();
-                this.dragX = event.clientX - this.initialX;
-                this.dragY = event.clientY - this.initialY;
-            }
-        },
-        handleMouseUp() {
-            this.isDragging = false;
-        },
+    handleMouseMove(event) {
+      if (this.isDragging) {
+        event.preventDefault();
+        this.dragX = event.clientX - this.initialX;
+        this.dragY = event.clientY - this.initialY;
+      }
     },
-    mounted() {
-        document.addEventListener("mousemove", this.handleMouseMove);
-        document.addEventListener("mouseup", this.handleMouseUp);
+    handleMouseUp() {
+      this.isDragging = false;
     },
-    beforeDestroy() {
-        document.removeEventListener("mousemove", this.handleMouseMove);
-        document.removeEventListener("mouseup", this.handleMouseUp);
-    },
+  },
+  mounted() {
+    document.addEventListener("mousemove", this.handleMouseMove);
+    document.addEventListener("mouseup", this.handleMouseUp);
+  },
+  beforeDestroy() {
+    document.removeEventListener("mousemove", this.handleMouseMove);
+    document.removeEventListener("mouseup", this.handleMouseUp);
+  },
 };
 
 // This mixin can be used in any component that requires draggable functionality. The component should implement a template that includes the DOM element that will be draggable, and the component should include the draggableMixin object as a mixin.
