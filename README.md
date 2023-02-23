@@ -7,6 +7,9 @@ Zenithic also focuses on developer productivity, offering a powerful templating 
 
 The framework has a core library size of under 50KB and no dependencies, and it supports server-side rendering, as well as the latest versions of all major browsers.
 
+## Progress
+![](https://geps.dev/progress/30)
+
 ## Features
 - **Small size**: Core library size of under 50KB and no dependencies
 - **Fast**: Powerful virtual DOM rendering engine for efficient updates
