@@ -2,6 +2,8 @@
 // THERE IS STILL A LOT TO DO FOR COMPILING TO AST AND GENERATE VDOM WHILE IMPLEMENTING 
 // DIRECTIVES, FILTERS, MIXINS, AND OTHER CAPABILITIES
 
+// NONE OF THOSE FUNCIONS ARE DEFINITIVE, COMPLETE, SECURE OR WORKING
+
 const parseDirectives = (template) => {
   const directiveRegex = /v-(\w+):?([a-zA-Z]*)="(.*?)"/g; // Expression régulière pour identifier les directives
   let match = directiveRegex.exec(template);
