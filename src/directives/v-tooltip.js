@@ -1,5 +1,9 @@
+const makeTooltipId = (binding) => {
+  return `tooltip-${binding.value}`;
+};
+
 const buildTooltip = (el) => {
-  tooltipEl.id = `tooltip-${binding.value}`;
+  const tooltipText = el.dataset.tooltipText;
   tooltipEl.textContent = tooltipText;
   document.body.appendChild(tooltipEl);
   const rect = el.getBoundingClientRect();
@@ -10,14 +14,14 @@ const buildTooltip = (el) => {
   }px`;
 };
 
-const handleMouseEnter = () => {
-  const tooltipText = el.dataset.tooltipText;
+const handleMouseEnter = (el, binding) => {
   const tooltipEl = document.createElement("div");
+  tooltipEl.id = makeTooltipId(binding);
   buildTooltip(el);
 };
 
-const handleMouseLeave = () => {
-  const tooltipEl = document.querySelector(".tooltip");
+const handleMouseLeave = (binding) => {
+  const tooltipEl = document.querySelector(`#${makeTooltipId(binding)}`);
   if (tooltipEl) {
     tooltipEl.remove();
   }
@@ -25,17 +29,16 @@ const handleMouseLeave = () => {
 
 export default {
   mounted(el, binding) {
-    el.addEventListener("mouseenter", () => handleMouseEnter(binding));
+    el.addEventListener("mouseenter", () => handleMouseEnter(el, binding));
     el.addEventListener("mouseleave", () => handleMouseLeave(binding));
   },
 
   updated(el, binding) {
-    const tooltipEl = document.querySelector(`tooltip-${binding.value}`);
-    tooltip.updated.call({ el });
+    buildTooltip(binding);
   },
 
   beforeDestroy(el, binding) {
-    el.removeEventListener(() => handleMouseEnter(binding));
+    el.removeEventListener(() => handleMouseEnter(el, binding));
     el.removeEventListener(() => handleMouseLeave(binding));
   },
 };
