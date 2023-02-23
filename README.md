@@ -401,24 +401,50 @@ Other commonly used directives include `v-if`, `v-for`, `v-bind`, and `v-on`.
 
 ## Plugins
 
-Plugins can be used to register application-level features.
+Plugins are a powerful feature of Zenithic that allow developers to extend the framework with custom functionality. Plugins can provide additional components, directives, filters, or services that are not included in the core framework.
+
+### Creating a plugin
+To create a plugin, you need to define an object that contains one or more of the following properties:
+
+- `install`: A function that will be called when the plugin is installed. The function will receive the Zenithic application instance as its only argument. You can use this function to register new components, directives, filters, or services.
+For example, here's how you could create a simple plugin that adds a new filter to format numbers as percentages:
 
 ```js
-// Define a plugin
-const myPlugin = {
-    install(app) {
-        app.myMethod = () => {
-            // do something
-        };
-    }
+const percentageFilter = (value) => {
+  if (typeof value !== 'number') {
+    return value;
+  }
+
+  return `${Math.round(value * 100)}%`;
 };
 
-// Register the plugin
-app.use(myPlugin);
+const percentagePlugin = {
+  install: (app) => {
+    Object.assign(app.filters, { 'percentage', percentageFilter })
+  },
+};
 
-// Use the plugin
-app.myPlugin.myMethod();
+export default percentagePlugin;
 ```
+
+This plugin adds a new percentage filter to the application instance. When the plugin is installed, the percentageFilter function is registered as a filter.
+
+### Using a plugin
+To use a plugin, you need to install it into your application instance using the `app.use` method:
+
+```js
+import createZenithic from 'zenithic';
+import percentagePlugin from './percentagePlugin';
+
+const app = createZenithic();
+
+app.use(percentagePlugin);
+```
+
+This code installs the percentagePlugin into the application instance. When the plugin is installed, the percentage filter will be available to use in your templates.
+
+### Sharing plugins
+Plugins can be published to npm and shared with other developers. To make your plugin easy to use, it's a good idea to include a `README.md` file that explains how to install and use the plugin. You can also include a `demo` folder that demonstrates the plugin's functionality.
 
 ## Routing
 To enable routing, use the `router` plugin:
