@@ -1,13 +1,8 @@
-import { set, isInput } from "../utils/dom";
-import { isInput } from "../utils/dom";
+import { set } from "../utils/dom";
 
 const modelDirective = {
   bind(elem, binding) {
-    if (isInput(elem)) {
-      elem.value = binding.value;
-    } else {
-      set(elem, binding.value);
-    }
+    set(elem, binding.value);
 
     binding.modifiers.lazy &&
       elem.addEventListener("change", () => {
@@ -15,11 +10,7 @@ const modelDirective = {
       });
   },
   update(elem, binding) {
-    if (isInput(elem)) {
-      elem.value = binding.value;
-    } else {
-      set(elem, binding.value);
-    }
+    set(elem, binding.value);
   },
 };
 
