@@ -35,7 +35,7 @@ export default {
   },
 };
 
-// This mixin can be used in any component that requires draggable functionality. The component should implement a template that includes the DOM element that will be draggable, and the component should include the draggableMixin object as a mixin.
+// This mixin can be used in any component that requires draggable functionality. The component should implement a template that includes the DOM element that will be draggable, and the component should include the draggable object as a mixin.
 
 // For example:
 

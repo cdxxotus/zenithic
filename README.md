@@ -338,6 +338,75 @@ const loginForm = {
 };
 ```
 
+### draggable
+
+The draggable mixin adds drag and drop functionality to a component. This can be useful for components like sliders or sortable lists.
+
+```js
+import { draggable } from "zenithic";
+
+const slider = {
+  mixins: [draggable],
+
+  data() {
+    return {
+      position: 0,
+    };
+  },
+
+  methods: {
+    onDragStart(event) {
+      const thumb = event.target;
+      const thumbRect = thumb.getBoundingClientRect();
+
+      this.dragStartX = event.clientX;
+      this.thumbStartX = thumbRect.left;
+      this.thumbWidth = thumbRect.width;
+    },
+
+    onDrag(event) {
+      const offset = event.clientX - this.dragStartX;
+      const newPosition = this.thumbStartX + offset;
+      const sliderRect = this.$el.getBoundingClientRect();
+      const position = (newPosition - sliderRect.left) / sliderRect.width;
+
+      this.position = Math.max(Math.min(position, 1), 0);
+      this.$emit("input", this.position);
+    },
+  },
+
+  template: `
+    <div class="slider" @mousedown="startDrag">
+      <div class="track">
+        <div class="thumb" :style="{ left: position * 100 + '%' }" @mousedown.stop="startDrag" />
+      </div>
+    </div>
+  `,
+};
+```
+
+### tooltip
+
+```js
+import { form } from "zenithic";
+
+const divWithTooltip = {
+  mixins: [tooltip],
+
+  data() {
+    return {
+      tooltipText: 'Tooltip text',
+    };
+  },
+
+  template: `
+    <div>
+      Block
+    </div>
+  `,
+};
+```
+
 ## Directives
 
 Directives are special attributes that can be used to apply reactive behavior to an HTML element in Zenithic applications. They are prefixed with`v-` followed by the directive name. For example, `v-if`, `v-for`, `v-bind`, `v-on`, etc.
