@@ -10,6 +10,20 @@ Zenithic also focuses on developer productivity, offering a powerful templating 
 
 The framework has a core library size of under 50KB and no dependencies, and it supports server-side rendering, as well as the latest versions of all major browsers.
 
+## Table of Contents
+
+1. [Features](#features)
+2. [Usage](#usage)
+3. [Components](#components)
+4. [Filters](#filters)
+5. [Mixins](#mixins)
+6. [Directives](#directives)
+7. [Plugins](#plugins)
+8. [Routing](#routing)
+9. [State management](#state-management)
+10. [Customizing the configuration](#customizing-the-configuration)
+11. [App example](#app-example)
+
 ## Progress
 
 ![](https://geps.dev/progress/30)
@@ -62,7 +76,7 @@ Components are the building blocks of Zenithic applications. They are reusable U
 - `destroyed`: A function that is executed when the component is destroyed. Destroyed is a lifecycle hook that is used to perform cleanup tasks after the component has been removed from the DOM.
 - `mixins`: An array of objects that define mixins to be applied to the component. Mixins are reusable sets of component options that can be combined with other options to create a new component definition.
 
-### Component Example
+### Component example
 
 Here's an example of a simple component that displays a message:
 
@@ -560,7 +574,7 @@ const router = createRouter({
 });
 ```
 
-## Store (state management)
+## State management
 
 To enable state management, use the `store` plugin:
 
