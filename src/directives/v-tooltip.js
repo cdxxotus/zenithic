@@ -2,10 +2,9 @@ const makeTooltipId = (binding) => {
   return `tooltip-${binding.value}`;
 };
 
-const buildTooltip = (el) => {
+const buildTooltip = (el, tooltipEl) => {
   const tooltipText = el.dataset.tooltipText;
   tooltipEl.textContent = tooltipText;
-  document.body.appendChild(tooltipEl);
   const rect = el.getBoundingClientRect();
   const tooltipRect = tooltipEl.getBoundingClientRect();
   tooltipEl.style.top = `${rect.top - tooltipRect.height}px`;
@@ -17,7 +16,8 @@ const buildTooltip = (el) => {
 const handleMouseEnter = (el, binding) => {
   const tooltipEl = document.createElement("div");
   tooltipEl.id = makeTooltipId(binding);
-  buildTooltip(el);
+  buildTooltip(el, tooltipEL);
+  document.body.appendChild(tooltipEl);
 };
 
 const handleMouseLeave = (binding) => {
@@ -34,7 +34,8 @@ export default {
   },
 
   updated(el, binding) {
-    buildTooltip(binding);
+    const tooltipEl = document.querySelector(`#${makeTooltipId(binding)}`);
+    buildTooltip(el, tooltipEl);
   },
 
   beforeDestroy(el, binding) {
