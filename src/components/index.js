@@ -6,7 +6,7 @@ import List from "./List.js";
 import Select from "./Select.js";
 import TextArea from "./TextArea.js";
 
-export function createComponents(config) {
+export const createComponents = (config) => {
   return {
     install: (app) =>
       (app["components"] = {

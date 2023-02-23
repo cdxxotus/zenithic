@@ -2,11 +2,10 @@ import clickOutside from "./clickOutside";
 import draggable from "./draggable";
 import focus from "./focus";
 import form from "./form";
-import tooltip from "./tooltip";
 import transition from "./transition";
 import validator from "./validator";
 
-export function createMixins(config) {
+export const createMixins = (config) => {
   return {
     install: (app) =>
       (app["mixins"] = {
@@ -14,7 +13,6 @@ export function createMixins(config) {
         draggable,
         focus,
         form,
-        tooltip,
         transition,
         validator,
       }),

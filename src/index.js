@@ -8,7 +8,7 @@ import { createComponents } from "./components";
 import { createUtils } from "./utils";
 import defaultConfig from "./config";
 
-export default function createZenithic(config = defaultConfig) {
+export default createZenithic = (config = defaultConfig) => {
   const app = createApp();
   const router = createRouter(config);
   const store = createStore(config);
@@ -27,4 +27,4 @@ export default function createZenithic(config = defaultConfig) {
   app.use(utils);
 
   return app;
-}
+};

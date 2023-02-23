@@ -2,7 +2,7 @@ import { createHistory } from "./history";
 import { createRoutes } from "./routes";
 import { createRouter } from "./router";
 
-export function createRouter(config) {
+export const createRouter = (config) => {
   const router = createRouter(config);
   const history = createHistory(config);
   const routes = createRoutes(config);
@@ -13,4 +13,4 @@ export function createRouter(config) {
   return {
     install: (app) => (app["router"] = router),
   };
-}
+};

@@ -1,19 +1,24 @@
-import bind from "./bind";
-import cloak from "./cloak";
-import forLoop from "./for";
-import ifCondition from "./if";
-import model from "./model";
-import on from "./on";
-import once from "./once";
-import pre from "./pre";
-import show from "./show";
+import bind from "./v-bind";
+import cloak from "./v-cloak";
+import elseIf from "./v-else-if";
+import elseDirective from "./v-else";
+import forLoop from "./v-for";
+import ifCondition from "./v-if";
+import model from "./v-model";
+import on from "./v-on";
+import once from "./v-once";
+import pre from "./v-pre";
+import show from "./v-show";
+import tooltip from "./v-tooltip";
 
-export function createDirectives(config) {
+export const createDirectives = (config) => {
   return {
     install: (app) =>
       (app["directives"] = {
         bind,
         cloak,
+        elseIf,
+        else: elseDirective,
         for: forLoop,
         if: ifCondition,
         model,
@@ -21,6 +26,7 @@ export function createDirectives(config) {
         once,
         pre,
         show,
+        tooltip,
       }),
   };
 }

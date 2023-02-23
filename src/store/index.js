@@ -5,7 +5,7 @@ import { createMutations } from "./mutations";
 import { createModules } from "./modules";
 import { createState } from "./state";
 
-export function createStore(config) {
+export const createStore = (config) => {
   const store = createStore();
   const actions = createActions(config.store);
   const getters = createGetters(config.store);

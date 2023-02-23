@@ -6,7 +6,7 @@ import number from "./date";
 import url from "./date";
 import utils from "./date";
 
-export function createUtils(config) {
+export const createUtils = (config) => {
   return {
     install: (app) =>
       (app["utils"] = {
