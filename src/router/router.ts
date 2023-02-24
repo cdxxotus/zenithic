@@ -1,4 +1,4 @@
-import { RouterConfig, History } from "../types/router";
+import { RouterConfig, History, Route } from "../types/router";
 
 export const prepareRouter = (config?: RouterConfig) => {
   let history: History;
@@ -8,22 +8,23 @@ export const prepareRouter = (config?: RouterConfig) => {
     history = h;
   };
 
-  const registerRoutes = (r) => {
+  const registerRoutes = (r: Route[]) => {
     routes.push(...r);
   };
 
-  const navigateTo = (pathname) => {
+  const navigateTo = (pathname: string) => {
     if (history) history.push(pathname);
   };
 
-  const match = (pathname) => {
+  const match = (pathname: string) => {
     return routes.find((route) => route.path === pathname);
   };
 
   const listen = (callback) => {
-    history.listen((pathname) => {
-      callback(match(pathname));
-    });
+    if (history)
+      history.listen((pathname) => {
+        callback(match(pathname));
+      });
   };
 
   return {
