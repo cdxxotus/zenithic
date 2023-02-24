@@ -1,6 +1,6 @@
 import { createStore as createModuleStore } from "./store";
 
-export function createModules(config) {
+export const createModules = (config) => {
   const { modules = {} } = config;
   const allModules = {};
 

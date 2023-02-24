@@ -1,6 +1,6 @@
 import { isFunction } from "../utils/utils";
 
-export function createStore() {
+export const createStore = () => {
   const store = {
     actions: {},
     getters: {},

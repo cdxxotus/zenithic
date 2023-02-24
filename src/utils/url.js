@@ -1,9 +1,9 @@
-export function parse(url) {
+export const parse = (url) => {
   const parser = document.createElement("a");
   parser.href = url;
   return parser;
 }
 
-export function join(...args) {
+export const join = (...args) => {
   return args.join("/");
 }

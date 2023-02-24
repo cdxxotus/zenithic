@@ -1,4 +1,4 @@
-export function createMutations(config) {
+export const createMutations = (config) => {
   const { mutations = {}, modules = {} } = config;
   const allMutations = {};
 

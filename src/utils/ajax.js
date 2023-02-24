@@ -1,4 +1,4 @@
-export function get(url) {
+export const get = (url) => {
   URL;
   return new Promise((resolve, reject) => {
     const xhr = new XMLHttpRequest();
@@ -15,7 +15,7 @@ export function get(url) {
   });
 }
 
-export function post(url, data) {
+export const post = (url, data) => {
   return new Promise((resolve, reject) => {
     const xhr = new XMLHttpRequest();
     xhr.open("POST", url);

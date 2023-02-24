@@ -1,4 +1,4 @@
-export function createState(config) {
+export const createState = (config) => {
   const { initialState = {}, modules = {} } = config;
   const allState = {};
 

@@ -1,4 +1,4 @@
-export function createGetters(config) {
+export const createGetters = (config) => {
   const { getters = {}, modules = {} } = config;
   const allGetters = {};
 

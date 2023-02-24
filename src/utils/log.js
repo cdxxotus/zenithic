@@ -1,11 +1,11 @@
-export function log(message) {
+export const log = (message) => {
   console.log("[Zenithic] " + message);
 }
 
-export function warn(message) {
+export const warn = (message) => {
   console.warn("[Zenithic] " + message);
 }
 
-export function error(message) {
+export const error = (message) => {
   console.error("[Zenithic] " + message);
 }

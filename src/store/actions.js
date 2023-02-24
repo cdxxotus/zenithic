@@ -1,4 +1,4 @@
-export function createActions(config) {
+export const createActions = (config) => {
   const { actions = {}, modules = {} } = config;
   const allActions = {};
 
