@@ -1,4 +1,6 @@
-export const createActions = (config) => {
+import { StoreConfig } from "../types/store";
+
+export const createActions = (config: StoreConfig) => {
   const { actions = {}, modules = {} } = config;
   const allActions = {};
 

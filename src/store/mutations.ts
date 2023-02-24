@@ -1,4 +1,6 @@
-export const createMutations = (config) => {
+import { StoreConfig } from "../types/store";
+
+export const createMutations = (config: StoreConfig) => {
   const { mutations = {}, modules = {} } = config;
   const allMutations = {};
 

@@ -1,12 +1,14 @@
-import { createStore } from "./store";
+import { prepareStore } from "./store";
 import { createActions } from "./actions";
 import { createGetters } from "./getters";
 import { createMutations } from "./mutations";
 import { createModules } from "./modules";
 import { createState } from "./state";
 
-export const createStore = (config) => {
-  const store = createStore();
+import { Config } from "../types/core";
+
+export const createStore = (config: Config) => {
+  const store = prepareStore();
   const actions = createActions(config.store);
   const getters = createGetters(config.store);
   const mutations = createMutations(config.store);

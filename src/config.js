@@ -1,6 +1,5 @@
 export default {
   router: {
-    mode: "history",
     routes: [],
   },
   store: {

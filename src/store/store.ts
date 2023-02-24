@@ -1,7 +1,9 @@
 import { isFunction } from "../utils/utils";
 
-export const createStore = () => {
-  const store = {
+import { Actions, Getters, Module, Modules, Mutations, StoreConfig, Store } from "../types/store";
+
+export const prepareStore = (config: StoreConfig | Module): Store => {
+  const store: Store = {
     actions: {},
     getters: {},
     mutations: {},
@@ -44,6 +46,8 @@ export const createStore = () => {
       mutation(...params);
     },
   };
+
+  Object.assign(store, config);
 
   return store;
 }

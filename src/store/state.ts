@@ -1,11 +1,13 @@
-export const createState = (config) => {
+import { StoreConfig } from "../types/store";
+
+export const createState = (config: StoreConfig) => {
   const { initialState = {}, modules = {} } = config;
   const allState = {};
 
   Object.keys(modules).forEach((moduleName) => {
     const module = modules[moduleName];
-    const { state = {} } = module;
-    allState[moduleName] = state;
+    const { initialState = {} } = module;
+    allState[moduleName] = initialState;
   });
 
   Object.keys(initialState).forEach((stateName) => {

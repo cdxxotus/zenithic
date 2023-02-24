@@ -1,4 +1,6 @@
-export const createGetters = (config) => {
+import { StoreConfig } from "../types/store";
+
+export const createGetters = (config: StoreConfig) => {
   const { getters = {}, modules = {} } = config;
   const allGetters = {};
 
@@ -7,8 +9,8 @@ export const createGetters = (config) => {
     const { getters = {} } = module;
 
     Object.keys(getters).forEach((getterName) => {
-      const getterFullName = `${moduleName}/${gettersName}`;
-      allGetters[getterFullName] = getters[gettersName];
+      const getterFullName = `${moduleName}/${getterName}`;
+      allGetters[getterFullName] = getters[getterName];
     });
   });
 
