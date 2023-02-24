@@ -1,4 +1,4 @@
-import { RouterConfig, History, Route } from "../types/router";
+import { RouterConfig, History, Route, RouterListenCallback } from "../types/router";
 
 export const prepareRouter = (config?: RouterConfig) => {
   let history: History;
@@ -17,10 +17,10 @@ export const prepareRouter = (config?: RouterConfig) => {
   };
 
   const match = (pathname: string) => {
-    return routes.find((route) => route.path === pathname);
+    return routes.find((route) => route.path === pathname) || null;
   };
 
-  const listen = (callback) => {
+  const listen = (callback: RouterListenCallback) => {
     if (history)
       history.listen((pathname) => {
         callback(match(pathname));
