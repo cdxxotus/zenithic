@@ -197,7 +197,7 @@ The clickOutside mixin adds a click outside event to a component. This can be us
 
 ```js
 const modal = {
-  mixins: ['clickOutside'],
+  mixins: ["clickOutside"],
 
   mounted() {
     this.addClickOutsideEvent();
@@ -231,7 +231,7 @@ const modal = {
 
 ```js
 export default {
-  mixins: ['draggable'],
+  mixins: ["draggable"],
   template: `
       <div class="draggable" @mousedown="handleMouseDown" :style="{ transform: translate(${dragX}px, ${dragY}px) }">
           Draggable Element
@@ -246,7 +246,7 @@ The form mixin provides form validation and submission functionality to a compon
 
 ```js
 const loginForm = {
-  mixins: ['form'],
+  mixins: ["form"],
 
   data() {
     return {
