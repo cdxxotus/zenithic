@@ -21,11 +21,14 @@ export const createRouter = () => {
     return routes.find(route => route.path === currentPath);
   }
 
+  const listen = (currentPath) => {
+    return match(currentPath);
+  }
+
   return {
     registerHistory,
     registerRoutes,
     navigateTo,
-    match,
-    listen: history.listen,
+    listen,
   };
 };
