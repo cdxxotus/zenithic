@@ -5,15 +5,15 @@ import { createMutations } from "./mutations";
 import { createModules } from "./modules";
 import { createState } from "./state";
 
-import { Config } from "../types/core";
+import { StoreConfig } from "../types/store";
 
-export const createStore = (config: Config) => {
+export const createStore = (config: StoreConfig) => {
   const store = prepareStore();
-  const actions = createActions(config.store);
-  const getters = createGetters(config.store);
-  const mutations = createMutations(config.store);
-  const modules = createModules(config.store);
-  const state = createState(config.store);
+  const actions = createActions(config);
+  const getters = createGetters(config);
+  const mutations = createMutations(config);
+  const modules = createModules(config);
+  const state = createState(config);
 
   store.registerActions(actions);
   store.registerGetters(getters);

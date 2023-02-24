@@ -10,13 +10,13 @@ import defaultConfig from "./config";
 
 export default createZenithic = (config = defaultConfig) => {
   const app = createApp();
-  const router = createRouter(config);
-  const store = createStore(config);
-  const mixins = createMixins(config);
-  const directives = createDirectives(config);
-  const filters = createFilters(config);
-  const components = createComponents(config);
-  const utils = createUtils(config);
+  const router = createRouter(config.router);
+  const store = createStore(config.store);
+  const mixins = createMixins(config.mixins);
+  const directives = createDirectives(config.directives);
+  const filters = createFilters(config.filters);
+  const components = createComponents(config.components);
+  const utils = createUtils(config.utils);
 
   app.use(router);
   app.use(store);

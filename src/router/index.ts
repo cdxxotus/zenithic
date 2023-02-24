@@ -1,10 +1,12 @@
 import { createHistory } from "./history";
 import { createRoutes } from "./routes";
-import { createRouter } from "./router";
+import { prepareRouter } from "./router";
 
-export const createRouter = (config) => {
-  const router = createRouter(config);
-  const history = createHistory(config);
+import { RouterConfig } from "../types/router";
+
+export const createRouter = (config?: RouterConfig) => {
+  const router = prepareRouter(config);
+  const history = createHistory();
   const routes = createRoutes(config);
 
   router.registerHistory(history);

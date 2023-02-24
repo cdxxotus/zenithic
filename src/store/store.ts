@@ -2,7 +2,7 @@ import { isFunction } from "../utils/utils";
 
 import { Module, StoreConfig, Store } from "../types/store";
 
-export const prepareStore = (config: StoreConfig | Module): Store => {
+export const prepareStore = (config?: StoreConfig | Module): Store => {
   const store: Store = {
     actions: {},
     getters: {},
@@ -47,7 +47,7 @@ export const prepareStore = (config: StoreConfig | Module): Store => {
     },
   };
 
-  Object.assign(store, config);
+  if (config) Object.assign(store, config);
 
   return store;
 }
