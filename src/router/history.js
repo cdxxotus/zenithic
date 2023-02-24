@@ -1,5 +1,5 @@
 export const createHistory = () => {
-  const historyManager = window.createHistory;
+  const historyManager = window.history;
   const history = {
     listen: (callback) =>
       historyManager.addEventListener("popstate", (event) =>
