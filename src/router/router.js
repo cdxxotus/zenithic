@@ -21,8 +21,10 @@ export const createRouter = () => {
     return routes.find(route => route.path === currentPath);
   }
 
-  const listen = (currentPath) => {
-    return match(currentPath);
+  const listen = (callback) => {
+    history.listen(currentPath => {
+      callback(match(currentPath));
+    })
   }
 
   return {
