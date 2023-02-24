@@ -1,6 +1,6 @@
 import { isFunction } from "../utils/utils";
 
-import { Actions, Getters, Module, Modules, Mutations, StoreConfig, Store } from "../types/store";
+import { Module, StoreConfig, Store } from "../types/store";
 
 export const prepareStore = (config: StoreConfig | Module): Store => {
   const store: Store = {
