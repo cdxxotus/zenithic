@@ -1,6 +1,6 @@
 ![visitors](https://visitor-badge.glitch.me/badge?page_id=danielfebrero.zenithic)
 
-# Zenithic
+# Zenithic (made in France)
 
 Zenithic is a lightweight, fast, and highly customizable JavaScript framework designed as an alternative to React and other existing competitors. It features a powerful virtual DOM rendering engine, an intuitive and easy-to-learn API, and a flexible and modular architecture that allows developers to use only the features they need.
 
@@ -711,7 +711,7 @@ package.json
 
 ## Differences with
 
-### Vue.js
+### Vue.js (made in China)
 
 Vue.js and Zenithic have some similarities, such as both being JavaScript frameworks with a focus on performance and flexibility. However, there are some key differences between the two:
 
@@ -729,7 +729,7 @@ Vue.js and Zenithic have some similarities, such as both being JavaScript framew
 
 - Plugins: Zenithic's plugin system allows for easier extension of the framework than Vue.js's plugin system.
 
-### React.JS
+### React.JS (made in USA)
 
 - Size: Zenithic is smaller in size than React.js, requiring only a fraction of the memory footprint of existing frameworks, making it easier to create responsive and performant applications.
 
@@ -741,7 +741,7 @@ Vue.js and Zenithic have some similarities, such as both being JavaScript framew
 
 In conclusion, Zenithic provides a lightweight, fast, and highly customizable alternative to React.js, with a powerful templating system and modular architecture that can enhance developer productivity and enable a flexible and customized framework according to project requirements.
 
-### Angular
+### Angular (made in USA)
 
 - Size: Zenithic is a lightweight framework, with a core library size of under 50KB and no dependencies, while Angular is a larger framework with many built-in features and dependencies.
 
