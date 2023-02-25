@@ -1,40 +1,64 @@
+import { ComponentLifecycle } from "../core/types";
+
 export type Binding = {
-    value: any;
-    arg: string;
-    modifiers: {
-        lazy: boolean;
-    }
+  value: any;
+  arg: string;
 };
 
 export type DirectiveMethod = (el: HTMLElement, binding: Binding) => void;
 
-export type Directive = Record<string, DirectiveMethod>;
+export type Directive = {
+  [key in ComponentLifecycle]?: DirectiveMethod;
+};
 
 export type DirectivesConfig = string[];
 
 export type TooltipDirective = {
-    bind: DirectiveMethod;
-    updated: DirectiveMethod;
-    beforeDestroy: DirectiveMethod;
-}
+  beforeMount: DirectiveMethod;
+  updated: DirectiveMethod;
+  beforeDestroy: DirectiveMethod;
+};
 
 export type ShowDirective = {
-    bind: DirectiveMethod;
-}
+  beforeMount: DirectiveMethod;
+};
 
 export type PreDirective = {
-    bind: DirectiveMethod;
-}
+  beforeMount: DirectiveMethod;
+};
 
 export type OnceDirective = {
-    bind: DirectiveMethod;
-}
+  beforeMount: DirectiveMethod;
+};
 
 export type OnDirective = {
-    bind: DirectiveMethod;
-}
+  beforeMount: DirectiveMethod;
+};
 
 export type ModelDirective = {
-    bind: DirectiveMethod;
-    update: DirectiveMethod;
-}
+  beforeMount: DirectiveMethod;
+  update: DirectiveMethod;
+};
+
+export type IfDirective = {
+  beforeMount: DirectiveMethod;
+};
+
+export type ForDirective = {
+  beforeMount: DirectiveMethod;
+};
+
+export type ElseDirective = {};
+
+export type ElseIfDirective = {
+  beforeMount: DirectiveMethod;
+};
+
+export type CloakDirective = {
+  beforeMount: DirectiveMethod;
+  mounted: DirectiveMethod;
+};
+
+export type BindDirective = {
+  beforeMount: DirectiveMethod;
+};

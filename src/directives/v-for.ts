@@ -1,7 +1,11 @@
-export default {
-  bind(el, binding) {
+import { Directive, ForDirective } from "../types/directives/types";
+
+const forDirective: ForDirective = {
+  beforeMount(el, binding) {
     // Get the parent element
     const parentEl = el.parentNode;
+    if (!parentEl) return;
+
     // Get the array of items to iterate over
     const items = binding.value;
     // Loop over the array and create a new element for each item
@@ -12,3 +16,5 @@ export default {
     });
   },
 };
+
+export default forDirective satisfies Directive;

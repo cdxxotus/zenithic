@@ -1,5 +1,7 @@
-export default {
-  bind(el, binding) {
+import { Directive, BindDirective } from "../types/directives/types";
+
+const bind: BindDirective = {
+  beforeMount(el, binding) {
     // Get the attribute name
     const attributeName = binding.arg;
     // Get the attribute value
@@ -8,3 +10,5 @@ export default {
     el.setAttribute(attributeName, attributeValue);
   },
 };
+
+export default bind satisfies Directive;

@@ -33,7 +33,7 @@ const handleMouseLeave = (binding: Binding) => {
 
 
 const tooltip: TooltipDirective = {
-  bind(el, binding) {
+  beforeMount(el, binding) {
     el.addEventListener("mouseenter", () => handleMouseEnter(el, binding));
     el.addEventListener("mouseleave", () => handleMouseLeave(binding));
   },

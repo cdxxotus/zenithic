@@ -11,7 +11,10 @@ import pre from "./v-pre";
 import show from "./v-show";
 import tooltip from "./v-tooltip";
 
-export const createDirectives = (config) => {
+import { DirectivesConfig } from "../types/directives/types";
+import { Plugin } from "../types/core";
+
+export const createDirectives = (config?: DirectivesConfig): Plugin => {
   return {
     install: (app) =>
       (app["directives"] = {

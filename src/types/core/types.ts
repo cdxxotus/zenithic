@@ -3,6 +3,8 @@ import { StoreConfig } from "../store";
 
 export type ZenithicApp = any;
 
+export type ComponentLifecycle = "beforeMount" | "mounted" | "updated" | "beforeDestroy" | "destroyed";
+
 export type Config = {
   router: RouterConfig;
   store: StoreConfig;

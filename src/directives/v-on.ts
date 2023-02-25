@@ -1,7 +1,7 @@
 import { Directive, OnDirective } from "../types/directives/types";
 
 const on: OnDirective = {
-  bind(el, binding) {
+  beforeMount(el, binding) {
     // Get the event name
     const eventName = binding.arg;
     // Get the event handler
