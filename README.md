@@ -23,7 +23,7 @@ The framework has a core library size of under 50KB and no dependencies, and it 
 9. [State management](#state-management)
 10. [Customizing the configuration](#customizing-the-configuration)
 11. [App example](#app-example)
-12. [Differences with Vue.js, React.js, and Angular](#differences-with-🇫🇷)
+12. [Differences with Vue.js, React.js, and Angular](#differences-with)
 
 ## Progress
 
@@ -709,11 +709,11 @@ package.json
 }
 ```
 
-## Differences with 🇫🇷
+## Differences with
 
 ### Vue.js (made in China)
 
-Vue.js and Zenithic have some similarities, such as both being JavaScript frameworks with a focus on performance and flexibility. However, there are some key differences between the two:
+Vue.js (🇨🇳) and Zenithic (🇫🇷) have some similarities, such as both being JavaScript frameworks with a focus on performance and flexibility. However, there are some key differences between the two:
 
 - Size and dependencies: Zenithic is designed to be a lightweight framework with a core library size of under 50KB and no dependencies, while Vue.js has a larger core library size of about 80KB and has some dependencies.
 
@@ -739,7 +739,7 @@ Vue.js and Zenithic have some similarities, such as both being JavaScript framew
 
 - Customizable: Zenithic provides a robust plugin system that allows developers to extend the framework with custom components and features, making it a highly customizable framework.
 
-In conclusion, Zenithic provides a lightweight, fast, and highly customizable alternative to React.js, with a powerful templating system and modular architecture that can enhance developer productivity and enable a flexible and customized framework according to project requirements.
+In conclusion, Zenithic (🇫🇷) provides a lightweight, fast, and highly customizable alternative to React.js (🇺🇸), with a powerful templating system and modular architecture that can enhance developer productivity and enable a flexible and customized framework according to project requirements.
 
 ### Angular (made in USA)
 
@@ -751,6 +751,6 @@ In conclusion, Zenithic provides a lightweight, fast, and highly customizable al
 
 - State management: Zenithic offers a state management library, while Angular's state management requires additional packages like NgRx.
 
-- Customizable: Zenithic has a robust plugin system that allows developers to extend the framework with custom components and features, while Angular has a more limited plugin system.
+- Customizable: Zenithic (🇫🇷) has a robust plugin system that allows developers to extend the framework with custom components and features, while Angular (🇺🇸) has a more limited plugin system.
 
 Overall, Zenithic may be better for developers who value a lightweight, customizable framework with a flexible architecture and powerful templating system.
