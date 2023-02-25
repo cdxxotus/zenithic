@@ -1,5 +1,4 @@
-export const get = (url) => {
-  URL;
+export const get = (url: string) => {
   return new Promise((resolve, reject) => {
     const xhr = new XMLHttpRequest();
     xhr.open("GET", url);
@@ -15,7 +14,7 @@ export const get = (url) => {
   });
 }
 
-export const post = (url, data) => {
+export const post = (url: string, data: Record<string, any>) => {
   return new Promise((resolve, reject) => {
     const xhr = new XMLHttpRequest();
     xhr.open("POST", url);
