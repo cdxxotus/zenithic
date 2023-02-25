@@ -1,10 +1,14 @@
-const makeTooltipId = (binding) => {
+import domUtils from "../utils/dom";
+
+import { Binding, Directive, TooltipDirective } from "../types/directives/types";
+
+const makeTooltipId = (binding: Binding) => {
   return `tooltip-${binding.value}`;
 };
 
-const buildTooltip = (el, tooltipEl) => {
+const buildTooltip = (el: HTMLElement, tooltipEl: HTMLDivElement) => {
   const tooltipText = el.dataset.tooltipText;
-  tooltipEl.textContent = tooltipText;
+  tooltipEl.textContent = tooltipText || "";
   const rect = el.getBoundingClientRect();
   const tooltipRect = tooltipEl.getBoundingClientRect();
   tooltipEl.style.top = `${rect.top - tooltipRect.height}px`;
@@ -13,33 +17,36 @@ const buildTooltip = (el, tooltipEl) => {
   }px`;
 };
 
-const handleMouseEnter = (el, binding) => {
+const handleMouseEnter = (el: HTMLElement, binding: Binding) => {
   const tooltipEl = document.createElement("div");
   tooltipEl.id = makeTooltipId(binding);
-  buildTooltip(el, tooltipEL);
+  buildTooltip(el, tooltipEl);
   document.body.appendChild(tooltipEl);
 };
 
-const handleMouseLeave = (binding) => {
+const handleMouseLeave = (binding: Binding) => {
   const tooltipEl = document.querySelector(`#${makeTooltipId(binding)}`);
   if (tooltipEl) {
     tooltipEl.remove();
   }
 };
 
-export default {
-  mounted(el, binding) {
+
+const tooltip: TooltipDirective = {
+  bind(el, binding) {
     el.addEventListener("mouseenter", () => handleMouseEnter(el, binding));
     el.addEventListener("mouseleave", () => handleMouseLeave(binding));
   },
 
   updated(el, binding) {
-    const tooltipEl = document.querySelector(`#${makeTooltipId(binding)}`);
+    const tooltipEl = domUtils.querySelector(`#${makeTooltipId(binding)}`) as HTMLDivElement;
     buildTooltip(el, tooltipEl);
   },
 
   beforeDestroy(el, binding) {
-    el.removeEventListener(() => handleMouseEnter(el, binding));
-    el.removeEventListener(() => handleMouseLeave(binding));
+    el.removeEventListener("mouseenter", () => handleMouseEnter(el, binding));
+    el.removeEventListener("mouseleave", () => handleMouseLeave(binding));
   },
 };
+
+export default tooltip satisfies Directive;

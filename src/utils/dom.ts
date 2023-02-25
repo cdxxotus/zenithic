@@ -31,5 +31,6 @@ export default {
   querySelectorAll,
   getComputedStyle,
   isInput,
+  isSelect,
   set,
 }

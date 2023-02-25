@@ -1,4 +1,6 @@
-export default {
+import { Directive, OnDirective } from "../types/directives/types";
+
+const on: OnDirective = {
   bind(el, binding) {
     // Get the event name
     const eventName = binding.arg;
@@ -8,3 +10,4 @@ export default {
     el.addEventListener(eventName, eventHandler);
   },
 };
+export default on satisfies Directive;
