@@ -663,7 +663,7 @@ export default {
 index.js
 
 ```javascript
-import createZenithic, component from 'zenithic';
+import { createZenithic } from 'zenithic';
 
 import App from './App';
 import config from './config';
@@ -693,7 +693,7 @@ app.store.mutations.increment = (state) => {
     state.count++;
 };
 
-// Mount and render
+// Init
 app.mount('#app', App, { title: 'Hello World' });
 ```
 

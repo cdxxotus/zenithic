@@ -9,17 +9,18 @@ import * as type from "./type";
 import { UtilsConfig } from "../types/utils";
 import { Plugin } from "../types/core";
 
-export const createUtils = (config: UtilsConfig): Plugin => {
+export const createUtils = (config?: UtilsConfig): Plugin => {
   return {
-    install: (app) =>
-      (app["utils"] = {
-        ajax,
-        date,
-        dom,
-        log,
-        number,
-        url,
-        type,
-      }),
+    install: (app) => {
+      Object.assign(app.utils,
+        config && config.includes('ajax') && { ajax },
+        config && config.includes('date') && { date },
+        config && config.includes('dom') && { dom },
+        config && config.includes('log') && { log },
+        config && config.includes('number') && { number },
+        config && config.includes('url') && { url },
+        config && config.includes('type') && { type },
+      )
+    }
   };
 }

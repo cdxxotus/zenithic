@@ -8,12 +8,14 @@ import { Plugin } from "../types/core/types";
 
 export const createMixins = (config?: MixinsConfig): Plugin => {
   return {
-    install: (app) =>
-      (app["mixins"] = {
-        clickOutside,
-        draggable,
-        focus,
-        form,
-      }),
+    install: (app) => {
+      Object.assign(
+        app.mixins,
+        config && config.includes("clickOutside") && { clickOutside },
+        config && config.includes("draggable") && { draggable },
+        config && config.includes("focus") && { focus },
+        config && config.includes("form") && { form }
+      );
+    },
   };
-}
+};
