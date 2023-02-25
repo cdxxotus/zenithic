@@ -1,4 +1,4 @@
-import { isFunction } from "../utils/utils";
+import { isFunction } from "../utils/type";
 
 import { Module, StoreConfig, Store } from "../types/store";
 

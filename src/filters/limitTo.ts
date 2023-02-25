@@ -1,4 +1,4 @@
-import { isArray } from "../utils/utils";
+import { isArray } from "../utils/type";
 
 import { Filter, LimitToFilter } from "../types/filters/types";
 

@@ -1,7 +1,9 @@
+import { isArray } from "../utils/type";
+
 import { Filter, OrderByFilter } from "../types/filters/types";
 
 const orderBy: OrderByFilter = (array, sortKey, reverse) => {
-  if (!Array.isArray(array)) {
+  if (!isArray(array)) {
     return array;
   }
 
