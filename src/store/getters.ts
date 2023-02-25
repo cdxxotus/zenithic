@@ -1,7 +1,8 @@
 import { StoreConfig } from "../types/store";
 
-export const createGetters = (config: StoreConfig) => {
-  const { getters = {}, modules = {} } = config;
+export const createGetters = (config?: StoreConfig) => {
+  const getters = config?.getters || {};
+  const modules = config?.modules || {};
   const allGetters = {};
 
   Object.keys(modules).forEach((moduleName) => {

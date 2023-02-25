@@ -1,4 +1,6 @@
-export default {
+import { Mixin } from '../types/mixins';
+
+const clickOutside: Mixin = {
   mounted() {
     document.addEventListener("click", this.handleClickOutside);
   },
@@ -14,3 +16,5 @@ export default {
     },
   },
 };
+
+export default clickOutside;

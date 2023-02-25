@@ -1,7 +1,8 @@
 import { StoreConfig } from "../types/store";
 
-export const createActions = (config: StoreConfig) => {
-  const { actions = {}, modules = {} } = config;
+export const createActions = (config?: StoreConfig) => {
+  const actions = config?.actions || {};
+  const modules = config?.modules || {};
   const allActions = {};
 
   Object.keys(modules).forEach((moduleName) => {

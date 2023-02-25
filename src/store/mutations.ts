@@ -1,7 +1,8 @@
 import { StoreConfig } from "../types/store";
 
-export const createMutations = (config: StoreConfig) => {
-  const { mutations = {}, modules = {} } = config;
+export const createMutations = (config?: StoreConfig) => {
+  const mutations = config?.mutations || {};
+  const modules = config?.modules || {};
   const allMutations = {};
 
   Object.keys(modules).forEach((moduleName) => {

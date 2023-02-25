@@ -1,6 +1,8 @@
 import { RouterConfig } from "../router";
 import { StoreConfig } from "../store";
 
+export type ZenithicApp = any;
+
 export type Config = {
   router: RouterConfig;
   store: StoreConfig;
@@ -9,3 +11,7 @@ export type Config = {
   filters: null;
   components: null;
 };
+
+export type Plugin = {
+  install: (app: ZenithicApp) => void;
+}

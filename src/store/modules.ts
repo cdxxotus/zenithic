@@ -2,8 +2,8 @@ import { prepareStore } from "./store";
 
 import { StoreConfig } from "../types/store";
 
-export const createModules = (config: StoreConfig) => {
-  const { modules = {} } = config;
+export const createModules = (config?: StoreConfig) => {
+  const modules = config?.modules || {};
   const allModules = {};
 
   Object.keys(modules).forEach((moduleName) => {

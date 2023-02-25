@@ -1,4 +1,6 @@
-export default {
+import { Mixin } from "../types/mixins";
+
+const form: Mixin = {
   data() {
     return {
       form: {
@@ -84,3 +86,5 @@ export default {
     },
   },
 };
+
+export default form;

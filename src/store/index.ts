@@ -6,8 +6,9 @@ import { createModules } from "./modules";
 import { createState } from "./state";
 
 import { StoreConfig } from "../types/store";
+import { Plugin } from "../types/core";
 
-export const createStore = (config: StoreConfig) => {
+export const createStore = (config?: StoreConfig): Plugin => {
   const store = prepareStore();
   const actions = createActions(config);
   const getters = createGetters(config);
@@ -24,4 +25,4 @@ export const createStore = (config: StoreConfig) => {
   return {
     install: (app) => (app["store"] = store),
   };
-}
+};

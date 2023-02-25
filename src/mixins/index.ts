@@ -3,7 +3,10 @@ import draggable from "./draggable";
 import focus from "./focus";
 import form from "./form";
 
-export const createMixins = (config) => {
+import { MixinConfig } from "../types/mixins";
+import { Plugin } from "../types/core/types";
+
+export const createMixins = (config?: MixinConfig): Plugin => {
   return {
     install: (app) =>
       (app["mixins"] = {

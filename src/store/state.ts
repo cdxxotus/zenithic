@@ -1,7 +1,8 @@
 import { StoreConfig } from "../types/store";
 
-export const createState = (config: StoreConfig) => {
-  const { initialState = {}, modules = {} } = config;
+export const createState = (config?: StoreConfig) => {
+  const initialState = config?.initialState || {};
+  const modules = config?.modules || {};
   const allState = {};
 
   Object.keys(modules).forEach((moduleName) => {
