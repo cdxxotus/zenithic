@@ -23,7 +23,7 @@ The framework has a core library size of under 50KB and no dependencies, and it 
 9. [State management](#state-management)
 10. [Customizing the configuration](#customizing-the-configuration)
 11. [App example](#app-example)
-12. [Differences with Vue.js, React.js, and Angular](#differences-with)
+12. [Differences with Vue.js, React.js, and Angular](#differences-with-🇫🇷)
 
 ## Progress
 
