@@ -1,4 +1,6 @@
-export default (array, sortKey, reverse = false) => {
+import { Filter, OrderByFilter } from "../types/filters/types";
+
+const orderBy: OrderByFilter = (array, sortKey, reverse) => {
   if (!Array.isArray(array)) {
     return array;
   }
@@ -20,3 +22,5 @@ export default (array, sortKey, reverse = false) => {
 
   return array;
 };
+
+export default orderBy satisfies Filter;
