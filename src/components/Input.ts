@@ -1,5 +1,8 @@
-export default {
-  template: `<textarea
+import { Component, InputComponent } from "../types/components";
+
+const Input: InputComponent = {
+  template: `<input
+    type="text"
     v-model="value"
     @input="handleInput"
     :placeholder="placeholder"
@@ -20,7 +23,9 @@ export default {
   },
   methods: {
     handleInput(e) {
-      this.onInput(e.target.value);
+      this.onInput((e.target as HTMLInputElement).value);
     },
   },
 };
+
+export default Input satisfies Component;

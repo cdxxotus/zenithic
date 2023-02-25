@@ -1,4 +1,6 @@
-export default {
+import { Component, DatePickerComponent } from "../types/components"
+
+const DatePicker: DatePickerComponent = {
   template: `<input
     type="date"
     v-model="value"
@@ -21,7 +23,9 @@ export default {
   },
   methods: {
     handleInput(e) {
-      this.onInput(e.target.value)
+      this.onInput((e.target as HTMLInputElement).value)
     }
   }
 }
+
+export default DatePicker satisfies Component;

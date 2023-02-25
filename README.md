@@ -71,6 +71,7 @@ Components are the building blocks of Zenithic applications. They are reusable U
 - `computed`: An object that defines the component's computed properties. Computed properties are derived from one or more data properties and are updated automatically when their dependencies change.
 - `methods`: An object that defines the component's methods. Methods are used to perform actions or calculations within the component.
 - `watch`: An object that defines the component's watchers. Watchers are used to perform an action when a data property changes. Watchers are defined as key-value pairs, where the key is the name of the property to watch and the value is a function that is executed when the property changes.
+- `beforeMount`: 
 - `mounted`: A function that is executed when the component is mounted. Mounted is a lifecycle hook that is used to perform initialization tasks that require access to the DOM.
 - `updated`: A function that is executed when the component is updated. Updated is a lifecycle hook that is used to perform tasks after the component has been re-rendered.
 - `beforeDestroy`: A function that is executed before the component is destroyed. BeforeDestroy is a lifecycle hook that is used to perform cleanup tasks before the component is removed from the DOM.
