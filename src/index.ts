@@ -10,7 +10,7 @@ import defaultConfig from "./config";
 
 import { Config, ZenithicApp } from "./types/core";
 
-let apps: ZenithicApp[] = [];
+const apps: ZenithicApp[] = [];
 
 const mergeConfigs = (defaultConfig: Config, config?: Config): Config => {
   return {
