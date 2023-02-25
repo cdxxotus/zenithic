@@ -644,32 +644,15 @@ export default {
 };
 ```
 
-config.js
-
-```javascript
-export default {
-  plugins: [],
-  directives: [],
-  store: {
-    state: {},
-    actions: {},
-    mutations: {},
-    getters: {},
-    modules: {},
-  },
-};
-```
-
 index.js
 
 ```javascript
 import { createZenithic } from 'zenithic';
 
 import App from './App';
-import config from './config';
 
 // Create application instance
-const app = createZenithic(config);
+const app = createZenithic();
 
 // Register router plugin
 app.use(router.createRouter());
