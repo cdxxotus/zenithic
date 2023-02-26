@@ -33,8 +33,8 @@ export type ComponentLifecycle =
   | "destroyed";
 
 export type Config = {
-  router?: RouterConfig;
-  store?: StoreConfig;
+  router?: RouterConfig | false;
+  store?: StoreConfig | false;
   mixins?: MixinsConfig;
   directives?: DirectivesConfig;
   filters?: FiltersConfig;
