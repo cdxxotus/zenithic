@@ -11,6 +11,11 @@ export type Props = {
 
 export type Method = (...args: any[]) => unknown;
 
+export type CompiledComponent = {
+  render: () => DocumentFragment;
+  [methods: string]: (...args: any[]) => any;
+}
+
 export type Component = {
   template: string;
   props?: Props;

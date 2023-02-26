@@ -1,4 +1,4 @@
-import domUtils from "../utils/dom";
+import { querySelector } from "../utils/dom";
 
 import { Binding, Directive, TooltipDirective } from "../types/directives/types";
 
@@ -39,7 +39,7 @@ const tooltip: TooltipDirective = {
   },
 
   updated(el, binding) {
-    const tooltipEl = domUtils.querySelector(`#${makeTooltipId(binding)}`) as HTMLDivElement;
+    const tooltipEl = querySelector(`#${makeTooltipId(binding)}`) as HTMLDivElement;
     buildTooltip(el, tooltipEl);
   },
 

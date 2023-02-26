@@ -1,13 +1,13 @@
-import domUtils from "../utils/dom";
+import { set, isInput, isSelect } from "../utils/dom";
 
 import { Directive, ModelDirective } from "../types/directives/types";
 
 const modelDirective: ModelDirective = {
   beforeMount(el, binding) {
-    domUtils.set(el, binding.value);
+    set(el, binding.value);
 
     el.addEventListener("change", () => {
-      if (domUtils.isInput(el) || domUtils.isSelect(el)) {
+      if (isInput(el) || isSelect(el)) {
         binding.value = (el as HTMLInputElement).value;
       } else {
         binding.value = el.textContent;
@@ -15,7 +15,7 @@ const modelDirective: ModelDirective = {
     });
   },
   update(el, binding) {
-    domUtils.set(el, binding.value);
+    set(el, binding.value);
   },
 };
 

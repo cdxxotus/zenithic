@@ -3,12 +3,16 @@
 // DIRECTIVES, FILTERS, MIXINS, AND OTHER CAPABILITIES
 // NONE OF THOSE FUNCIONS ARE DEFINITIVE, COMPLETE, SECURE OR WORKING
 
-import { Component, Props } from "./types/components";
+import { querySelector } from "./utils/dom";
+
+import { Component, Props, CompiledComponent } from "./types/components";
 import { Plugin, ZenithicApp } from "./types/core";
 import { Directive } from "./types/directives";
 import { Filter } from "./types/filters";
 
-const parseDirectives = (template: string): { [directive: string]: (...args: any[]) => any} => {
+const parseDirectives = (
+  template: string
+): { [directive: string]: (...args: any[]) => any } => {
   const directiveRegex = /v-(\w+):?([a-zA-Z]*)="(.*?)"/g; // Expression régulière pour identifier les directives
   let match = directiveRegex.exec(template);
   const directives = {};
@@ -102,27 +106,30 @@ const prepareComponent = (comp: Component) => {
   return component;
 };
 
-const compileComponent = (component: Component) => {
+const compileComponent = (component: Component): CompiledComponent => {
   // Define the component object
-  const obj = prepareComponent(component);
+  const preparedComponent = prepareComponent(component);
 
   // Define the component template
   const template = component.template;
 
   // Create the component constructor
-  const ComponentConstructor = () => {};
+  const ComponentConstructor = (obj: Component) => {};
 
   ComponentConstructor.prototype = {
     constructor(obj: Component) {
+      Object.assign(this, obj);
+      // TODO
       // Set the context for the component
       // obj.setContext.call(this);
 
+      // TODO
       // Set up the reactive data
       // this.$data = reactive(obj.data);
 
       // Set up the computed properties
-      for (const key in obj.computed) {
-        const getter = obj.computed[key].bind(this);
+      for (const key in this.computed) {
+        const getter = this.computed[key].bind(this);
         defineComputed(this, key, getter);
       }
 
@@ -134,23 +141,25 @@ const compileComponent = (component: Component) => {
       // Set up the watchers
       for (const key in obj.watch) {
         const handler = obj.watch[key].bind(this);
-        watch(this.$data, key, handler);
+        watch(this.data, key, handler);
       }
 
+      // TODO
+      // Mounted / rendered lifecyle
       // Call the mounted hook
-      obj.mounted.call(this);
+      // obj.mounted.call(this);
     },
     $destroy: function () {
       // Call the beforeDestroy hook
-      obj.beforeDestroy.call(this);
+      this.beforeDestroy.call(this);
 
       // Destroy the component
-      unwatch(this.$data);
-      delete this.$data;
+      unwatch(this.data);
+      delete this.data;
       Object.setPrototypeOf(this, null);
 
       // Call the destroyed hook
-      obj.destroyed.call(this);
+      this.destroyed.call(this);
     },
   };
 
@@ -159,11 +168,23 @@ const compileComponent = (component: Component) => {
 
   // Add the render function to the component prototype
   ComponentConstructor.prototype.render = () => {
+    return "<div>Hello noob</div>";
     // return vdom();
   };
 
   // Return the component constructor
-  return ComponentConstructor;
+  return new ComponentConstructor(preparedComponent);
+};
+
+const fillFragmentOrElement = (
+  el: DocumentFragment | Element,
+  parent: DocumentFragment | Element
+) => {
+  if (el) {
+    const childNodes = parent.childNodes;
+    while (childNodes.length > 0) parent.removeChild(childNodes[0]);
+    parent.appendChild(el);
+  }
 };
 
 const createApp = (): ZenithicApp => {
@@ -177,24 +198,32 @@ const createApp = (): ZenithicApp => {
     filters: null,
     components: null,
     utils: null,
-
     use(plugin: Plugin) {
       if (plugin.install) {
         plugin.install(this);
       }
     },
-    mount(selector: string, comp: Component, props: Props) {
+    mount(selector: string, component: Component, props: Props) {
       const mountPoint = window.document.querySelector(selector);
 
       if (mountPoint) {
+        // TODO
         // if (comp.setContext) {
         //   comp.setContext(el, comp);
         // }
-        // comp.props = props;
-        // const fragment = document.createDocumentFragment();
-        // const compiledComponent = compileComponent(comp);
-        // const node = compiledComponent.render();
-        // fillFragment(node, fragment);
+
+        // assign mounted properties to computed data
+        Object.assign(component, { computed: props });
+
+        // create empty document and assign it to app object
+        const fragment = document.createDocumentFragment();
+        this.el = fragment;
+
+        // compile component, render it, and fill the fragment with the result
+        const compiledComponent = compileComponent(component);
+        const node = compiledComponent.render();
+        fillFragmentOrElement(node, fragment);
+        fillFragmentOrElement(fragment, querySelector(selector));
       }
     },
     unmount() {
@@ -218,14 +247,6 @@ const createApp = (): ZenithicApp => {
 };
 
 export { createApp };
-
-// const fillFragment = (el, fragment) => {
-//   if (el) {
-//     const childNodes = fragment.childNodes;
-//     while (childNodes.length > 0) fragment.removeChild(childNodes[0]);
-//     fragment.appendChild(el);
-//   }
-// };
 
 // const parse = (template, options = {}) => {
 //   const { delimiters = ["{{", "}}"], state = {} } = options;
