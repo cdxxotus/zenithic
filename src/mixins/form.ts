@@ -20,12 +20,12 @@ type Field = {
 
 type CompiledFormMixin = CompiledComponent & {
   form: Form;
-  validateField: (fieldName: string) => void;
+  validateFormField: (fieldName: string) => void;
   validateForm: () => void;
   submitForm: () => void;
   resetForm: () => void;
-  onSuccess: (response: any) => void;
-  onError: (error: any) => void;
+  onFormSubmitSuccess: (response: any) => void;
+  onFormSubmitError: (error: any) => void;
 }
 
 const form: Mixin = {
@@ -43,7 +43,7 @@ const form: Mixin = {
   },
 
   methods: {
-    validateField(fieldName: string) {
+    validateFormField(fieldName: string) {
       const field = (this as CompiledFormMixin).form.fields[fieldName];
       const validators = field.validators || [];
 
@@ -94,14 +94,14 @@ const form: Mixin = {
       (this as CompiledFormMixin).form.submitSuccess = null;
     },
 
-    onSuccess(response: any) {
+    onFormSubmitSuccess(response: any) {
       (this as CompiledFormMixin).form.isSubmitted = false;
       (this as CompiledFormMixin).form.submitSuccess = response;
 
       (this as CompiledFormMixin).$emit("success", response);
     },
 
-    onError(error: any) {
+    onFormSubmitError(error: any) {
       (this as CompiledFormMixin).form.isSubmitted = false;
       (this as CompiledFormMixin).form.submitError = error;
 
