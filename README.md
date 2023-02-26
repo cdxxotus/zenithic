@@ -654,12 +654,6 @@ import App from './App';
 // Create application instance
 const app = createZenithic();
 
-// Register router plugin
-app.use(router.createRouter());
-
-// Register store plugin
-app.use(store.createStore());
-
 // Setup routes
 app.router.addRoutes([
     {
