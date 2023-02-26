@@ -454,10 +454,10 @@ Plugins can be published to npm and shared with other developers. To make your p
 
 ## Routing
 
-To enable routing, use the `router` plugin:
+By default, routing is enabled, but you may want to enable it manually by specifying a `router` property in your configuration file, or by importing and registering the `router` plugin:
 
 ```js
-import router from "zenithic/plugins/router";
+import { router } from "zenithic/plugins";
 
 app.use(router.createRouter());
 ```
@@ -539,11 +539,10 @@ const router = createRouter({
 ```
 
 ## State management
-
-To enable state management, use the `store` plugin:
+By default, state management is enabled, but you may want to enable it manually by specifying a `store` property in your configuration file, or by importing and registering the `store` plugin:
 
 ```js
-import store from "zenithic/plugins/store";
+import { store } from "zenithic/plugins";
 
 app.use(store.createStore());
 ```
@@ -648,6 +647,7 @@ index.js
 
 ```javascript
 import { createZenithic } from 'zenithic';
+import { router, store } from 'zenithic/plugins';
 
 import App from './App';
 

@@ -8,7 +8,7 @@ import { Plugin, ZenithicApp } from "./types/core";
 import { Directive } from "./types/directives";
 import { Filter } from "./types/filters";
 
-const parseDirectives = (template) => {
+const parseDirectives = (template: string): { [directive: string]: (...args: any[]) => any} => {
   const directiveRegex = /v-(\w+):?([a-zA-Z]*)="(.*?)"/g; // Expression régulière pour identifier les directives
   let match = directiveRegex.exec(template);
   const directives = {};
@@ -38,7 +38,7 @@ const watch = (
 };
 
 // This function removes all watchers from a reactive object.
-const unwatch = (obj) => {
+const unwatch = (obj: { [key: string]: any }) => {
   Object.keys(obj).forEach((key) => {
     Object.defineProperty(obj, key, {
       get() {
