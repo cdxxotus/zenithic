@@ -647,7 +647,6 @@ index.js
 
 ```javascript
 import { createZenithic } from 'zenithic';
-import { router, store } from 'zenithic/plugins';
 
 import App from './App';
 
