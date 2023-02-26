@@ -1,3 +1,4 @@
+import { CompiledComponent } from "../types/components";
 import { Mixin } from "../types/mixins";
 
 type Form = {
@@ -17,7 +18,7 @@ type Field = {
   value: string;
 };
 
-type CompiledFormMixin = Mixin & {
+type CompiledFormMixin = CompiledComponent & {
   form: Form;
   validateField: (fieldName: string) => void;
   validateForm: () => void;
