@@ -5,13 +5,15 @@ export type Prop = {
   required: boolean;
 };
 
+export type Props = {
+  [key: string]: Prop;
+};
+
 export type Method = (...args: any[]) => unknown;
 
 export type Component = {
   template: string;
-  props?: {
-    [key: string]: Prop;
-  };
+  props?: Props;
   data?: any;
   computed?: any;
   methods?: {
@@ -24,6 +26,10 @@ export type Component = {
   beforeDestroy?: any;
   destroyed?: any;
   mixins?: any;
+};
+
+export type Components = {
+  [component: string]: Component;
 };
 
 export type TextareaComponent = {

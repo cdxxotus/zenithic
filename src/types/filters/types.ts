@@ -1,5 +1,9 @@
 export type Filter = (value: any, ...args: any[]) => unknown;
 
+export type Filters = {
+    [filter: string]: (...args: any[]) => unknown;
+};
+
 export type UppercaseFilter = (value: string) => string;
 
 export type LowercaseFilter = (value: string) => string;

@@ -11,6 +11,10 @@ export type Directive = {
   [key in ComponentLifecycle]?: DirectiveMethod;
 };
 
+export type Directives = {
+  [directive: string]: Directive;
+}
+
 export type DirectivesConfig = string[];
 
 export type TooltipDirective = {

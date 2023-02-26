@@ -18,3 +18,10 @@ export type History = {
 export type RouterConfig = {
   routes: Route[];
 };
+
+export type Router = {
+  registerHistory: (history: History) => void,
+  registerRoutes: (routes: Route[]) => void,
+  navigateTo: (pathname: string) => void,
+  listen: (callback: RouterListenCallback) => void,
+}

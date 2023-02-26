@@ -1,6 +1,6 @@
-import { RouterConfig, History, Route, RouterListenCallback } from "../types/router";
+import { RouterConfig, History, Route, RouterListenCallback, Router } from "../types/router";
 
-export const prepareRouter = (config?: RouterConfig) => {
+export const prepareRouter = (config?: RouterConfig): Router => {
   let history: History;
   const routes = config?.routes || [];
 
