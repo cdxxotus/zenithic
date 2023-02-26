@@ -16,6 +16,7 @@ export type ZenithicApp = {
   filters: Filters | null;
   components: Components | null;
   utils: Utils | null;
+  context: Context | null;
   use: (plugin: Plugin) => void;
   mount: (selector: string, component: Component, props: Props) => void;
   unmount: () => void;
@@ -24,6 +25,8 @@ export type ZenithicApp = {
   registerDirective: (name: string, directive: Directive) => void;
   registerFilter: (name: string, filter: Filter) => void;
 };
+
+export type Context = { [key: string]: any };
 
 export type ComponentLifecycle =
   | "beforeMount"

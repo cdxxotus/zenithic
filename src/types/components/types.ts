@@ -1,3 +1,5 @@
+import { Mixins } from "../mixins";
+
 export type ComponentsConfig = string[];
 
 export type Prop = {
@@ -15,24 +17,26 @@ export type CompiledComponent = {
   render: () => DocumentFragment;
   $destroy: () => void;
   $emit: (key: string, ...args: any[]) => void;
+  $data: { [key: string]: any };
   [properties: string]: ((...args: any[]) => any) | any;
 }
 
 export type Component = {
   template: string;
   props?: Props;
-  data?: any;
-  computed?: any;
+  data?(): { [key: string]: any };
+  computed?: { [key: string]: any };
   methods?: {
     [key: string]: Method;
   };
-  watch?: any;
-  beforeMount?: any;
-  mounted?: any;
-  updated?: any;
-  beforeDestroy?: any;
-  destroyed?: any;
-  mixins?: any;
+  watch?: {[key: string]: () => any };
+  beforeMount?: () => any;
+  mounted?: () => any;
+  updated?: () => any;
+  beforeDestroy?:() => any;
+  destroyed?: () => any;
+  mixins?: Mixins;
+  context?: { [key: string]: any };
 };
 
 export type Components = {

@@ -77,6 +77,7 @@ Components are the building blocks of Zenithic applications. They are reusable U
 - `beforeDestroy`: A function that is executed before the component is destroyed. BeforeDestroy is a lifecycle hook that is used to perform cleanup tasks before the component is removed from the DOM.
 - `destroyed`: A function that is executed when the component is destroyed. Destroyed is a lifecycle hook that is used to perform cleanup tasks after the component has been removed from the DOM.
 - `mixins`: An array of objects that define mixins to be applied to the component. Mixins are reusable sets of component options that can be combined with other options to create a new component definition.
+- `context`: An object passed from the component to children components.
 
 ### Component example
 

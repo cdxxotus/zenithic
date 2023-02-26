@@ -68,34 +68,47 @@ const defineComputed = (
   });
 };
 
+// This function returns a reactive object that tracks changes to its properties.
+const reactive = (obj: { [key: string]: any }) => {
+  const observed = new Proxy(obj, {
+    set(target, key, value) {
+      const result = Reflect.set(target, key, value);
+      // TODO: trigger update
+      return result;
+    },
+  });
+  return observed;
+};
+
 const prepareComponent = (comp: Component) => {
   const component: Component = Object.assign(comp, {
-    data: () => {
-      // const reactiveData = reactive(data);
-      const reactiveData = component.data;
-      component.mixins.forEach((mixin) => {
-        if (mixin.data) {
-          Object.assign(reactiveData, mixin.data());
+    data() {
+      const reactiveData = reactive(comp.data());
+      
+      Object.keys(component.mixins).forEach((mixinKey) => {
+        if (component.mixins[mixinKey].data) {
+          Object.assign(reactiveData, reactive(component.mixins[mixinKey].data()));
         }
       });
+
       return reactiveData;
     },
   });
 
-  component.mixins.forEach((mixin) => {
-    if (mixin.computed) {
-      Object.keys(mixin.computed).forEach((key) => {
-        defineComputed(component.computed, key, mixin.computed[key]);
+  Object.keys(component.mixins).forEach((mixinKey) => {
+    if (component.mixins[mixinKey].computed) {
+      Object.keys(component.mixins[mixinKey].computed).forEach((key) => {
+        defineComputed(component.computed, key, component.mixins[mixinKey].computed[key]);
       });
     }
-    if (mixin.methods) {
-      Object.keys(mixin.methods).forEach((key) => {
-        component.methods[key] = mixin.methods[key];
+    if (component.mixins[mixinKey].methods) {
+      Object.keys(component.mixins[mixinKey].methods).forEach((key) => {
+        component.methods[key] = component.mixins[mixinKey].methods[key];
       });
     }
-    if (mixin.watch) {
-      Object.keys(mixin.watch).forEach((key) => {
-        const handler = mixin.watch[key];
+    if (component.mixins[mixinKey].watch) {
+      Object.keys(component.mixins[mixinKey].watch).forEach((key) => {
+        const handler = component.mixins[mixinKey].watch[key];
         watch(component.data(), key, (newValue, oldValue) => {
           handler.call(component, newValue, oldValue);
         });
@@ -119,13 +132,9 @@ const compileComponent = (component: Component): CompiledComponent => {
   ComponentConstructor.prototype = {
     constructor(obj: Component) {
       Object.assign(this, obj);
-      // TODO
-      // Set the context for the component
-      // obj.setContext.call(this);
 
-      // TODO
       // Set up the reactive data
-      // this.$data = reactive(obj.data);
+      this.$data = reactive(obj.data());
 
       // Set up the computed properties
       for (const key in this.computed) {
@@ -141,21 +150,16 @@ const compileComponent = (component: Component): CompiledComponent => {
       // Set up the watchers
       for (const key in obj.watch) {
         const handler = obj.watch[key].bind(this);
-        watch(this.data, key, handler);
+        watch(this.$data, key, handler);
       }
-
-      // TODO
-      // Mounted / rendered lifecyle
-      // Call the mounted hook
-      // obj.mounted.call(this);
     },
     $destroy: function () {
       // Call the beforeDestroy hook
       this.beforeDestroy.call(this);
 
       // Destroy the component
-      unwatch(this.data);
-      delete this.data;
+      unwatch(this.$data);
+      delete this.$data;
       Object.setPrototypeOf(this, null);
 
       // Call the destroyed hook
@@ -198,6 +202,7 @@ const createApp = (): ZenithicApp => {
     filters: null,
     components: null,
     utils: null,
+    context: null,
     use(plugin: Plugin) {
       if (plugin.install) {
         plugin.install(this);
@@ -207,11 +212,6 @@ const createApp = (): ZenithicApp => {
       const mountPoint = window.document.querySelector(selector);
 
       if (mountPoint) {
-        // TODO
-        // if (comp.setContext) {
-        //   comp.setContext(el, comp);
-        // }
-
         // assign mounted properties to computed data
         Object.assign(component, { computed: props });
 
@@ -373,16 +373,4 @@ export { createApp };
 //   const vdom = buildVdom(template, { state, directives });
 
 //   return vdom;
-// };
-
-// This function returns a reactive object that tracks changes to its properties.
-// const reactive = (obj) => {
-//   const observed = new Proxy(obj, {
-//     set(target, key, value) {
-//       const result = Reflect.set(target, key, value);
-//       // trigger update
-//       return result;
-//     },
-//   });
-//   return observed;
 // };
