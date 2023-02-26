@@ -17,8 +17,14 @@ type Field = {
   value: string;
 };
 
-type FormMixin = Mixin & {
+type CompiledFormMixin = Mixin & {
   form: Form;
+  validateField: (fieldName: string) => void;
+  validateForm: () => void;
+  submitForm: () => void;
+  resetForm: () => void;
+  onSuccess: (response: any) => void;
+  onError: (error: any) => void;
 }
 
 const form: Mixin = {
@@ -36,8 +42,8 @@ const form: Mixin = {
   },
 
   methods: {
-    validateField(fieldName) {
-      const field = (this as FormMixin).form.fields[fieldName];
+    validateField(fieldName: string) {
+      const field = (this as CompiledFormMixin).form.fields[fieldName];
       const validators = field.validators || [];
 
       let isValid = true;
@@ -49,56 +55,56 @@ const form: Mixin = {
           isValid = false;
           field.isValid = isValid;
           errors.push(result.error);
-          (this as FormMixin).form.errors[fieldName] = errors;
+          (this as CompiledFormMixin).form.errors[fieldName] = errors;
         }
       }
     },
 
     validateForm() {
-      for (let fieldName in (this as FormMixin).form.fields) {
-        (this as FormMixin).validateField(fieldName);
+      for (let fieldName in (this as CompiledFormMixin).form.fields) {
+        (this as CompiledFormMixin).validateField(fieldName);
       }
 
-      (this as FormMixin).form.isValid = Object.values((this as FormMixin).form.fields).every(
+      (this as CompiledFormMixin).form.isValid = Object.values((this as CompiledFormMixin).form.fields).every(
         (field) => field.isValid
       );
     },
 
     submitForm() {
-      (this as FormMixin).validateForm();
+      (this as CompiledFormMixin).validateForm();
 
-      if ((this as FormMixin).form.isValid) {
-        (this as FormMixin).form.isSubmitted = true;
+      if ((this as CompiledFormMixin).form.isValid) {
+        (this as CompiledFormMixin).form.isSubmitted = true;
 
-        (this as FormMixin).$emit("submit", this.form.fields, this.onSuccess, this.onError);
+        (this as CompiledFormMixin).$emit("submit", this.form.fields, this.onSuccess, this.onError);
       }
     },
 
     resetForm() {
       for (let fieldName in this.form.fields) {
-        (this as FormMixin).form.fields[fieldName].value = "";
-        (this as FormMixin).form.fields[fieldName].isValid = false;
+        (this as CompiledFormMixin).form.fields[fieldName].value = "";
+        (this as CompiledFormMixin).form.fields[fieldName].isValid = false;
       }
 
-      (this as FormMixin).form.errors = {};
-      (this as FormMixin).form.isValid = false;
-      (this as FormMixin).form.isSubmitted = false;
-      (this as FormMixin).form.submitError = null;
-      (this as FormMixin).form.submitSuccess = null;
+      (this as CompiledFormMixin).form.errors = {};
+      (this as CompiledFormMixin).form.isValid = false;
+      (this as CompiledFormMixin).form.isSubmitted = false;
+      (this as CompiledFormMixin).form.submitError = null;
+      (this as CompiledFormMixin).form.submitSuccess = null;
     },
 
-    onSuccess(response) {
-      (this as FormMixin).form.isSubmitted = false;
-      (this as FormMixin).form.submitSuccess = response;
+    onSuccess(response: any) {
+      (this as CompiledFormMixin).form.isSubmitted = false;
+      (this as CompiledFormMixin).form.submitSuccess = response;
 
-      (this as FormMixin).$emit("success", response);
+      (this as CompiledFormMixin).$emit("success", response);
     },
 
     onError(error: any) {
-      (this as FormMixin).form.isSubmitted = false;
-      (this as FormMixin).form.submitError = error;
+      (this as CompiledFormMixin).form.isSubmitted = false;
+      (this as CompiledFormMixin).form.submitError = error;
 
-      (this as FormMixin).$emit("error", error);
+      (this as CompiledFormMixin).$emit("error", error);
     },
   },
 };
