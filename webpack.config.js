@@ -1,56 +1,31 @@
 const path = require("path");
-const HtmlWebpackPlugin = require("html-webpack-plugin");
-const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-
-const isDev = process.env.NODE_ENV === "development";
+const TerserPlugin = require("terser-webpack-plugin");
 
 module.exports = {
-  entry: "./src/index.js",
+  devtool: "source-map",
+  entry: "./src/index.ts",
   output: {
-    filename: isDev ? "bundle.js" : "bundle.[contenthash].js",
     path: path.resolve(__dirname, "dist"),
-    publicPath: "",
+    filename: "[name].js",
   },
-  mode: isDev ? "development" : "production",
-  devtool: isDev ? "eval-source-map" : "source-map",
-  devServer: {
-    contentBase: path.join(__dirname, "dist"),
-    compress: true,
-    port: 9000,
-    historyApiFallback: true,
+  optimization: {
+    minimize: true,
+    minimizer: [new TerserPlugin()],
+  },
+  resolve: {
+    // Add `.ts` and `.tsx` as a resolvable extension.
+    extensions: [".ts", ".tsx", ".js"],
+    // Add support for TypeScripts fully qualified ESM imports.
+    extensionAlias: {
+      ".js": [".js", ".ts"],
+      ".cjs": [".cjs", ".cts"],
+      ".mjs": [".mjs", ".mts"],
+    },
   },
   module: {
     rules: [
-      {
-        test: /\.(js|jsx)$/,
-        exclude: /node_modules/,
-        use: ["babel-loader", "eslint-loader"],
-      },
-      {
-        test: /\.css$/,
-        use: [
-          isDev ? "style-loader" : MiniCssExtractPlugin.loader,
-          "css-loader",
-        ],
-      },
-      {
-        test: /\.(png|svg|jpg|jpeg|gif)$/i,
-        type: "asset/resource",
-      },
+      // all files with a `.ts`, `.cts`, `.mts` or `.tsx` extension will be handled by `ts-loader`
+      { test: /\.([cm]?ts|tsx)$/, loader: "ts-loader" },
     ],
-  },
-  plugins: [
-    new HtmlWebpackPlugin({
-      template: "./public/index.html",
-      filename: "index.html",
-      favicon: "./public/favicon.ico",
-    }),
-    new MiniCssExtractPlugin({
-      filename: isDev ? "[name].css" : "[name].[contenthash].css",
-      chunkFilename: isDev ? "[id].css" : "[id].[contenthash].css",
-    }),
-  ],
-  resolve: {
-    extensions: [".js", ".jsx"],
   },
 };

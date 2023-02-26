@@ -16,9 +16,8 @@
   "author": "Daniel Febrero",
   "license": "MIT",
   "devDependencies": {
-    "babel-core": "^6.26.3",
-    "babel-loader": "^9.1.2",
-    "babel-preset-env": "^1.7.0",
+    "terser-webpack-plugin": "^5.3.6",
+    "ts-loader": "^9.4.2",
     "webpack": "^5.75.0"
   }
 }
