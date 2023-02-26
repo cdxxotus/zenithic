@@ -13,7 +13,9 @@ export type Method = (...args: any[]) => unknown;
 
 export type CompiledComponent = {
   render: () => DocumentFragment;
-  [methods: string]: (...args: any[]) => any;
+  $destroy: () => void;
+  $emit: (key: string, arg: any) => void;
+  [properties: string]: ((...args: any[]) => any) | any;
 }
 
 export type Component = {

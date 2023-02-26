@@ -8,7 +8,7 @@ One of the main advantages of Zenithic is its small size and minimal overhead, r
 
 Zenithic also focuses on developer productivity, offering a powerful templating system and state management library that reduce the amount of code needed to implement a feature. Additionally, it provides a robust plugin system that allows developers to extend the framework with custom components and features.
 
-The framework has a core library size of under 50KB and no dependencies, and it supports server-side rendering, as well as the latest versions of all major browsers.
+The framework has a core library size of under 30KB and no dependencies, and it supports server-side rendering, as well as the latest versions of all major browsers.
 
 ## Table of Contents
 
@@ -31,7 +31,7 @@ The framework has a core library size of under 50KB and no dependencies, and it 
 
 ## Features
 
-- **Small size**: Core library size of under 50KB and no dependencies
+- **Small size**: Core library size of under 30KB and no dependencies
 - **Fast**: Powerful virtual DOM rendering engine for efficient updates
 - **Customizable**: Flexible and modular architecture allows developers to use only the features they need
 - **Productivity**: Powerful templating system and state management library that reduce the amount of code needed to implement a feature
@@ -692,7 +692,7 @@ package.json
 
 Vue.js (🇨🇳) and Zenithic (🇫🇷) have some similarities, such as both being JavaScript frameworks with a focus on performance and flexibility. However, there are some key differences between the two:
 
-- Size and dependencies: Zenithic is designed to be a lightweight framework with a core library size of under 50KB and no dependencies, while Vue.js has a larger core library size of about 80KB and has some dependencies.
+- Size and dependencies: Zenithic is designed to be a lightweight framework with a core library size of under 30KB and no dependencies, while Vue.js has a larger core library size of 105KB and has some dependencies.
 
 - State management: Zenithic has a built-in state management library, while Vue.js has Vuex, which is a separate state management library that is commonly used with Vue.js. Also, Zenithic's state management library is more lightweight and easy to use than Vue.js's Vuex library.
 
@@ -708,7 +708,7 @@ Vue.js (🇨🇳) and Zenithic (🇫🇷) have some similarities, such as both b
 
 ### React.JS (made in USA)
 
-- Size: Zenithic is smaller in size than React.js, requiring only a fraction of the memory footprint of existing frameworks, making it easier to create responsive and performant applications.
+- Size: Zenithic (< 30KB) is smaller in size than React.js (React + React-dom = 139KB), requiring only a fraction of the memory footprint of existing frameworks, making it easier to create responsive and performant applications.
 
 - Templating System: Zenithic offers a powerful templating system and state management library that reduce the amount of code needed to implement a feature, enhancing developer productivity.
 
@@ -720,7 +720,7 @@ In conclusion, Zenithic (🇫🇷) provides a lightweight, fast, and highly cust
 
 ### Angular (made in USA)
 
-- Size: Zenithic is a lightweight framework, with a core library size of under 50KB and no dependencies, while Angular is a larger framework with many built-in features and dependencies.
+- Size: Zenithic is a lightweight framework, with a core library size of under 30KB and no dependencies, while Angular (173KB) is a larger framework with many built-in features and dependencies.
 
 - Architecture: Zenithic has a flexible and modular architecture that allows developers to use only the features they need, while Angular has a more opinionated and structured architecture.
 
