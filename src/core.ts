@@ -65,10 +65,13 @@ const getPropertyNameFromStrinWithFilters = (str: string) =>
   str.split("|")[0].trim();
 
 const componentPropsFromElement = (el: Element) => {
-  return Array.from(el.attributes).reduce((acc, v) => {
-    return { ...acc, [v.name]: v.value };
-  }, { children: el.innerHTML });
-}
+  return Array.from(el.attributes).reduce(
+    (acc, v) => {
+      return { ...acc, [v.name]: v.value };
+    },
+    { children: el.innerHTML }
+  );
+};
 
 const makeComponentRenderFn = (app: ZenithicApp): (() => string) => {
   const vdom = () => {
@@ -87,8 +90,16 @@ const makeComponentRenderFn = (app: ZenithicApp): (() => string) => {
     const children = compiledComponent.el.children;
     Array.from(children).forEach((child: Element) => {
       if (componentsNames.includes(child.tagName)) {
-        const mountPoint = document.createElement('div');
-        app.mount(mountPoint, app.components[child.tagName], componentPropsFromElement(child));
+        const mountPoint = document.createElement("div");
+        app.mount(
+          mountPoint,
+          app.components[child.tagName],
+          Object.assign(
+            {},
+            compiledComponent.context,
+            componentPropsFromElement(child)
+          )
+        );
         compiledComponent.el.removeChild(child);
         compiledComponent.el.appendChild(mountPoint);
       }
@@ -161,33 +172,44 @@ const prepareComponent = (comp: Component) => {
   const component: Component = Object.assign(comp, {
     data() {
       const reactiveData = reactive(comp.data());
+      let returnData = reactiveData;
 
       Object.keys(component.mixins).forEach((mixinKey) => {
         if (component.mixins[mixinKey].data) {
-          Object.assign(
-            reactiveData,
-            reactive(component.mixins[mixinKey].data())
+          returnData = Object.assign(
+            reactive(component.mixins[mixinKey].data()),
+            reactiveData
           );
         }
       });
 
-      return reactiveData;
+      return returnData;
     },
   });
 
   Object.keys(component.mixins).forEach((mixinKey) => {
     if (component.mixins[mixinKey].computed) {
       Object.keys(component.mixins[mixinKey].computed).forEach((key) => {
-        defineComputed(
-          component.computed,
-          key,
-          component.mixins[mixinKey].computed[key]
-        );
+        if (!component.computed[key]) {
+          defineComputed(
+            component.computed,
+            key,
+            component.mixins[mixinKey].computed[key]
+          );
+        }
       });
     }
     if (component.mixins[mixinKey].methods) {
       Object.keys(component.mixins[mixinKey].methods).forEach((key) => {
-        component.methods[key] = component.mixins[mixinKey].methods[key];
+        if (!component.methods[key]) {
+          const fnCopy = component.methods[key].bind({});
+          component.methods[key] = (...args) => {
+            fnCopy(...args);
+            component.mixins[mixinKey].methods[key](...args);
+          };
+        } else {
+          component.methods[key] = component.mixins[mixinKey].methods[key];
+        }
       });
     }
     if (component.mixins[mixinKey].watch) {
@@ -340,7 +362,11 @@ const createApp = (): ZenithicApp => {
 
       if (mountPoint) {
         // assign mounted properties to computed data
-        Object.assign(component, { computed: props });
+        Object.assign(
+          component,
+          { computed: props },
+          { computed: app.context }
+        );
 
         // create empty document and assign it to app object
         const fragment = document.createDocumentFragment();
@@ -375,6 +401,9 @@ const createApp = (): ZenithicApp => {
     },
     registerFilter(name: string, filter: Filter) {
       Object.assign((this as ZenithicApp).filters, { [name]: filter });
+    },
+    registerContext(context: { [key: string]: any }) {
+      this.context = context;
     },
   };
 

@@ -24,6 +24,7 @@ export type ZenithicApp = {
   getComponent: (name: string) => Component;
   registerDirective: (name: string, directive: Directive) => void;
   registerFilter: (name: string, filter: Filter) => void;
+  registerContext: (context: { [key: string]: any }) => void;
 };
 
 export type Context = { [key: string]: any };
