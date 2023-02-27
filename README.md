@@ -27,7 +27,7 @@ The framework has a core library size of under 30KB and no dependencies, and it 
 
 ## Progress
 
-![](https://geps.dev/progress/30)
+![](https://geps.dev/progress/69)
 
 ## Features
 
