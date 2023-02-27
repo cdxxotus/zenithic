@@ -64,15 +64,41 @@ const reactive = (obj: { [key: string]: any }) => {
 const getPropertyNameFromStrinWithFilters = (str: string) =>
   str.split("|")[0].trim();
 
+const componentPropsFromElement = (el: Element) => {
+  return Array.from(el.attributes).reduce((acc, v) => {
+    return { ...acc, [v.name]: v.value };
+  }, { children: el.children });
+}
+
 const makeComponentRenderFn = (app: ZenithicApp): (() => string) => {
   const vdom = () => {
     const compiledComponent = this as CompiledComponent;
-    // TODO: parse components
+
+    if (compiledComponent.children) {
+      return compiledComponent.el.innerHTML.replace(
+        /\{{(.*?)\}}/gm,
+        (_substring: string, str: string) => {
+          if (str.trim() === "children") return compiledComponent.children;
+        }
+      );
+    }
+
+    const componentsNames = Object.keys(app.components);
+    const children = compiledComponent.el.children;
+    Array.from(children).forEach((child: Element) => {
+      if (componentsNames.includes(child.tagName)) {
+        const mountPoint = document.createElement('div');
+        app.mount(mountPoint, app.components[child.tagName], componentPropsFromElement(child));
+        compiledComponent.el.removeChild(child);
+        compiledComponent.el.appendChild(mountPoint);
+      }
+    });
 
     return compiledComponent.el.innerHTML.replace(
       /\{{(.*?)\}}/gm,
       (_substring: string, str: string) => {
         // use filters
+        if (str === "children") return compiledComponent.children;
         const filters = getFiltersFromValue(app, compiledComponent, str);
         return filters.reduce(
           (acc, filter) => filter(acc),
@@ -96,7 +122,7 @@ const getFiltersFromValue = (
       .match(/\(([^()]+)\)/g)[0]
       .split(",")
       .reduce((acc, v) => {
-        const matchString = v.match(/"(.*?)"|'(.*?)'/);
+        const matchString = v.match(/"(.*?)"|'(.*?)'/g);
         if (matchString[1]) {
           return [...acc, matchString[1]];
         } else if (Number.isNaN(v.trim())) {
@@ -302,8 +328,15 @@ const createApp = (): ZenithicApp => {
         plugin.install(this);
       }
     },
-    mount(selector: string, component: Component, props: Props) {
-      const mountPoint = window.document.querySelector(selector);
+    mount(
+      selectorOrElement: string | Element,
+      component: Component,
+      props: Props
+    ) {
+      const mountPoint =
+        typeof selectorOrElement === "string"
+          ? window.document.querySelector(selectorOrElement)
+          : selectorOrElement;
 
       if (mountPoint) {
         // assign mounted properties to computed data
@@ -322,7 +355,7 @@ const createApp = (): ZenithicApp => {
         // render and mount the component
         const node = compiledComponent.render();
         fillFragmentOrElement(node, fragment);
-        fillFragmentOrElement(fragment, querySelector(selector));
+        fillFragmentOrElement(fragment, mountPoint);
 
         // @Lifecycle:mounted
         compiledComponent.mounted();

@@ -18,7 +18,7 @@ export type ZenithicApp = {
   utils: Utils | null;
   context: Context | null;
   use: (plugin: Plugin) => void;
-  mount: (selector: string, component: Component, props: Props) => void;
+  mount: (selectorOrElement: string | Element, component: Component, props: { [key: string]: any }) => void;
   unmount: () => void;
   registerComponent: (name: string, component: Component) => void;
   getComponent: (name: string) => Component;
