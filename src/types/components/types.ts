@@ -13,7 +13,8 @@ export type Props = {
 
 export type Method = (...args: any[]) => unknown;
 
-export type CompiledComponent = {
+export type CompiledComponent = Component & {
+  el: Element;
   render: () => DocumentFragment;
   $destroy: () => void;
   $emit: (key: string, ...args: any[]) => void;

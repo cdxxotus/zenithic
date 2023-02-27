@@ -1,6 +1,9 @@
 import { Directive, CloakDirective } from "../types/directives/types";
 
 const cloak: CloakDirective = {
+  parseValue(_str: string) {
+    return null;
+  },
   beforeMount(el) {
     // Set the element's content to be hidden until it's rendered
     el.style.display = "none";

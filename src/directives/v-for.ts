@@ -1,6 +1,12 @@
 import { Directive, ForDirective } from "../types/directives/types";
 
 const forDirective: ForDirective = {
+  parseValue(str: string) {
+    const matched = str.match(/(.*) in (.*)/gm);
+
+    // TODO: index
+    return this[matched[1]];
+  },
   beforeMount(el, binding) {
     // Get the parent element
     const parentEl = el.parentNode;

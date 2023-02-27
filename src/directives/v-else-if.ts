@@ -1,6 +1,9 @@
 import { Directive, ElseIfDirective } from "../types/directives/types";
 
 const elseIf: ElseIfDirective = {
+  parseValue(str: string) {
+    return this[str] || false;
+  },
   beforeMount(el, binding) {
     const parentEl = el.parentNode;
     if (!parentEl) return;

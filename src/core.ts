@@ -80,14 +80,39 @@ const reactive = (obj: { [key: string]: any }) => {
   return observed;
 };
 
+const makeComponentRenderFn = (app: ZenithicApp): (() => string) => {
+  const vdom = () => {
+    const compiledComponent = this || { el: document.createElement("div") };
+
+    // 1. use directives
+
+    // 2. use filters
+
+    // 3. parse components
+
+    // 4. replace placeholders
+    return compiledComponent.el.innerHTML.replace(
+      /\{{(.*?)\}}/g,
+      (_substring: string, property: string) => {
+        return app ? app[property.trim()] : "";
+      }
+    );
+  };
+
+  return vdom.bind(this);
+};
+
 const prepareComponent = (comp: Component) => {
   const component: Component = Object.assign(comp, {
     data() {
       const reactiveData = reactive(comp.data());
-      
+
       Object.keys(component.mixins).forEach((mixinKey) => {
         if (component.mixins[mixinKey].data) {
-          Object.assign(reactiveData, reactive(component.mixins[mixinKey].data()));
+          Object.assign(
+            reactiveData,
+            reactive(component.mixins[mixinKey].data())
+          );
         }
       });
 
@@ -98,7 +123,11 @@ const prepareComponent = (comp: Component) => {
   Object.keys(component.mixins).forEach((mixinKey) => {
     if (component.mixins[mixinKey].computed) {
       Object.keys(component.mixins[mixinKey].computed).forEach((key) => {
-        defineComputed(component.computed, key, component.mixins[mixinKey].computed[key]);
+        defineComputed(
+          component.computed,
+          key,
+          component.mixins[mixinKey].computed[key]
+        );
       });
     }
     if (component.mixins[mixinKey].methods) {
@@ -120,6 +149,8 @@ const prepareComponent = (comp: Component) => {
 };
 
 const compileComponent = (component: Component): CompiledComponent => {
+  const app: ZenithicApp = this;
+
   // Define the component object
   const preparedComponent = prepareComponent(component);
 
@@ -132,6 +163,12 @@ const compileComponent = (component: Component): CompiledComponent => {
   ComponentConstructor.prototype = {
     constructor(obj: Component) {
       Object.assign(this, obj);
+      let compiledComponent = this;
+
+      // Set up dom
+      const dom = document.createElement("div");
+      dom.innerHTML = component.template;
+      this.el = dom;
 
       // Set up the reactive data
       this.$data = reactive(obj.data());
@@ -152,6 +189,33 @@ const compileComponent = (component: Component): CompiledComponent => {
         const handler = obj.watch[key].bind(this);
         watch(this.$data, key, handler);
       }
+
+      // Set up directives
+      // iterate app registered directives
+      Object.keys(app.directives).forEach((directive) => {
+        const nodesWithThisDirective = this.el.querySelectorAll(
+          `["v-${directive}"]`
+        );
+
+        // iterate directive methods
+        Object.keys(app.directives[directive]).forEach((method) => {
+          const methodCopy = compiledComponent[method];
+          compiledComponent[method] = () => {
+            methodCopy.call(compiledComponent);
+
+            // iterate nodes with this directive
+            nodesWithThisDirective.forEach((el: Element) => {
+              app.directives[directive][method].call(compiledComponent, el, {
+                value: app.directives[directive].parseValue.call(compileComponent, el.getAttribute(`v-${directive}`)),
+                arg: null,
+              });
+            });
+          };
+        });
+      });
+    },
+    beforeMount: function () {
+      this.beforeMount();
     },
     $destroy: function () {
       // Call the beforeDestroy hook
@@ -165,16 +229,12 @@ const compileComponent = (component: Component): CompiledComponent => {
       // Call the destroyed hook
       this.destroyed.call(this);
     },
+    render: function () {
+      makeComponentRenderFn.call(this).call();
+    },
   };
 
-  // Define the render function
-  // const vdom = parseComponent(component);
-
-  // Add the render function to the component prototype
-  ComponentConstructor.prototype.render = () => {
-    return "<div>Hello noob</div>";
-    // return vdom();
-  };
+  // ComponentConstructor = makeLifecycleFunctions(this)
 
   // Return the component constructor
   return new ComponentConstructor(preparedComponent);
@@ -220,7 +280,7 @@ const createApp = (): ZenithicApp => {
         this.el = fragment;
 
         // compile component, render it, and fill the fragment with the result
-        const compiledComponent = compileComponent(component);
+        const compiledComponent = compileComponent(component).bind(this);
         const node = compiledComponent.render();
         fillFragmentOrElement(node, fragment);
         fillFragmentOrElement(fragment, querySelector(selector));
@@ -362,15 +422,4 @@ export { createApp };
 
 //   const code = genElement(ast);
 //   return new Function(`with(this){return ${code}}`);
-// };
-
-// const parseComponent = (component) => {
-//   const { template, data, computed, methods, props } = component;
-//   const state = { ...data(), ...computed, ...props, methods };
-//   const directives = parseDirectives(template);
-
-//   // Parse template string and create virtual DOM tree
-//   const vdom = buildVdom(template, { state, directives });
-
-//   return vdom;
 // };

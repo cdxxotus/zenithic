@@ -7,6 +7,7 @@ const modelDirective: ModelDirective = {
     set(el, binding.value);
 
     el.addEventListener("change", () => {
+      // TODO: fixme
       if (isInput(el) || isSelect(el)) {
         binding.value = (el as HTMLInputElement).value;
       } else {
