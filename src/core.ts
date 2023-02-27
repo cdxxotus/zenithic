@@ -61,7 +61,8 @@ const reactive = (obj: { [key: string]: any }) => {
   return observed;
 };
 
-const getPropertyNameFromStrinWithFilters = (str: string) => str.split('|')[0].trim();;
+const getPropertyNameFromStrinWithFilters = (str: string) =>
+  str.split("|")[0].trim();
 
 const makeComponentRenderFn = (app: ZenithicApp): (() => string) => {
   const vdom = () => {
@@ -73,7 +74,10 @@ const makeComponentRenderFn = (app: ZenithicApp): (() => string) => {
       (_substring: string, str: string) => {
         // use filters
         const filters = getFiltersFromValue(app, compiledComponent, str);
-        return filters.reduce((acc, filter) => filter(acc), app[getPropertyNameFromStrinWithFilters(str)]);
+        return filters.reduce(
+          (acc, filter) => filter(acc),
+          app[getPropertyNameFromStrinWithFilters(str)]
+        );
       }
     );
   };
@@ -91,7 +95,17 @@ const getFiltersFromValue = (
     const filterArgs = filter
       .match(/\(([^()]+)\)/g)[0]
       .split(",")
-      .reduce((acc, v) => [...acc, compiledComponent[v.trim()]], []);
+      .reduce((acc, v) => {
+        const matchString = v.match(/"(.*?)"|'(.*?)'/);
+        if (matchString[1]) {
+          return [...acc, matchString[1]];
+        } else if (Number.isNaN(v.trim())) {
+          [...acc, compiledComponent[v.trim()]];
+        } else {
+          [...acc, Number(v.trim())];
+        }
+      }, []);
+
     const filterName = filter.replace(filterArgs[0], "");
     const fn = (val: any) => app.filters[filterName](val, ...filterArgs);
     return [...acc, fn];
@@ -224,7 +238,13 @@ const compileComponent = (component: Component): CompiledComponent => {
               );
 
               app.directives[directive][method].call(compiledComponent, el, {
-                value: getDirectiveBindingValue(filters, app.directives[directive].parseValue, directive, el, app),
+                value: getDirectiveBindingValue(
+                  filters,
+                  app.directives[directive].parseValue,
+                  directive,
+                  el,
+                  app
+                ),
                 arg: null, // TODO: implement argument
               });
             });
