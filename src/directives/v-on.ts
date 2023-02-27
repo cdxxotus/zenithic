@@ -1,6 +1,9 @@
 import { Directive, OnDirective } from "../types/directives/types";
 
 const on: OnDirective = {
+  parseValue(str: string) {
+    return this[str];
+  },
   beforeMount(el, binding) {
     // Get the event name
     const eventName = binding.arg;

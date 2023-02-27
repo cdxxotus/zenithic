@@ -1,6 +1,9 @@
 import { Directive, IfDirective } from "../types/directives/types";
 
 const ifDirective: IfDirective = {
+  parseValue(str: string) {
+    return Boolean(this[str]);
+  },
   beforeMount(el, binding) {
     const parentEl = el.parentNode;
     if (!parentEl) return;

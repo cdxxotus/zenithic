@@ -1,13 +1,11 @@
-import { querySelector } from "../utils/dom";
+import {
+  Directive,
+  TooltipDirective,
+} from "../types/directives/types";
+import { CompiledComponent } from "../types/components";
 
-import { Binding, Directive, TooltipDirective } from "../types/directives/types";
-
-const makeTooltipId = (binding: Binding) => {
-  return `tooltip-${binding.value}`;
-};
-
-const buildTooltip = (el: HTMLElement, tooltipEl: HTMLDivElement) => {
-  const tooltipText = el.dataset.tooltipText;
+const buildTooltip = (el: HTMLElement, tooltipText: string) => {
+  const tooltipEl = document.createElement("div");
   tooltipEl.textContent = tooltipText || "";
   const rect = el.getBoundingClientRect();
   const tooltipRect = tooltipEl.getBoundingClientRect();
@@ -15,37 +13,45 @@ const buildTooltip = (el: HTMLElement, tooltipEl: HTMLDivElement) => {
   tooltipEl.style.left = `${
     rect.left + rect.width / 2 - tooltipRect.width / 2
   }px`;
+
+  return tooltipEl;
 };
 
-const handleMouseEnter = (el: HTMLElement, binding: Binding) => {
-  const tooltipEl = document.createElement("div");
-  tooltipEl.id = makeTooltipId(binding);
-  buildTooltip(el, tooltipEl);
-  document.body.appendChild(tooltipEl);
+const handleMouseEnter = () => {
+  document.body.appendChild((this as CompiledComponent).tooltipElement);
+  (this as CompiledComponent).tooltipNode = document.body.lastChild;
 };
 
-const handleMouseLeave = (binding: Binding) => {
-  const tooltipEl = document.querySelector(`#${makeTooltipId(binding)}`);
-  if (tooltipEl) {
-    tooltipEl.remove();
-  }
+const handleMouseLeave = () => {
+  (this as CompiledComponent).tooltipNode.remove();
 };
-
 
 const tooltip: TooltipDirective = {
+  parseValue(str: string) {
+    return this[str].toString();
+  },
+
   beforeMount(el, binding) {
-    el.addEventListener("mouseenter", () => handleMouseEnter(el, binding));
-    el.addEventListener("mouseleave", () => handleMouseLeave(binding));
+    const component = this;
+    component.tooltipElement = buildTooltip(el, binding.value);
+    el.addEventListener("mouseenter", handleMouseEnter.bind(component));
+    el.addEventListener("mouseleave", handleMouseLeave.bind(component));
   },
 
   updated(el, binding) {
-    const tooltipEl = querySelector(`#${makeTooltipId(binding)}`) as HTMLDivElement;
-    buildTooltip(el, tooltipEl);
+    const component = this;
+    component.tooltipElement = buildTooltip(el, binding.value);
+    if (this.tooltipNode) {
+      this.tooltipNode.remove();
+      document.body.appendChild(this.tooltipElement);
+      this.tooltipNode = document.body.lastChild;
+    }
   },
 
-  beforeDestroy(el, binding) {
-    el.removeEventListener("mouseenter", () => handleMouseEnter(el, binding));
-    el.removeEventListener("mouseleave", () => handleMouseLeave(binding));
+  beforeDestroy(el, _binding) {
+    const component = this;
+    el.removeEventListener("mouseenter", handleMouseEnter.bind(component));
+    el.removeEventListener("mouseleave", handleMouseLeave.bind(component));
   },
 };
 

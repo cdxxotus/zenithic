@@ -8,8 +8,8 @@ export type Binding = {
 export type DirectiveMethod = (el: HTMLElement, binding: Binding) => void;
 
 export type DirectiveTemplate = {
-  parseValue?: (str: string) => any
-}
+  parseValue?: (str: string) => any;
+};
 
 export type Directive = DirectiveTemplate & {
   [key in ComponentLifecycle]?: DirectiveMethod;
@@ -22,7 +22,7 @@ export type Directives = {
 export type DirectivesConfig = string[];
 
 export type TooltipDirective = {
-  parseValue: (str: string) => any;
+  parseValue: (str: string) => string;
   beforeMount: DirectiveMethod;
   updated: DirectiveMethod;
   beforeDestroy: DirectiveMethod;
@@ -34,39 +34,47 @@ export type ShowDirective = {
 };
 
 export type PreDirective = {
-  parseValue: (str: string) => null;
+  parseValue: (str: string) => string;
   beforeMount: DirectiveMethod;
 };
 
 export type OnceDirective = {
-  parseValue: (str: string) => null;
+  parseValue: (str: string) => string;
   beforeMount: DirectiveMethod;
 };
 
 export type OnDirective = {
-  parseValue: (str: string) => null;
+  parseValue: (str: string) => string;
   beforeMount: DirectiveMethod;
 };
 
 export type ModelDirective = {
-  parseValue: (str: string) => null;
+  parseValue: (str: string) => {
+    get: () => string;
+    set: (str: string) => void;
+  };
   beforeMount: DirectiveMethod;
   update: DirectiveMethod;
 };
 
 export type IfDirective = {
+  parseValue: (str: string) => boolean;
   beforeMount: DirectiveMethod;
 };
 
 export type ForDirective = {
-  parseValue: (str: string) => any[];
+  parseValue: (str: string) => {
+    itemPropertyName: string;
+    itemsPropertyName: string;
+    items: any[];
+  };
   beforeMount: DirectiveMethod;
 };
 
 export type ElseDirective = {};
 
 export type ElseIfDirective = {
-  parseValue: (str: string) => null;
+  parseValue: (str: string) => boolean;
   beforeMount: DirectiveMethod;
 };
 
@@ -77,6 +85,6 @@ export type CloakDirective = {
 };
 
 export type BindDirective = {
-  parseValue: (str: string) => null;
+  parseValue: (str: string) => string;
   beforeMount: DirectiveMethod;
 };

@@ -69,16 +69,13 @@ const reactive = (obj: { [key: string]: any }) => {
 const makeComponentRenderFn = (app: ZenithicApp): (() => string) => {
   const vdom = () => {
     const compiledComponent = this || { el: document.createElement("div") };
-
-    // 1. use directives
-
     // 2. use filters
 
     // 3. parse components
 
     // 4. replace placeholders
     return compiledComponent.el.innerHTML.replace(
-      /\{{(.*?)\}}/g,
+      /\{{(.*?)\}}/gm,
       (_substring: string, property: string) => {
         return app ? app[property.trim()] : "";
       }
@@ -140,46 +137,43 @@ const compileComponent = (component: Component): CompiledComponent => {
   // Define the component object
   const preparedComponent = prepareComponent(component);
 
-  // Define the component template
-  const template = component.template;
-
   // Create the component constructor
   const ComponentConstructor = (obj: Component) => {};
 
   ComponentConstructor.prototype = {
     constructor(obj: Component) {
       Object.assign(this, obj);
-      let compiledComponent = this;
+      let compiledComponent: CompiledComponent = this;
 
       // Set up dom
       const dom = document.createElement("div");
       dom.innerHTML = component.template;
-      this.el = dom;
+      compiledComponent.el = dom;
 
       // Set up the reactive data
-      this.$data = reactive(obj.data());
+      compiledComponent.$data = reactive(obj.data());
 
       // Set up the computed properties
-      for (const key in this.computed) {
-        const getter = this.computed[key].bind(this);
-        defineComputed(this, key, getter);
+      for (const key in compiledComponent.computed) {
+        const getter = compiledComponent.computed[key].bind(compiledComponent);
+        defineComputed(compiledComponent, key, getter);
       }
 
       // Set up the methods
       for (const key in obj.methods) {
-        this[key] = obj.methods[key].bind(this);
+        this[key] = obj.methods[key].bind(compiledComponent);
       }
 
       // Set up the watchers
       for (const key in obj.watch) {
-        const handler = obj.watch[key].bind(this);
+        const handler = obj.watch[key].bind(compiledComponent);
         watch(this.$data, key, handler);
       }
 
       // Set up directives
       // iterate app registered directives
       Object.keys(app.directives).forEach((directive) => {
-        const nodesWithThisDirective = this.el.querySelectorAll(
+        const nodesWithThisDirective = compiledComponent.el.querySelectorAll(
           `["v-${directive}"]`
         );
 
@@ -192,16 +186,16 @@ const compileComponent = (component: Component): CompiledComponent => {
             // iterate nodes with this directive
             nodesWithThisDirective.forEach((el: Element) => {
               app.directives[directive][method].call(compiledComponent, el, {
-                value: app.directives[directive].parseValue.call(compileComponent, el.getAttribute(`v-${directive}`)),
-                arg: null,
+                value: app.directives[directive].parseValue.call(
+                  compileComponent,
+                  el.getAttribute(`v-${directive}`)
+                ),
+                arg: null, // TODO: implement argument
               });
             });
           };
         });
       });
-    },
-    beforeMount: function () {
-      this.beforeMount();
     },
     $destroy: function () {
       // Call the beforeDestroy hook
@@ -216,7 +210,8 @@ const compileComponent = (component: Component): CompiledComponent => {
       this.destroyed.call(this);
     },
     render: function () {
-      makeComponentRenderFn.call(this).call();
+      this.el = makeComponentRenderFn.call(this).call();
+      return this.el;
     },
   };
 
@@ -267,9 +262,17 @@ const createApp = (): ZenithicApp => {
 
         // compile component, render it, and fill the fragment with the result
         const compiledComponent = compileComponent(component).bind(this);
+
+        // @Lifecycle:beforeMount
+        compiledComponent.beforeMount();
+
+        // render and mount the component
         const node = compiledComponent.render();
         fillFragmentOrElement(node, fragment);
         fillFragmentOrElement(fragment, querySelector(selector));
+
+        // @Lifecycle:mounted
+        compiledComponent.mounted();
       }
     },
     unmount() {
