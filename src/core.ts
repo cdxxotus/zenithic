@@ -1,8 +1,3 @@
-// THIS FILE IS A BIG WORK IN PROGRESS
-// THERE IS STILL A LOT TO DO FOR COMPILING TO AST AND GENERATE VDOM WHILE IMPLEMENTING
-// DIRECTIVES, FILTERS, MIXINS, AND OTHER CAPABILITIES
-// NONE OF THOSE FUNCIONS ARE DEFINITIVE, COMPLETE, SECURE OR WORKING
-
 import { querySelector } from "./utils/dom";
 
 import { Component, Props, CompiledComponent } from "./types/components";
@@ -66,23 +61,61 @@ const reactive = (obj: { [key: string]: any }) => {
   return observed;
 };
 
+const getPropertyNameFromStrinWithFilters = (str: string) => str.split('|')[0].trim();;
+
 const makeComponentRenderFn = (app: ZenithicApp): (() => string) => {
   const vdom = () => {
-    const compiledComponent = this || { el: document.createElement("div") };
-    // 2. use filters
-
+    const compiledComponent = this as CompiledComponent;
     // 3. parse components
 
     // 4. replace placeholders
     return compiledComponent.el.innerHTML.replace(
       /\{{(.*?)\}}/gm,
-      (_substring: string, property: string) => {
-        return app ? app[property.trim()] : "";
+      (_substring: string, str: string) => {
+        // use filters
+        const filters = getFiltersFromValue(app, compiledComponent, str);
+        return filters.reduce((acc, filter) => filter(acc), app[getPropertyNameFromStrinWithFilters(str)]);
       }
     );
   };
 
   return vdom.bind(this);
+};
+
+const getFiltersFromValue = (
+  app: ZenithicApp,
+  compiledComponent: CompiledComponent,
+  str: string
+) => {
+  const strSplitted = str.split("|");
+  const filters = strSplitted.splice(0, 1).reduce((acc, filter) => {
+    const filterArgs = filter
+      .match(/\(([^()]+)\)/g)[0]
+      .split(",")
+      .reduce((acc, v) => [...acc, compiledComponent[v.trim()]], []);
+    const filterName = filter.replace(filterArgs[0], "");
+    const fn = (val: any) => app.filters[filterName](val, ...filterArgs);
+    return [...acc, fn];
+  }, []);
+  return filters;
+};
+
+const getDirectiveBindingValue = (
+  filters: ((val: any) => any)[],
+  parseValueMethod: (str: string) => any,
+  directiveName: string,
+  el: Element,
+  app: ZenithicApp
+) => {
+  filters.reduce(
+    (acc, filter) => filter(acc),
+    parseValueMethod
+      .call(
+        compileComponent,
+        el.getAttribute(`v-${directiveName}`).split("|")[0].trim()
+      )
+      .bind(app)
+  );
 };
 
 const prepareComponent = (comp: Component) => {
@@ -185,11 +218,14 @@ const compileComponent = (component: Component): CompiledComponent => {
 
             // iterate nodes with this directive
             nodesWithThisDirective.forEach((el: Element) => {
+              const filters = getFiltersFromValue(
+                app,
+                compiledComponent,
+                el.getAttribute(`v-${directive}`)
+              );
+
               app.directives[directive][method].call(compiledComponent, el, {
-                value: app.directives[directive].parseValue.call(
-                  compileComponent,
-                  el.getAttribute(`v-${directive}`)
-                ),
+                value: getDirectiveBindingValue(filters, app.directives[directive].parseValue, directive, el, app),
                 arg: null, // TODO: implement argument
               });
             });
@@ -210,12 +246,10 @@ const compileComponent = (component: Component): CompiledComponent => {
       this.destroyed.call(this);
     },
     render: function () {
-      this.el = makeComponentRenderFn.call(this).call();
+      this.el = makeComponentRenderFn.call(this, app).call();
       return this.el;
     },
   };
-
-  // ComponentConstructor = makeLifecycleFunctions(this)
 
   // Return the component constructor
   return new ComponentConstructor(preparedComponent);
@@ -261,7 +295,7 @@ const createApp = (): ZenithicApp => {
         this.el = fragment;
 
         // compile component, render it, and fill the fragment with the result
-        const compiledComponent = compileComponent(component).bind(this);
+        const compiledComponent = compileComponent.call(this, component);
 
         // @Lifecycle:beforeMount
         compiledComponent.beforeMount();
