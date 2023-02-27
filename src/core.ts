@@ -67,7 +67,7 @@ const getPropertyNameFromStrinWithFilters = (str: string) =>
 const componentPropsFromElement = (el: Element) => {
   return Array.from(el.attributes).reduce((acc, v) => {
     return { ...acc, [v.name]: v.value };
-  }, { children: el.children });
+  }, { children: el.innerHTML });
 }
 
 const makeComponentRenderFn = (app: ZenithicApp): (() => string) => {
