@@ -13,14 +13,15 @@ import { Config, ZenithicApp } from "./types/core";
 const apps: ZenithicApp[] = [];
 
 const mergeConfigs = (defaultConfig: Config, config?: Config): Config => {
+  const keys = Object.keys(config || {});
   return {
-    router: config?.router || defaultConfig.router,
-    store: config?.store || defaultConfig.store,
-    mixins: config?.mixins || defaultConfig.mixins,
-    directives: config?.directives || defaultConfig.directives,
-    filters: config?.filters || defaultConfig.filters,
-    components: config?.components || defaultConfig.components,
-    utils: config?.utils || defaultConfig.utils,
+    router: keys.includes('router') ? config?.router : defaultConfig.router,
+    store: keys.includes('store') ? config?.store : defaultConfig.store,
+    mixins: keys.includes('mixins') ? config?.mixins : defaultConfig.mixins,
+    directives: keys.includes('directives') ? config?.directives : defaultConfig.directives,
+    filters: keys.includes('filters') ? config?.filters : defaultConfig.filters,
+    components: keys.includes('components') ? config?.components : defaultConfig.components,
+    utils: keys.includes('utils') ? config?.utils : defaultConfig.utils,
   }
 }
 
