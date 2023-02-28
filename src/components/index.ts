@@ -1,12 +1,12 @@
-import Button from "./Button.js";
-import DatePicker from "./DatePicker.js";
-import Input from "./Input.js";
-import List from "./List.js";
-import Select from "./Select.js";
-import Textarea from "./Textarea.js";
+import Button from "./Button";
+import DatePicker from "./DatePicker";
+import Input from "./Input";
+import List from "./List";
+import Select from "./Select";
+import Textarea from "./Textarea";
 
 import { ComponentsConfig } from "../types/components";
-import { Plugin } from "../types/core/types.js";
+import { Plugin } from "../types/core/types";
 
 export const createComponents = (config?: ComponentsConfig): Plugin => {
   return {

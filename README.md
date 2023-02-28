@@ -191,6 +191,13 @@ This filter splits the input string into an array, reverses the array, and then 
 
 Mixins are a way to share functionality between components without inheritance. A mixin is an object containing properties that can be merged with the properties of a component. The properties of a mixin are added to the component, and if there are conflicts, the properties of the component take precedence.
 
+Built-in mixins:
+
+- clickOutside
+- draggable
+- focus
+- form
+
 Here are some examples of mixins in Zenithic:
 
 ### clickOutside
@@ -307,6 +314,21 @@ const loginForm = {
 Directives are special attributes that can be used to apply reactive behavior to an HTML element in Zenithic applications. They are prefixed with`v-` followed by the directive name. For example, `v-if`, `v-for`, `v-bind`, `v-on`, etc.
 
 Directives enable developers to declaratively apply reactive behavior to elements in the DOM, which makes it easier to reason about the application's behavior and state. Directives can be used to manipulate DOM elements, listen to events, conditionally render content, and more.
+
+Built-in directives:
+
+- v-bind
+- v-cloak
+- v-else-if
+- v-else
+- v-for
+- v-if
+- v-model
+- v-on
+- v-once
+- v-pre
+- v-show
+- v-tooltip
 
 ### Common directives
 

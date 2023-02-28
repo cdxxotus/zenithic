@@ -339,12 +339,12 @@ const createApp = (): ZenithicApp => {
     main: null,
     router: null,
     store: null,
-    mixins: null,
-    directives: null,
-    filters: null,
-    components: null,
-    utils: null,
-    context: null,
+    mixins: {},
+    directives: {},
+    filters: {},
+    components: {},
+    utils: {},
+    context: {},
     use(plugin: Plugin) {
       if (plugin.install) {
         plugin.install(this);

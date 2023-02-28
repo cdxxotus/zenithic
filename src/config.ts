@@ -51,7 +51,6 @@ export default {
     "ajax",
     "date",
     "dom",
-    "index",
     "log",
     "number",
     "type",
