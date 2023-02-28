@@ -51,14 +51,16 @@ const defineComputed = (
 
 // This function returns a reactive object that tracks changes to its properties.
 const reactive = (obj: { [key: string]: any }) => {
-  const observed = new Proxy(obj, {
-    set(target, key, value) {
-      const result = Reflect.set(target, key, value);
-      // TODO: trigger update
-      return result;
-    },
-  });
-  return observed;
+  return obj;
+  // TODO: fixme
+  // const observed = new Proxy(obj, {
+  //   set(target, key, value) {
+  //     const result = Reflect.set(target, key, value);
+  //     // TODO: trigger update
+  //     return result;
+  //   },
+  // });
+  // return observed;
 };
 
 const getPropertyNameFromStrinWithFilters = (str: string) =>
@@ -73,10 +75,11 @@ const componentPropsFromElement = (el: Element) => {
   );
 };
 
-const makeComponentRenderFn = (app: ZenithicApp): (() => string) => {
+const makeComponentRenderFn = (
+  app: ZenithicApp,
+  compiledComponent: CompiledComponent
+): (() => Element) => {
   const vdom = () => {
-    const compiledComponent = this as CompiledComponent;
-
     if (compiledComponent.children) {
       return compiledComponent.el.innerHTML.replace(
         /\{{(.*?)\}}/gm,
@@ -86,37 +89,43 @@ const makeComponentRenderFn = (app: ZenithicApp): (() => string) => {
       );
     }
 
-    const componentsNames = Object.keys(app.components);
+    const componentsNames = Object.keys(app.components || {});
     const children = compiledComponent.el.children;
-    Array.from(children).forEach((child: Element) => {
-      if (componentsNames.includes(child.tagName)) {
-        const mountPoint = document.createElement("div");
-        app.mount(
-          mountPoint,
-          app.components[child.tagName],
-          Object.assign(
-            {},
-            compiledComponent.context,
-            componentPropsFromElement(child)
-          )
-        );
-        compiledComponent.el.removeChild(child);
-        compiledComponent.el.appendChild(mountPoint);
-      }
-    });
+    if (children.length > 0) {
+      Array.from(children).forEach((child: Element) => {
+        if (componentsNames.includes(child.tagName)) {
+          const mountPoint = document.createElement("div");
+          app.mount(
+            mountPoint,
+            app.components[child.tagName],
+            Object.assign(
+              {},
+              compiledComponent.context,
+              componentPropsFromElement(child)
+            )
+          );
+          compiledComponent.el.removeChild(child);
+          compiledComponent.el.appendChild(mountPoint);
+        }
+      });
+    }
 
-    return compiledComponent.el.innerHTML.replace(
+    compiledComponent.el.innerHTML = compiledComponent.el.innerHTML.replace(
       /\{{(.*?)\}}/gm,
       (_substring: string, str: string) => {
         // use filters
         if (str === "children") return compiledComponent.children;
         const filters = getFiltersFromValue(app, compiledComponent, str);
-        return filters.reduce(
-          (acc, filter) => filter(acc),
-          app[getPropertyNameFromStrinWithFilters(str)]
-        );
+        return filters.length > 0
+          ? filters.reduce(
+              (acc, filter) => filter(acc),
+              compiledComponent[getPropertyNameFromStrinWithFilters(str)]
+            )
+          : compiledComponent[getPropertyNameFromStrinWithFilters(str)];
       }
     );
+
+    return compiledComponent.el;
   };
 
   return vdom.bind(this);
@@ -128,7 +137,8 @@ const getFiltersFromValue = (
   str: string
 ) => {
   const strSplitted = str.split("|");
-  const filters = strSplitted.splice(0, 1).reduce((acc, filter) => {
+  strSplitted.splice(0, 1);
+  const filters = strSplitted.reduce((acc, filter) => {
     const filterArgs = filter
       .match(/\(([^()]+)\)/g)[0]
       .split(",")
@@ -169,27 +179,32 @@ const getDirectiveBindingValue = (
 };
 
 const prepareComponent = (comp: Component) => {
-  const component: Component = Object.assign(comp, {
+  const compCopy = Object.assign({}, comp);
+  const dataFn = {
     data() {
-      const reactiveData = reactive(comp.data());
-      let returnData = reactiveData;
+      let returnData = {};
+      if (compCopy.data) {
+        const reactiveData = reactive(compCopy.data());
+        returnData = reactiveData;
+      }
 
-      Object.keys(component.mixins).forEach((mixinKey) => {
-        if (component.mixins[mixinKey].data) {
+      Object.keys(this.mixins || {}).forEach((mixinKey) => {
+        if (this.mixins[mixinKey].data) {
           returnData = Object.assign(
-            reactive(component.mixins[mixinKey].data()),
-            reactiveData
+            reactive(this.mixins[mixinKey].data()),
+            returnData
           );
         }
       });
 
       return returnData;
     },
-  });
+  };
+  const component: Component = Object.assign(comp, dataFn);
 
-  Object.keys(component.mixins).forEach((mixinKey) => {
+  Object.keys(component.mixins || {}).forEach((mixinKey) => {
     if (component.mixins[mixinKey].computed) {
-      Object.keys(component.mixins[mixinKey].computed).forEach((key) => {
+      Object.keys(component.mixins[mixinKey].computed || {}).forEach((key) => {
         if (!component.computed[key]) {
           defineComputed(
             component.computed,
@@ -200,7 +215,7 @@ const prepareComponent = (comp: Component) => {
       });
     }
     if (component.mixins[mixinKey].methods) {
-      Object.keys(component.mixins[mixinKey].methods).forEach((key) => {
+      Object.keys(component.mixins[mixinKey].methods || {}).forEach((key) => {
         if (!component.methods[key]) {
           const fnCopy = component.methods[key].bind({});
           component.methods[key] = (...args) => {
@@ -213,7 +228,7 @@ const prepareComponent = (comp: Component) => {
       });
     }
     if (component.mixins[mixinKey].watch) {
-      Object.keys(component.mixins[mixinKey].watch).forEach((key) => {
+      Object.keys(component.mixins[mixinKey].watch || {}).forEach((key) => {
         const handler = component.mixins[mixinKey].watch[key];
         watch(component.data(), key, (newValue, oldValue) => {
           handler.call(component, newValue, oldValue);
@@ -232,16 +247,23 @@ const compileComponent = (component: Component): CompiledComponent => {
   const preparedComponent = prepareComponent(component);
 
   // Create the component constructor
-  const ComponentConstructor = (obj: Component) => {};
+  class ComponentConstructor {
+    el: null;
+    template: "";
+    $data: {};
+    beforeMount() {}
+    mounted() {}
+    updated() {}
+    beforeDestroy() {}
+    destroyed() {}
 
-  ComponentConstructor.prototype = {
     constructor(obj: Component) {
       Object.assign(this, obj);
-      let compiledComponent: CompiledComponent = this;
+      let compiledComponent = this as unknown as CompiledComponent;
 
       // Set up dom
       const dom = document.createElement("div");
-      dom.innerHTML = component.template;
+      dom.innerHTML = component.template.trim();
       compiledComponent.el = dom;
 
       // Set up the reactive data
@@ -249,7 +271,7 @@ const compileComponent = (component: Component): CompiledComponent => {
 
       // Set up the computed properties
       for (const key in compiledComponent.computed) {
-        const getter = compiledComponent.computed[key].bind(compiledComponent);
+        const getter = () => compiledComponent.computed[key];
         defineComputed(compiledComponent, key, getter);
       }
 
@@ -266,7 +288,7 @@ const compileComponent = (component: Component): CompiledComponent => {
 
       // Set up directives
       // iterate app registered directives
-      Object.keys(app.directives).forEach((directive) => {
+      Object.keys(app.directives || {}).forEach((directive) => {
         const nodesWithThisDirective = compiledComponent.el.querySelectorAll(
           `["v-${directive}"]`
         );
@@ -299,8 +321,11 @@ const compileComponent = (component: Component): CompiledComponent => {
           };
         });
       });
-    },
-    $destroy: function () {
+    }
+
+    $emit() {}
+
+    $destroy() {
       // Call the beforeDestroy hook
       this.beforeDestroy.call(this);
 
@@ -311,15 +336,18 @@ const compileComponent = (component: Component): CompiledComponent => {
 
       // Call the destroyed hook
       this.destroyed.call(this);
-    },
-    render: function () {
-      this.el = makeComponentRenderFn.call(this, app).call();
+    }
+
+    render() {
+      let compiledComponent = this as CompiledComponent;
+      const newEl = makeComponentRenderFn(app, compiledComponent)();
+      (this.el as Element) = newEl;
       return this.el;
-    },
-  };
+    }
+  }
 
   // Return the component constructor
-  return new ComponentConstructor(preparedComponent);
+  return new ComponentConstructor(preparedComponent) as CompiledComponent;
 };
 
 const fillFragmentOrElement = (
@@ -353,7 +381,7 @@ const createApp = (): ZenithicApp => {
     mount(
       selectorOrElement: string | Element,
       component: Component,
-      props: Props
+      props: { [key: string]: any }
     ) {
       const mountPoint =
         typeof selectorOrElement === "string"
@@ -362,33 +390,29 @@ const createApp = (): ZenithicApp => {
 
       if (mountPoint) {
         // assign mounted properties to computed data
-        Object.assign(
-          component,
-          { computed: props },
-          { computed: app.context }
-        );
-
-        // create empty document and assign it to app object
-        const fragment = document.createDocumentFragment();
-        this.el = fragment;
+        component.computed = component.computed || {};
+        Object.assign(component.computed, props, app.context);
 
         // compile component, render it, and fill the fragment with the result
-        const compiledComponent = compileComponent.call(this, component);
+        const compiledComponent: CompiledComponent = compileComponent.call(
+          this,
+          component
+        );
 
         // @Lifecycle:beforeMount
         compiledComponent.beforeMount();
 
         // render and mount the component
         const node = compiledComponent.render();
-        fillFragmentOrElement(node, fragment);
-        fillFragmentOrElement(fragment, mountPoint);
+        this.el = node;
+        fillFragmentOrElement(node, mountPoint);
 
         // @Lifecycle:mounted
         compiledComponent.mounted();
       }
     },
     unmount() {
-      (this as ZenithicApp).el.parentNode.removeChild(this.el);
+      (this as ZenithicApp).el.parentElement.removeChild(this.el);
     },
     registerComponent(name: string, component: Component) {
       Object.assign((this as ZenithicApp).components, { [name]: component });

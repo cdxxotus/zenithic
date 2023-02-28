@@ -4,7 +4,7 @@ const template = `
   <button>{{ text }}</button>
 `;
 
-const Button: ButtonComponent = {
+export const Button: ButtonComponent = {
   template,
   props: {
     text: {
@@ -12,6 +12,4 @@ const Button: ButtonComponent = {
       required: true,
     },
   }
-};
-
-export default Button satisfies Component;
+} satisfies Component;

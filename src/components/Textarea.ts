@@ -1,6 +1,6 @@
 import { Component, TextareaComponent } from "../types/components";
 
-const Textarea: TextareaComponent = {
+export const Textarea: TextareaComponent = {
   template: `<textarea
     v-model="value"
     @input="handleInput"
@@ -25,6 +25,4 @@ const Textarea: TextareaComponent = {
       this.onInput((e.target as HTMLTextAreaElement).textContent);
     },
   },
-};
-
-export default Textarea satisfies Component;
+} satisfies Component;

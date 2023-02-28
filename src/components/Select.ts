@@ -1,6 +1,6 @@
 import { Component, SelectComponent } from "../types/components";
 
-const Select: SelectComponent = {
+export const Select: SelectComponent = {
   template: `<select v-model="value" @change="handleChange">
     <option v-for="option in options" :value="option.value" :key="option.value">
       {{ option.label }}
@@ -25,6 +25,4 @@ const Select: SelectComponent = {
       this.onChange((e.target as HTMLSelectElement).value);
     },
   },
-};
-
-export default Select satisfies Component;
+} satisfies Component;

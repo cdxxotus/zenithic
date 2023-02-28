@@ -1,6 +1,6 @@
 import { Component, ListComponent } from "../types/components";
 
-const List: ListComponent = {
+export const List: ListComponent = {
   template: `<ul>
     <li v-for="item in items" :key="item.id">{{ item.name }}</li>
   </ul>`,
@@ -10,6 +10,4 @@ const List: ListComponent = {
       required: false,
     },
   },
-};
-
-export default List satisfies Component;
+} satisfies Component;

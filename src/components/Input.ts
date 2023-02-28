@@ -1,6 +1,6 @@
 import { Component, InputComponent } from "../types/components";
 
-const Input: InputComponent = {
+export const Input: InputComponent = {
   template: `<input
     type="text"
     v-model="value"
@@ -26,6 +26,4 @@ const Input: InputComponent = {
       this.onInput((e.target as HTMLInputElement).value);
     },
   },
-};
-
-export default Input satisfies Component;
+} satisfies Component;
