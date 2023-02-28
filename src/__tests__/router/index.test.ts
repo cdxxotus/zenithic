@@ -1,6 +1,5 @@
 const { createZenithic } = require('"../../../src');
 const { createRouter } = require("../../router");
-const defaultConfig = require("../../config");
 const Button = require("../../components/Button");
 
 let app;
