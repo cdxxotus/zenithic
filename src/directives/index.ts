@@ -17,21 +17,20 @@ import { Plugin } from "../types/core";
 export const createDirectives = (config?: DirectivesConfig): Plugin => {
   return {
     install: (app) => {
-      Object.assign(
-        app.directives,
-        config && config.includes("bind") && { bind },
-        config && config.includes("cloak") && { cloak },
-        config && config.includes("elseIf") && { elseIf },
-        config && config.includes("else") && { else: elseDirective },
-        config && config.includes("for") && { for: forDirective },
-        config && config.includes("if") && { if: ifDirective },
-        config && config.includes("model") && { model },
-        config && config.includes("on") && { on },
-        config && config.includes("once") && { once },
-        config && config.includes("pre") && { pre },
-        config && config.includes("show") && { show },
-        config && config.includes("tooltip") && { tooltip }
-      );
+      if (config) {
+        if (config.includes("bind")) Object.assign(app.directives, { bind });
+        if (config.includes("cloak")) Object.assign(app.directives, { cloak });
+        if (config.includes("else-if")) Object.assign(app.directives, { "else-if": elseIf });
+        if (config.includes("else")) Object.assign(app.directives, { else: elseDirective });
+        if (config.includes("for")) Object.assign(app.directives, { for: forDirective });
+        if (config.includes("if")) Object.assign(app.directives, { if: ifDirective });
+        if (config.includes("model")) Object.assign(app.directives, { model });
+        if (config.includes("on")) Object.assign(app.directives, { on });
+        if (config.includes("once")) Object.assign(app.directives, { once });
+        if (config.includes("pre")) Object.assign(app.directives, { pre });
+        if (config.includes("show")) Object.assign(app.directives, { show });
+        if (config.includes("tooltip")) Object.assign(app.directives, { tooltip });
+      }
     },
   };
 };

@@ -11,15 +11,14 @@ import { Plugin } from "../types/core/types";
 export const createComponents = (config?: ComponentsConfig): Plugin => {
   return {
     install: (app) => {
-      Object.assign(
-        app.components,
-        config && config.includes("Button") && { Button },
-        config && config.includes("DatePicker") && { DatePicker },
-        config && config.includes("Input") && { Input },
-        config && config.includes("List") && { List },
-        config && config.includes("Select") && { Select },
-        config && config.includes("Textarea") && { Textarea }
-      );
+      if (config) {
+        if (config.includes("Button")) Object.assign(app.components, { Button });
+        if (config.includes("DatePicker")) Object.assign(app.components, { DatePicker });
+        if (config.includes("Input")) Object.assign(app.components, { Input });
+        if (config.includes("List")) Object.assign(app.components, { List });
+        if (config.includes("Select")) Object.assign(app.components, { Select });
+        if (config.includes("Textarea")) Object.assign(app.components, { Textarea });
+      }
     },
   };
 };

@@ -9,13 +9,12 @@ import { Plugin } from "../types/core/types";
 export const createMixins = (config?: MixinsConfig): Plugin => {
   return {
     install: (app) => {
-      Object.assign(
-        app.mixins,
-        config && config.includes("clickOutside") && { clickOutside },
-        config && config.includes("draggable") && { draggable },
-        config && config.includes("focus") && { focus },
-        config && config.includes("form") && { form }
-      );
+      if (config) {
+        if (config.includes("clickOutside")) Object.assign(app.mixins, { clickOutside });
+        if (config.includes("draggable")) Object.assign(app.mixins, { draggable });
+        if (config.includes("focus")) Object.assign(app.mixins, { focus });
+        if (config.includes("form")) Object.assign(app.mixins, { form });
+      }
     },
   };
 };

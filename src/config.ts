@@ -19,7 +19,7 @@ export default {
   directives: [
     "bind",
     "cloak",
-    "elseIf",
+    "else-if",
     "else",
     "for",
     "if",

@@ -12,16 +12,15 @@ import { Plugin } from "../types/core";
 export const createFilters = (config?: FiltersConfig): Plugin => {
   return {
     install: (app) => {
-      Object.assign(
-        app.filters,
-        config && config.includes("capitalize") && { capitalize },
-        config && config.includes("currency") && { currency },
-        config && config.includes("date") && { date },
-        config && config.includes("limitTo") && { limitTo },
-        config && config.includes("lowercase") && { lowercase },
-        config && config.includes("orderBy") && { orderBy },
-        config && config.includes("uppercase") && { uppercase }
-      );
+      if (config) {
+        if (config.includes("capitalize")) Object.assign(app.filters, { capitalize });
+        if (config.includes("currency")) Object.assign(app.filters, { currency });
+        if (config.includes("date")) Object.assign(app.filters, { date });
+        if (config.includes("limitTo")) Object.assign(app.filters, { limitTo });
+        if (config.includes("lowercase")) Object.assign(app.filters, { lowercase });
+        if (config.includes("orderBy")) Object.assign(app.filters, { orderBy });
+        if (config.includes("uppercase")) Object.assign(app.filters, { uppercase });
+      }
     },
   };
 };
