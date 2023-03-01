@@ -45,7 +45,7 @@ export type OnceDirective = {
 
 export type OnDirective = {
   parseValue: (str: string) => string;
-  beforeMount: DirectiveMethod;
+  mounted: DirectiveMethod;
 };
 
 export type ModelDirective = {

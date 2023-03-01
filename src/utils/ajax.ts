@@ -1,32 +1,25 @@
-export const get = (url: string) => {
-  return new Promise((resolve, reject) => {
-    const xhr = new XMLHttpRequest();
-    xhr.open("GET", url);
-    xhr.onload = () => {
-      if (xhr.status === 200) {
-        resolve(xhr.response);
-      } else {
-        reject(xhr.statusText);
-      }
-    };
-    xhr.onerror = () => reject(xhr.statusText);
-    xhr.send();
-  });
-}
+/**
+ * Asynchronously GET a file.
+ * @param {string} url The URL of the file to GET.
+ * @returns {Promise<string>} The file's content.
+ */
+export const get = async (url: string): Promise<string> =>
+  (await fetch(url)).text();
 
-export const post = (url: string, data: Record<string, any>) => {
-  return new Promise((resolve, reject) => {
-    const xhr = new XMLHttpRequest();
-    xhr.open("POST", url);
-    xhr.setRequestHeader("Content-Type", "application/json");
-    xhr.onload = () => {
-      if (xhr.status === 200) {
-        resolve(xhr.response);
-      } else {
-        reject(xhr.statusText);
-      }
-    };
-    xhr.onerror = () => reject(xhr.statusText);
-    xhr.send(JSON.stringify(data));
+/**
+ * Asynchronously POST to a file.
+ * @param {string} url The URL of the file to POST to.
+ * @param {Record<string, any>} data The data to POST.
+ * @returns {Promise<Response>} The response.
+ */
+export const post = async (
+  url: string,
+  data: Record<string, any>
+): Promise<Response> =>
+  await fetch(url, {
+    method: "post",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
   });
-}

@@ -1,5 +1,3 @@
-import { querySelector } from "./utils/dom";
-
 import { Component, Props, CompiledComponent } from "./types/components";
 import { Plugin, ZenithicApp } from "./types/core";
 import { Directive } from "./types/directives";
@@ -36,8 +34,8 @@ const unwatch = (obj: { [key: string]: any }) => {
   });
 };
 
-// This function defines a computed property on an object.
-const defineComputed = (
+// This function defines a property on an object.
+const defineProperty = (
   obj: { [key: string]: any },
   key: string,
   getter: () => any
@@ -51,16 +49,14 @@ const defineComputed = (
 
 // This function returns a reactive object that tracks changes to its properties.
 const reactive = (obj: { [key: string]: any }) => {
-  return obj;
-  // TODO: fixme
-  // const observed = new Proxy(obj, {
-  //   set(target, key, value) {
-  //     const result = Reflect.set(target, key, value);
-  //     // TODO: trigger update
-  //     return result;
-  //   },
-  // });
-  // return observed;
+  const observed = new Proxy(obj, {
+    set(target, key, value) {
+      const result = Reflect.set(target, key, value);
+      // TODO: trigger update
+      return result;
+    },
+  });
+  return observed;
 };
 
 const getPropertyNameFromStrinWithFilters = (str: string) =>
@@ -160,22 +156,22 @@ const getFiltersFromValue = (
   return filters;
 };
 
-const getDirectiveBindingValue = (
+const getDirectiveBinding = (
   filters: ((val: any) => any)[],
   parseValueMethod: (str: string) => any,
-  directiveName: string,
+  completeDirective: string,
   el: Element,
-  app: ZenithicApp
+  compiledComponent: CompiledComponent
 ) => {
-  filters.reduce(
-    (acc, filter) => filter(acc),
-    parseValueMethod
-      .call(
-        compileComponent,
-        el.getAttribute(`v-${directiveName}`).split("|")[0].trim()
-      )
-      .bind(app)
-  );
+  const value = el.getAttribute(`${completeDirective}`).split("|")[0];
+  const arg = completeDirective.split(":")[1] || null;
+  return {
+    value: filters.length > 0 ? filters.reduce(
+      (acc, filter) => filter(acc),
+      parseValueMethod.call(compiledComponent, value.trim())
+    ) : parseValueMethod.call(compiledComponent, value.trim()),
+    arg,
+  };
 };
 
 const prepareComponent = (comp: Component) => {
@@ -206,7 +202,7 @@ const prepareComponent = (comp: Component) => {
     if (component.mixins[mixinKey].computed) {
       Object.keys(component.mixins[mixinKey].computed || {}).forEach((key) => {
         if (!component.computed[key]) {
-          defineComputed(
+          defineProperty(
             component.computed,
             key,
             component.mixins[mixinKey].computed[key]
@@ -240,9 +236,22 @@ const prepareComponent = (comp: Component) => {
   return component;
 };
 
-const compileComponent = (component: Component): CompiledComponent => {
-  const app: ZenithicApp = this;
+const hasDirective = (el: Element, directive: string) => {
+  const string = `v-${directive}`;
+  let c = 0;
+  if (el.attributes) {
+    while (c < el.attributes.length) {
+      if (el.attributes[c].name.match(new RegExp(string))) return true;
+      c++;
+    }
+  }
+  return false;
+};
 
+const compileComponent = (
+  app: ZenithicApp,
+  component: Component
+): CompiledComponent => {
   // Define the component object
   const preparedComponent = prepareComponent(component);
 
@@ -268,11 +277,15 @@ const compileComponent = (component: Component): CompiledComponent => {
 
       // Set up the reactive data
       compiledComponent.$data = reactive(obj.data());
+      for (const key in compiledComponent.$data) {
+        const getter = () => compiledComponent.$data[key];
+        defineProperty(compiledComponent, key, getter);
+      }
 
       // Set up the computed properties
       for (const key in compiledComponent.computed) {
         const getter = () => compiledComponent.computed[key];
-        defineComputed(compiledComponent, key, getter);
+        defineProperty(compiledComponent, key, getter);
       }
 
       // Set up the methods
@@ -287,11 +300,12 @@ const compileComponent = (component: Component): CompiledComponent => {
       }
 
       // Set up directives
-      // iterate app registered directives
+      // iterate app registered Directives
       Object.keys(app.directives || {}).forEach((directive) => {
-        const nodesWithThisDirective = compiledComponent.el.querySelectorAll(
-          `["v-${directive}"]`
-        );
+        const nodes = Array.from(compiledComponent.el.querySelectorAll("*"));
+        const nodesWithThisDirective = nodes.filter((n) => {
+          return hasDirective(n, directive);
+        });
 
         // iterate directive methods
         Object.keys(app.directives[directive]).forEach((method) => {
@@ -301,22 +315,36 @@ const compileComponent = (component: Component): CompiledComponent => {
 
             // iterate nodes with this directive
             nodesWithThisDirective.forEach((el: Element) => {
+              let attributes = [];
+              let count = 0;
+              while (count < el.attributes.length) {
+                attributes.push(el.attributes[count].name);
+                count++;
+              }
+
+              const completeDirective = attributes.filter(
+                (a) => a === directive || a.includes(`${directive}:`)
+              )[0];
+
               const filters = getFiltersFromValue(
                 app,
                 compiledComponent,
-                el.getAttribute(`v-${directive}`)
+                el.getAttribute(completeDirective)
               );
 
-              app.directives[directive][method].call(compiledComponent, el, {
-                value: getDirectiveBindingValue(
-                  filters,
-                  app.directives[directive].parseValue,
-                  directive,
-                  el,
-                  app
-                ),
-                arg: null, // TODO: implement argument
-              });
+              const binding = getDirectiveBinding(
+                filters,
+                app.directives[directive].parseValue,
+                completeDirective,
+                el,
+                compiledComponent,
+              );
+
+              app.directives[directive][method].call(
+                compiledComponent,
+                el,
+                binding
+              );
             });
           };
         });
@@ -394,7 +422,7 @@ const createApp = (): ZenithicApp => {
         Object.assign(component.computed, props, app.context);
 
         // compile component, render it, and fill the fragment with the result
-        const compiledComponent: CompiledComponent = compileComponent.call(
+        const compiledComponent: CompiledComponent = compileComponent(
           this,
           component
         );
@@ -412,7 +440,7 @@ const createApp = (): ZenithicApp => {
       }
     },
     unmount() {
-      (this as ZenithicApp).el.parentElement.removeChild(this.el);
+      (this as ZenithicApp).el.parentNode.removeChild(this.el);
     },
     registerComponent(name: string, component: Component) {
       Object.assign((this as ZenithicApp).components, { [name]: component });
