@@ -1,5 +1,10 @@
 import { Directive, PreDirective } from "../types/directives/types";
 
+/**
+ * A directive for evaluating the property that will be use to evaluate the content.
+ * It allows to compute the property name.
+ * @type {Directive}
+ */
 const pre: PreDirective = {
   parseValue(str: string) {
     return this[str].toString();

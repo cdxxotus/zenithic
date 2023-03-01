@@ -1,5 +1,9 @@
 import { Directive, OnDirective } from "../types/directives/types";
 
+/**
+ * A directive for adding events listeners to an Element
+ * @type {Directive}
+ */
 const on: OnDirective = {
   parseValue(str: string) {
     return this[str];

@@ -14,6 +14,11 @@ import tooltip from "./v-tooltip";
 import { DirectivesConfig } from "../types/directives/types";
 import { Plugin } from "../types/core";
 
+/**
+ * Creates a new Directives plugin based on the given configuration.
+ *
+ * @param config The configuration to use.
+ */
 export const createDirectives = (config?: DirectivesConfig): Plugin => {
   return {
     install: (app) => {

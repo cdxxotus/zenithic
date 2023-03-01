@@ -1,5 +1,10 @@
 import { Directive, IfDirective } from "../types/directives/types";
 
+/**
+ * A directive that adds or removes an element from the DOM based on the
+ * provided value.
+ * @type {Directive}
+ */
 const ifDirective: IfDirective = {
   parseValue(str: string) {
     return Boolean(this[str]);

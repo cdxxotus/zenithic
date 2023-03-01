@@ -1,5 +1,9 @@
 import { Directive, CloakDirective } from "../types/directives/types";
 
+/**
+ * This directive hides an element until it has rendered
+ * @type {Directive}
+ */
 const cloak: CloakDirective = {
   parseValue(_str: string) {
     return null;

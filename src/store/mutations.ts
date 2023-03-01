@@ -1,7 +1,7 @@
 import { Modules, Mutations, StoreConfig } from "../types/store";
 
 /**
- * Creates a `Mutations` object, that includes all modules mutations.
+ * Creates a `Mutations` object, that includes store mutations and all modules mutations.
  *
  * @param {StoreConfig} [config={}] Store configuration.
  * @returns {Mutations} All store mutations.

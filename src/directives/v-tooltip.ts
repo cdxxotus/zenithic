@@ -26,6 +26,10 @@ const handleMouseLeave = () => {
   (this as CompiledComponent).tooltipNode.remove();
 };
 
+/**
+ * A directive that attach a tooltip that shows the directive value to an Element 
+ * @type {Directive}
+ */
 const tooltip: TooltipDirective = {
   parseValue(str: string) {
     return this[str].toString();

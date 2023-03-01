@@ -8,6 +8,11 @@ import { createState } from "./state";
 import { StoreConfig } from "../types/store";
 import { Plugin } from "../types/core";
 
+/**
+ * Creates a new store plugin based on the given configuration.
+ *
+ * @param config The configuration to use.
+ */
 export const createStore = (config?: StoreConfig): Plugin => {
   const store = prepareStore();
   const actions = createActions(config);

@@ -1,5 +1,9 @@
 import { Directive, ForDirective } from "../types/directives/types";
 
+/**
+ * Directive for generating Elements while iterating through an array
+ * @type {Directive}
+ */
 const forDirective: ForDirective = {
   parseValue(str: string) {
     const matched = str.match(/(.*) in (.*)/gm);
