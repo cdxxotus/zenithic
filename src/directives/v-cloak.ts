@@ -1,7 +1,7 @@
 import { Directive, CloakDirective } from "../types/directives/types";
 
 /**
- * This directive hides an element until it has rendered
+ * This directive hides an element until it has rendered.
  * @type {CloakDirective}
  */
 const cloak: CloakDirective = {

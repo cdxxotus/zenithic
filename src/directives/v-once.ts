@@ -7,7 +7,7 @@ import { Directive, OnceDirective } from "../types/directives/types";
  */
 const once: OnceDirective = {
   parseValue(str: string) {
-    return this[str].toString();
+    return String(this[str]);
   },
   beforeMount(el, binding) {
     // Set the element's content to be evaluated once

@@ -17,7 +17,8 @@ import { Plugin } from "../types/core";
 /**
  * Creates a new Directives plugin based on the given configuration.
  *
- * @param config The configuration to use.
+ * @param {DirectivesConfig} config - The configuration to use.
+ * @returns {Plugin} The Directives plugin object.
  */
 export const createDirectives = (config?: DirectivesConfig): Plugin => {
   return {
@@ -25,16 +26,21 @@ export const createDirectives = (config?: DirectivesConfig): Plugin => {
       if (config) {
         if (config.includes("bind")) Object.assign(app.directives, { bind });
         if (config.includes("cloak")) Object.assign(app.directives, { cloak });
-        if (config.includes("else-if")) Object.assign(app.directives, { "else-if": elseIf });
-        if (config.includes("else")) Object.assign(app.directives, { else: elseDirective });
-        if (config.includes("for")) Object.assign(app.directives, { for: forDirective });
-        if (config.includes("if")) Object.assign(app.directives, { if: ifDirective });
+        if (config.includes("else-if"))
+          Object.assign(app.directives, { "else-if": elseIf });
+        if (config.includes("else"))
+          Object.assign(app.directives, { else: elseDirective });
+        if (config.includes("for"))
+          Object.assign(app.directives, { for: forDirective });
+        if (config.includes("if"))
+          Object.assign(app.directives, { if: ifDirective });
         if (config.includes("model")) Object.assign(app.directives, { model });
         if (config.includes("on")) Object.assign(app.directives, { on });
         if (config.includes("once")) Object.assign(app.directives, { once });
         if (config.includes("pre")) Object.assign(app.directives, { pre });
         if (config.includes("show")) Object.assign(app.directives, { show });
-        if (config.includes("tooltip")) Object.assign(app.directives, { tooltip });
+        if (config.includes("tooltip"))
+          Object.assign(app.directives, { tooltip });
       }
     },
   };

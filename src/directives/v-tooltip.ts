@@ -4,6 +4,12 @@ import {
 } from "../types/directives/types";
 import { CompiledComponent } from "../types/components";
 
+/**
+ * Builds a tooltip element and returns it
+ * @param {HTMLElement} el - The element that the tooltip is attached to
+ * @param {string} tooltipText - The text content of the tooltip
+ * @returns {HTMLElement} - The tooltip element
+ */
 const buildTooltip = (el: HTMLElement, tooltipText: string) => {
   const tooltipEl = document.createElement("div");
   tooltipEl.textContent = tooltipText || "";
@@ -17,11 +23,17 @@ const buildTooltip = (el: HTMLElement, tooltipText: string) => {
   return tooltipEl;
 };
 
+/**
+ * Shows the tooltip when the mouse enters the element
+ */
 const handleMouseEnter = () => {
   document.body.appendChild((this as CompiledComponent).tooltipElement);
   (this as CompiledComponent).tooltipNode = document.body.lastChild;
 };
 
+/**
+ * Hides the tooltip when the mouse leaves the element
+ */
 const handleMouseLeave = () => {
   (this as CompiledComponent).tooltipNode.remove();
 };
@@ -32,7 +44,7 @@ const handleMouseLeave = () => {
  */
 const tooltip: TooltipDirective = {
   parseValue(str: string) {
-    return this[str].toString();
+    return String(this[str] || str);
   },
 
   beforeMount(el, binding) {
@@ -56,6 +68,7 @@ const tooltip: TooltipDirective = {
     const component = this;
     el.removeEventListener("mouseenter", handleMouseEnter.bind(component));
     el.removeEventListener("mouseleave", handleMouseLeave.bind(component));
+    if (this.tooltipNode) this.tooltipNode.remove();
   },
 };
 

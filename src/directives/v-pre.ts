@@ -7,7 +7,7 @@ import { Directive, PreDirective } from "../types/directives/types";
  */
 const pre: PreDirective = {
   parseValue(str: string) {
-    return this[str].toString();
+    return String(this[str]);
   },
   beforeMount(el, binding) {
     // Set the element's content to be evaluated later

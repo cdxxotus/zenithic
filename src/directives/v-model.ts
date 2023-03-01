@@ -8,9 +8,20 @@ import { Directive, ModelDirective } from "../types/directives/types";
  * @type {ModelDirective}
  */
 const modelDirective: ModelDirective = {
+  /**
+   * Returns an object with `get` and `set` functions that retrieve and update the state property.
+   * @param {string} str - The name of the state property to bind to.
+   * @returns {object} An object with `get` and `set` functions.
+   */
   parseValue(str: string) {
     return { get: () => this[str].toString(), set: (v: string) => this[str] = v };
   },
+  /**
+   * Sets the initial value of the element to the current value of the state property,
+   * and adds an event listener to update the state property when the element value changes.
+   * @param {HTMLElement} el - The element to bind to.
+   * @param {object} binding - The binding object.
+   */
   beforeMount(el, binding) {
     set(el, binding.value.get());
 
@@ -23,6 +34,11 @@ const modelDirective: ModelDirective = {
       }
     });
   },
+  /**
+   * Sets the element value to the current value of the state property when the state changes,
+   * @param {HTMLElement} el - The element to bind to.
+   * @param {object} binding - The binding object.
+   */
   update(el, binding) {
     set(el, binding.value.get());
   },
