@@ -1,21 +1,31 @@
-import { StoreConfig } from "../types/store";
+import { Getters, StoreConfig, Modules } from "../types/store";
 
-export const createGetters = (config?: StoreConfig) => {
-  const getters = config?.getters || {};
-  const modules = config?.modules || {};
+/**
+ * Creates an object containing all the getters of the store,
+ * including the ones in modules.
+ * 
+ * @param {StoreConfig} [config={}] Store configuration.
+ * @returns {Getters} All store getters.
+ */
+export const createGetters = (config?: StoreConfig): Getters => {
+  const getters = config.getters || {};
+  const modules = config.modules || {};
+  const gettersNames = Object.keys(getters) as Array<keyof Getters>;
+  const modulesNames = Object.keys(modules) as Array<keyof Modules>;
   const allGetters = {};
 
-  Object.keys(modules).forEach((moduleName) => {
+  modulesNames.forEach((moduleName) => {
     const module = modules[moduleName];
-    const { getters = {} } = module;
+    const { getters: moduleGetters = {} } = module;
+    const moduleGettersNames = Object.keys(moduleGetters) as Array<keyof Getters>;
 
-    Object.keys(getters).forEach((getterName) => {
+    moduleGettersNames.forEach((getterName) => {
       const getterFullName = `${moduleName}/${getterName}`;
       allGetters[getterFullName] = getters[getterName];
     });
   });
 
-  Object.keys(getters).forEach((getterName) => {
+  gettersNames.forEach((getterName) => {
     allGetters[getterName] = getters[getterName];
   });
 

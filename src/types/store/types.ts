@@ -1,19 +1,191 @@
-export type State = any;
+/**
+ * The state of a store.
+ *
+ * @example
+ * {
+ *   name: 'Abdelrahman Inas',
+ *   age: 22,
+ *   module1: {
+ *     count: 0
+ *   }
+ * }
+ */
+export type State = { [key: string]: any };
 
-export type Action = (...[]) => Promise<unknown>;
+/**
+ * A store module.
+ */
+export type Module = Omit<StoreConfig, "modules">;
 
-export type Mutation = (...[]) => void;
+/**
+ * An action function.
+ *
+ * @param params Action parameters.
+ * @return A promise to be resolved or rejected, it can be resolved with any value.
+ *
+ * @example
+ * async function updateName (name) {
+ *   // do something
+ *   return name;
+ * }
+ */
+export type Action = (...params: any[]) => Promise<any>;
 
-export type Getter = (getterName: string) => unknown;
+/**
+ * A mutation function.
+ *
+ * @param params Mutation parameters.
+ */
+export type Mutation = (...params: any[]) => void;
 
-export type Actions = Record<string, Action>;
+/**
+ * A getter function.
+ *
+ * @param getterName The getter name.
+ * @return The getter value.
+ *
+ * @example
+ * function name () {
+ *   return this.state.name;
+ * }
+ */
+export type Getter = (getterName: string) => any;
 
-export type Getters = Record<string, Getter>;
+/**
+ * An object of actions.
+ *
+ * @example
+ * {
+ *  updateProfile: async (name) => {
+ *    this.state.name = name;
+ *    this.state.age = age;
+ *    await post('/profile', this.state);
+ *    return;
+ *  }
+ * }
+ */
+export type Actions = { [key: string]: Action };
 
-export type Mutations = Record<string, Mutation>;
+/**
+ * An object of getters.
+ *
+ * @example
+ * {
+ *  name: () => {
+ *    return this.state.name;
+ *  },
+ *  age: () => {
+ *    return this.state.age;
+ *  }
+ * }
+ */
+export type Getters = { [key: string]: Getter };
 
-export type Modules = Record<string, Module>;
+/**
+ * An object of mutations.
+ *
+ * @example
+ * {
+ *  incrementAge: (value) => {
+ *    this.state.age += value;
+ *  },
+ *  incrementCount: (value) => {
+ *    this.state.module1.count += value;
+ *  }
+ * }
+ */
+export type Mutations = { [key: string]: Mutation };
 
+/**
+ * An object of modules.
+ *
+ * @example
+ * {
+ *  module1: {
+ *    initialState: {
+ *      count: 0
+ *    },
+ *    actions: {
+ *      updateProfile: async (name) => {
+ *        this.state.name = name;
+ *        this.state.age = age;
+ *        await post('/profile', this.state);
+ *        return;
+ *      }
+ *    },
+ *    mutations: {
+ *      incrementCount: (value) => {
+ *        this.state.count += value;
+ *      }
+ *    },
+ *    getters: {
+ *      count: () => {
+ *        return this.state.count;
+ *      }
+ *    }
+ *  }
+ * }
+ */
+export type Modules = { [key: string]: Module };
+
+/**
+ * A store config.
+ *
+ * @example
+ * {
+ *  initialState: {
+ *    name: 'Abdelrahman Inas',
+ *    age: 22,
+ *    module1: {
+ *      count: 0
+ *    }
+ *  },
+ *  actions: {
+ *    updateProfile: async (name) => {
+ *      this.state.name = name;
+ *      this.state.age = age;
+ *      await post('/profile', this.state);
+ *      return;
+ *    },
+ *    updateAge: (age) => {
+ *      this.state.age = age;
+ *    }
+ *  },
+ *  mutations: {
+ *    incrementAge: (value) => {
+ *      this.state.age += value;
+ *    },
+ *    incrementCount: (value) => {
+ *      this.state.module1.count += value;
+ *    }
+ *  },
+ *  getters: {
+ *    name: () => {
+ *      return this.state.name;
+ *    },
+ *    age: () => {
+ *      return this.state.age;
+ *    }
+ *  },
+ *  modules: {
+ *    module1: {
+ *      initialState: {
+ *        count: 0
+ *      },
+ *      mutations: {
+ *        incrementCount: (value) => {
+ *          this.state.count += value;
+ *        }
+ *      },
+ *      getters: {
+ *        count: () => {
+ *          return this.state.count;
+ *        }
+ *      }
+ *    }
+ *  }
+ * }
+ */
 export type StoreConfig = {
   initialState: State;
   actions: Actions;
@@ -22,9 +194,10 @@ export type StoreConfig = {
   getters: Getters;
 };
 
-export type Module = Omit<StoreConfig, "modules">;
-
-export type Store = Omit<StoreConfig, 'initialState'> & {
+/**
+ * A store.
+ */
+export type Store = Omit<StoreConfig, "initialState"> & {
   state: State;
   registerActions: (actions: Actions) => void;
   registerGetters: (getters: Getters) => void;
@@ -33,5 +206,6 @@ export type Store = Omit<StoreConfig, 'initialState'> & {
   registerModule: (moduleName: string, module: Module) => void;
   registerState: (state: State) => void;
   dispatch: (actionName: string, ...params: any[]) => Promise<unknown>;
+  
   commit: (mutationName: string, ...params: any[]) => void;
 };

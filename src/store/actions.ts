@@ -1,21 +1,30 @@
-import { StoreConfig } from "../types/store";
+import { StoreConfig, Modules, Actions } from "../types/store";
 
-export const createActions = (config?: StoreConfig) => {
-  const actions = config?.actions || {};
-  const modules = config?.modules || {};
+/**
+ * Merges all actions from the store configuration into one object.
+ * 
+ * @param {StoreConfig} [config={}] Store configuration.
+ * @returns {Actions} All store actions.
+ */
+export const createActions = (config?: StoreConfig): Actions => {
+  const actions = config.actions || {};
+  const modules = config.modules || {};
+  const modulesNames = Object.keys(modules) as Array<keyof Modules>;
+  const actionsNames = Object.keys(actions) as Array<keyof Actions>;
   const allActions = {};
 
-  Object.keys(modules).forEach((moduleName) => {
+  modulesNames.forEach((moduleName) => {
     const module = modules[moduleName];
-    const { actions = {} } = module;
+    const { actions: moduleActions = {} } = module;
+    const moduleActionsNames = Object.keys(moduleActions) as Array<keyof Actions>;
 
-    Object.keys(actions).forEach((actionName) => {
+    moduleActionsNames.forEach((actionName) => {
       const actionFullName = `${moduleName}/${actionName}`;
       allActions[actionFullName] = actions[actionName];
     });
   });
 
-  Object.keys(actions).forEach((actionName) => {
+  actionsNames.forEach((actionName) => {
     allActions[actionName] = actions[actionName];
   });
 

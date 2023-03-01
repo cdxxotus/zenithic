@@ -1,17 +1,19 @@
-import { StoreConfig } from "../types/store";
+import { Modules, State, StoreConfig } from "../types/store";
 
 export const createState = (config?: StoreConfig) => {
-  const initialState = config?.initialState || {};
-  const modules = config?.modules || {};
+  const initialState = config.initialState || {};
+  const modules = config.modules || {};
+  const modulesNames = Object.keys(modules) as Array<keyof Modules>;
+  const initialStateProps = Object.keys(initialState) as Array<keyof State>;
   const allState = {};
 
-  Object.keys(modules).forEach((moduleName) => {
+  modulesNames.forEach((moduleName) => {
     const module = modules[moduleName];
     const { initialState = {} } = module;
     allState[moduleName] = initialState;
   });
 
-  Object.keys(initialState).forEach((stateName) => {
+  initialStateProps.forEach((stateName) => {
     allState[stateName] = initialState[stateName];
   });
 

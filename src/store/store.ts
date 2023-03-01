@@ -2,6 +2,12 @@ import { isFunction } from "../utils/type";
 
 import { Module, StoreConfig, Store } from "../types/store";
 
+/**
+ * Creates a new store with the given configuration.
+ * 
+ * @param {StoreConfig | Module} config 
+ * @returns {Store}
+ */
 export const prepareStore = (config?: StoreConfig | Module): Store => {
   const store: Store = {
     actions: {},
