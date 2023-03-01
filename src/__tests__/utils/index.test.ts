@@ -41,3 +41,5 @@ test("app.use(utils) with utils in app.config", () => {
   const utilsList = defaultConfig.default.utils.sort().toString();
   expect(Object.keys(app.utils).sort().toString()).toBe(utilsList);
 });
+
+export {};

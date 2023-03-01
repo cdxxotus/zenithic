@@ -12,3 +12,5 @@ test("join", () => {
   const array = ["https://zenithic.js.org", "one", "two", "three"];
   expect(join(...array)).toBe(url);
 });
+
+export {};

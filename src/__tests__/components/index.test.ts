@@ -40,3 +40,5 @@ test("app.use(components) with components in app.config", () => {
   app = createZenithic();
   expect(Object.keys(app.components).sort().toString()).toBe(defaultConfig.default.components.sort().toString());
 });
+
+export {};

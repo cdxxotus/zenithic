@@ -40,3 +40,5 @@ test("app.use(filters) with filters in app.config", () => {
   app = createZenithic();
   expect(Object.keys(app.filters).sort().toString()).toBe(defaultConfig.default.filters.sort().toString());
 });
+
+export {};

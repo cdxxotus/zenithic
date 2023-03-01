@@ -123,3 +123,5 @@ test("getMixins", () => {
   const mixins = getMixins();
   expect(typeof mixins).toBe("object");
 });
+
+export {};

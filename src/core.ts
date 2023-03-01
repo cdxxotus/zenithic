@@ -303,7 +303,7 @@ const compileComponent = (
       // iterate app registered Directives
       Object.keys(app.directives || {}).forEach((directive) => {
         const nodes = Array.from(compiledComponent.el.querySelectorAll("*"));
-        const nodesWithThisDirective = nodes.filter((n) => {
+        const nodesWithThisDirective = nodes.filter((n: Element) => {
           return hasDirective(n, directive);
         });
 
@@ -367,7 +367,7 @@ const compileComponent = (
     }
 
     render() {
-      let compiledComponent = this as CompiledComponent;
+      let compiledComponent = this as unknown as CompiledComponent;
       const newEl = makeComponentRenderFn(app, compiledComponent)();
       (this.el as Element) = newEl;
       return this.el;
@@ -375,7 +375,7 @@ const compileComponent = (
   }
 
   // Return the component constructor
-  return new ComponentConstructor(preparedComponent) as CompiledComponent;
+  return new ComponentConstructor(preparedComponent) as unknown as CompiledComponent;
 };
 
 const fillFragmentOrElement = (

@@ -42,3 +42,5 @@ test("app.use(router) with router in app.config", () => {
   app = createZenithic();
   expect(Object.keys(app.router).sort().toString()).toBe(routerProperties);
 });
+
+export {};

@@ -43,3 +43,5 @@ test("app.use(store) with store in app.config", () => {
   app = createZenithic();
   expect(Object.keys(app.store).sort().toString()).toBe(storeProperties);
 });
+
+export {};

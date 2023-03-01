@@ -40,3 +40,5 @@ test("app.use(directives) with directives in app.config", () => {
   app = createZenithic();
   expect(Object.keys(app.directives).sort().toString()).toBe(defaultConfig.default.directives.sort().toString());
 });
+
+export {};

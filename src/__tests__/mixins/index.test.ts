@@ -40,3 +40,5 @@ test("app.use(mixins) with mixins in app.config", () => {
   app = createZenithic();
   expect(Object.keys(app.mixins).sort().toString()).toBe(defaultConfig.default.mixins.sort().toString());
 });
+
+export {};

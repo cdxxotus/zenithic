@@ -84,3 +84,5 @@ test("app: update component data by clicking on a button", () => {
 
   expect(doc.querySelector("#app").textContent).toBe("1");
 });
+
+export {};
