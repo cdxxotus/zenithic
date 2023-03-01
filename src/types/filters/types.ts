@@ -10,7 +10,7 @@ export type LowercaseFilter = (value: string) => string;
 
 export type LimitToFilter = (array: any[], limit: number) => any[];
 
-export type OrderByFilter = (array: any[], sortKey: string, reverse?: boolean) => any[];
+export type OrderByFilter = (array: { [key: string]: any }[], sortKey: string, reverse?: boolean) => any[];
 
 export type DateFilter = (date: Date, format: string) => string;
 

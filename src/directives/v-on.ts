@@ -16,4 +16,5 @@ const on: OnDirective = {
     // el.addEventListener(eventName, eventHandler);
   },
 };
+
 export default on satisfies Directive;

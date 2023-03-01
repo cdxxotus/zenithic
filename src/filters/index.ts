@@ -9,6 +9,12 @@ import uppercase from "./uppercase";
 import { FiltersConfig } from "../types/filters/types";
 import { Plugin } from "../types/core";
 
+/**
+ * @name createFilters
+ * @description Creates a plugin that adds filters to the app.
+ * @param {FiltersConfig} [config] - The config of the filters to add.
+ * @returns {Plugin} The plugin.
+ */
 export const createFilters = (config?: FiltersConfig): Plugin => {
   return {
     install: (app) => {
