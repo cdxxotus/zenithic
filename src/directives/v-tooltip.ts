@@ -28,7 +28,7 @@ const handleMouseLeave = () => {
 
 /**
  * A directive that attach a tooltip that shows the directive value to an Element 
- * @type {Directive}
+ * @type {TooltipDirective}
  */
 const tooltip: TooltipDirective = {
   parseValue(str: string) {

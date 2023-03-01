@@ -8,6 +8,11 @@ import { Textarea } from "./Textarea";
 import { ComponentsConfig } from "../types/components";
 import { Plugin } from "../types/core/types";
 
+/**
+ * Creates a new Components plugin based on the given configuration.
+ *
+ * @param config The configuration to use.
+ */
 export const createComponents = (config?: ComponentsConfig): Plugin => {
   return {
     install: (app) => {

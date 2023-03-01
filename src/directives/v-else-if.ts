@@ -4,7 +4,7 @@ import { Directive, ElseIfDirective } from "../types/directives/types";
  * A directive that adds or removes an element from the DOM based on the
  * provided value.
  * The element will be hidden if the previous `v-if` Directive is true or if this directive is false
- * @type {Directive}
+ * @type {ElseIfDirective}
  */
 const elseIf: ElseIfDirective = {
   parseValue(str: string) {

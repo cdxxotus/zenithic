@@ -5,7 +5,7 @@ import { Directive, ModelDirective } from "../types/directives/types";
 /**
  * A directive for binding an Input or Select value, or a TextArea textContent, to a state property.
  * A change in the Store updates the Element value, and a change of the Element value updates the store.
- * @type {Directive}
+ * @type {ModelDirective}
  */
 const modelDirective: ModelDirective = {
   parseValue(str: string) {

@@ -2,7 +2,7 @@ import { Directive, BindDirective } from "../types/directives/types";
 
 /**
  * This directive allows to set a value to an attribute of the Element.
- * @type {Directive}
+ * @type {BindDirective}
  */
 const bind: BindDirective = {
   parseValue(str: string) {

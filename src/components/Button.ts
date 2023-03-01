@@ -4,6 +4,10 @@ const template = `
   <button>{{ text }}</button>
 `;
 
+/**
+ * A Button component that can be used in Components, Layouts and Pages.
+ * @type {ButtonComponent}
+ */
 export const Button: ButtonComponent = {
   template,
   props: {

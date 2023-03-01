@@ -1,5 +1,9 @@
 import { Component, DatePickerComponent } from "../types/components"
 
+/**
+ * A DatePicker component that can be used in Components, Layouts and Pages.
+ * @type {DatePickerComponent}
+ */
 export const DatePicker: DatePickerComponent = {
   template: `<input
     type="date"

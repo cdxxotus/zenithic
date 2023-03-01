@@ -2,7 +2,7 @@ import { Directive, ForDirective } from "../types/directives/types";
 
 /**
  * Directive for generating Elements while iterating through an array
- * @type {Directive}
+ * @type {ForDirective}
  */
 const forDirective: ForDirective = {
   parseValue(str: string) {

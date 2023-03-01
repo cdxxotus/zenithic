@@ -1,5 +1,9 @@
 import { Component, InputComponent } from "../types/components";
 
+/**
+ * An Input component that can be used in Components, Layouts and Pages.
+ * @type {InputComponent}
+ */
 export const Input: InputComponent = {
   template: `<input
     type="text"

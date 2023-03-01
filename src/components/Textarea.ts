@@ -1,5 +1,9 @@
 import { Component, TextareaComponent } from "../types/components";
 
+/**
+ * A Textarea component that can be used in Components, Layouts and Pages.
+ * @type {TextareaComponent}
+ */
 export const Textarea: TextareaComponent = {
   template: `<textarea
     v-model="value"

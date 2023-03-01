@@ -4,7 +4,7 @@ import { Directive, ShowDirective } from "../types/directives/types";
 
 /**
  * A directive for conditionnal displaying of an Element depending on the directive value.
- * @type {Directive}
+ * @type {ShowDirective}
  */
 const show: ShowDirective = {
   parseValue(str: string) {
