@@ -1,5 +1,10 @@
 import { RouterConfig, History, Route, RouterListenCallback, Router } from "../types/router";
 
+/**
+ * `prepareRouter` is a function that returns a `Router` instance with
+ * which is used to manage routes in a web application.
+ * @param config Router configuration
+ */
 export const prepareRouter = (config?: RouterConfig): Router => {
   let history: History;
   const routes = config?.routes || [];
