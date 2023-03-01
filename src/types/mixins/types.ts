@@ -1,6 +1,6 @@
-import { Component } from "../components";
+import { CompiledComponent } from "../components";
 
-export type Mixin = Omit<Component, 'template'>;
+export type Mixin = Omit<CompiledComponent, 'template'>;
 
 export type MixinsConfig = string[];
 

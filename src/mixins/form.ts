@@ -24,10 +24,12 @@ type CompiledFormMixin = CompiledComponent & {
   validateForm: () => void;
   submitForm: () => void;
   resetForm: () => void;
-  onFormSubmitSuccess: (response: any) => void;
-  onFormSubmitError: (error: any) => void;
 }
 
+/**
+ * Mixin for handling form validation and submission.
+ * @type {Mixin}
+ */
 const form: Mixin = {
   data() {
     return {
@@ -43,6 +45,10 @@ const form: Mixin = {
   },
 
   methods: {
+    /**
+     * Validate a single form field.
+     * @param {string} fieldName
+     */
     validateFormField(fieldName: string) {
       const field = (this as CompiledFormMixin).form.fields[fieldName];
       const validators = field.validators || [];
@@ -61,6 +67,9 @@ const form: Mixin = {
       }
     },
 
+    /**
+     * Validate the entire form.
+     */
     validateForm() {
       for (let fieldName in (this as CompiledFormMixin).form.fields) {
         (this as CompiledFormMixin).validateField(fieldName);
@@ -71,6 +80,9 @@ const form: Mixin = {
       );
     },
 
+    /**
+     * Submit the form.
+     */
     submitForm() {
       (this as CompiledFormMixin).validateForm();
 
@@ -81,6 +93,9 @@ const form: Mixin = {
       }
     },
 
+    /**
+     * Reset the form.
+     */
     resetForm() {
       for (let fieldName in this.form.fields) {
         (this as CompiledFormMixin).form.fields[fieldName].value = "";
@@ -92,20 +107,6 @@ const form: Mixin = {
       (this as CompiledFormMixin).form.isSubmitted = false;
       (this as CompiledFormMixin).form.submitError = null;
       (this as CompiledFormMixin).form.submitSuccess = null;
-    },
-
-    onFormSubmitSuccess(response: any) {
-      (this as CompiledFormMixin).form.isSubmitted = false;
-      (this as CompiledFormMixin).form.submitSuccess = response;
-
-      (this as CompiledFormMixin).$emit("success", response);
-    },
-
-    onFormSubmitError(error: any) {
-      (this as CompiledFormMixin).form.isSubmitted = false;
-      (this as CompiledFormMixin).form.submitError = error;
-
-      (this as CompiledFormMixin).$emit("error", error);
     },
   },
 };
