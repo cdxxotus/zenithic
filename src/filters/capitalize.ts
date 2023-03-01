@@ -1,13 +1,14 @@
 import { Filter, CapitalizeFilter } from "../types/filters/types";
 
 /**
- * Capitalize the first letter of a string.
- * @param value The string to capitalize.
+ * Capitalizes the first letter of a string.
+ * @param {string} value - The string to be capitalized.
+ * @returns {string} The capitalized string.
  */
 const capitalize: CapitalizeFilter = (value) => {
   if (!value) return "";
-  value = value.toString();
-  return value.charAt(0).toUpperCase() + value.slice(1);
+  return String(value).charAt(0).toUpperCase() + value.slice(1);
+
 };
 
 export default capitalize satisfies Filter;

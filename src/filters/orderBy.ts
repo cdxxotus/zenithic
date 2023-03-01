@@ -11,9 +11,7 @@ import { Filter, OrderByFilter } from "../types/filters/types";
  * @returns {Array} The ordered array.
  */
 const orderBy: OrderByFilter = (array, sortKey, reverse) => {
-  if (!isArray(array)) {
-    return array;
-  }
+  if (!isArray(array)) return array;
 
   const order = reverse ? -1 : 1;
 
@@ -21,12 +19,8 @@ const orderBy: OrderByFilter = (array, sortKey, reverse) => {
     const aVal = a[sortKey];
     const bVal = b[sortKey];
 
-    if (aVal < bVal) {
-      return -1 * order;
-    } else if (aVal > bVal) {
-      return 1 * order;
-    }
-
+    if (aVal < bVal) return -1 * order;
+    else if (aVal > bVal) return 1 * order;
     return 0;
   });
 

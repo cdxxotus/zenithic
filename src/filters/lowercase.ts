@@ -1,9 +1,9 @@
 import { Filter, LowercaseFilter } from "../types/filters/types";
 
 /**
- * This function returns the lowercase version of the given string.
- * @param str - A string.
- * @returns A lowercase string.
+ * Returns the lowercase version of the given string.
+ * @param {string} str - A string.
+ * @returns {string} A lowercase string.
  */
 const lowercase: LowercaseFilter = (str) => {
   if (typeof str !== "string") return "";
