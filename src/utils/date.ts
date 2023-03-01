@@ -1,3 +1,9 @@
+/**
+ * Format a date using a format string.
+ *
+ * @param date The date to format.
+ * @param formatString The format string to use.
+ */
 export const format = (date: Date, formatString: string) => {
   const day = date.getDate();
   const month = date.getMonth() + 1;
@@ -14,4 +20,4 @@ export const format = (date: Date, formatString: string) => {
     .replace("hh", hour < 10 ? `0${hour}` : hour.toString())
     .replace("mm", min < 10 ? `0${min}` : min.toString())
     .replace("ss", sec < 10 ? `0${sec}` : sec.toString());
-}
+};
