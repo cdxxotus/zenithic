@@ -38,8 +38,30 @@ test("app.getComponent()", () => {
 });
 
 test("app.registerDirective()", () => {
-  app.registerDirective("directive1", () => {});
+  const TestComponent = {
+    template: `
+        <div v-directive1="hometown">My hometown is:</div>
+        `,
+    data() {
+      return {
+        hometown: "Annecy",
+      };
+    }
+  };
+
+  app = createZenithic();
+  app.registerDirective("directive1", {
+    parseValue(str) {
+      return this[str];
+    },
+    beforeMount(el, binding) {
+      el.textContent = el.textContent + " " + binding.value;
+    }
+  });
   expect(Object.keys(app.directives).includes("directive1")).toBeTruthy();
+
+  app.mount("#app", TestComponent, {});
+  expect(doc.querySelector("#app").textContent).toBe("My hometown is: Annecy");
 });
 
 test("app.registerFilter()", () => {
@@ -60,7 +82,7 @@ test("app.unmount()", () => {
 test("app: update component data by clicking on a button", () => {
   const TestComponent = {
     template: `
-        <div id="clickMe" test="true" v-on:click="increment">{{ count }}</div>
+        <div id="clickMe" v-on:click="increment">{{ count }}</div>
         `,
     data() {
       return {

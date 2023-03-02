@@ -1,4 +1,4 @@
-import { querySelector } from "./utils/dom";
+import { querySelector, makeElementFromString } from "./utils/dom";
 import { isFunction, isObject, isString } from "./utils/type";
 
 import { Component, CompiledComponent } from "./types/components";
@@ -150,9 +150,8 @@ const makeComponentRenderFn = (
     const { components } = app;
     const componentsNames = Object.keys(components || {});
 
-    const templateWithReplacedProperties = template.replace(
-      /\{\{(.+?)\}\}/gms,
-      (_match, property) => {
+    const templateWithReplacedProperties = template
+      .replace(/\{\{(.+?)\}\}/gms, (_match, property) => {
         if (property.trim() === "children") return children;
         const filters = getFiltersFromValue(
           app,
@@ -166,13 +165,11 @@ const makeComponentRenderFn = (
         return filters.length > 0
           ? filters.reduce((acc, filter) => filter(acc), value)
           : value;
-      }
-    );
+      })
+      .trim();
 
     // Create a new element from the template.
-    const templateContainer = document.createElement("div");
-    templateContainer.innerHTML = templateWithReplacedProperties.trim();
-    const element = templateContainer.firstElementChild;
+    const element = makeElementFromString(templateWithReplacedProperties);
 
     // Set up directives
     Object.keys(app.directives || {}).forEach((directive) => {
@@ -195,8 +192,8 @@ const makeComponentRenderFn = (
               nodesWithThisDirective.forEach((el: Element) => {
                 const attributes = Array.from(el.attributes).map((a) => a.name);
                 const completeDirective =
-                  attributes.find((a) => a === directive) ||
-                  attributes.find((a) => a.includes(`${directive}:`));
+                  attributes.find((a) => a === `v-${directive}`) ||
+                  attributes.find((a) => a.includes(`v-${directive}:`));
 
                 const filters = getFiltersFromValue(
                   app,
@@ -226,7 +223,7 @@ const makeComponentRenderFn = (
       Array.from(element.children).forEach((child) => {
         if (componentsNames.includes(child.tagName)) {
           const props = componentPropsFromElement(child);
-          const mountPoint = document.createElement("div");
+          const mountPoint = document.createDocumentFragment();
           app.mountComponent(
             mountPoint,
             components[child.tagName],
@@ -257,10 +254,11 @@ const getFiltersFromValue = (
   compiledComponent: CompiledComponent,
   str: string
 ) => {
-  if (!app || !compiledComponent || !isString(str))
-    throw new Error("Invalid arguments");
-
-  const [, ...strSplitted] = str.split("|");
+  if (!app) throw new Error("App is invalid");
+  if (!compiledComponent) throw new Error("Component is invalid");
+  if (!isString(str)) throw new TypeError("Invalid string");
+    
+  const [, ...strSplitted] = (str as string).split("|");
 
   return strSplitted.reduce((acc, filter) => {
     const filterArgs = filter
@@ -623,7 +621,7 @@ const createApp = (): ZenithicApp => {
      * Removes the application's $el from the DOM.
      */
     unmount() {
-      (this as ZenithicApp).$el.parentNode.removeChild(this.$el);
+      (this as ZenithicApp).$el?.parentNode.removeChild(this.$el);
       this.$el = null;
     },
 

@@ -48,3 +48,13 @@ export const querySelectorAll = (selector: string) =>
  */
 export const getComputedStyle = (element: Element) =>
   window.getComputedStyle(element);
+
+/**
+ * Make an Element from a string.
+ * @param {string} str The string.
+ * @returns {Element}
+ */
+export const makeElementFromString = (str: string): Element => {
+  return new DOMParser().parseFromString(str, "text/html").body
+    .firstElementChild;
+};
