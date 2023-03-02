@@ -1,3 +1,5 @@
+import { CompiledComponent } from "../types/components";
+
 const { createZenithic } = require("../../src");
 const { createApp } = require("../core");
 const { Button } = require("../components/Button");
@@ -45,15 +47,15 @@ test("app.registerFilter()", () => {
   expect(Object.keys(app.filters).includes("filter1")).toBeTruthy();
 });
 
-test("app.registerContext()", () => {
-  app.registerContext({ prop1: "noob" });
+test("app.setContext()", () => {
+  app.setContext({ prop1: "noob" });
   expect(app.context.prop1).toBe("noob");
 });
 
 test("app.unmount()", () => {
-    app.unmount();  
-    expect(doc.querySelector("#app").textContent).toBe("");
-  });
+  app.unmount();
+  expect(doc.querySelector("#app").textContent).toBe("");
+});
 
 test("app: update component data by clicking on a button", () => {
   const TestComponent = {
@@ -61,25 +63,23 @@ test("app: update component data by clicking on a button", () => {
         <div id="clickMe" test="true" v-on:click="increment">{{ count }}</div>
         `,
     data() {
-        return {
-            count: 0
-        }
+      return {
+        count: 0,
+      };
     },
     methods: {
-        increment: () => {
-            console.log('daniiiiiiii');
-            // this.count = this.count + 1
-        }
-    }
+      increment() {
+        (this as CompiledComponent).count++;
+      },
+    },
   };
 
-  
   app = createZenithic({ components: [], directives: ["on"] });
-  app.mount("#app", TestComponent, { });
-  
+  app.mount("#app", TestComponent, {});
+
   expect(doc.querySelector("#app").textContent).toBe("0");
 
-  const clickMe = (window.document.querySelector('#clickMe') as HTMLDivElement);
+  const clickMe = window.document.querySelector("#clickMe") as HTMLDivElement;
   clickMe.click();
 
   expect(doc.querySelector("#app").textContent).toBe("1");

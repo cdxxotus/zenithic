@@ -1,9 +1,8 @@
 /**
  * Logs a message to the console.
- * @param message The message to log.
  */
-export const log = (message: string): void => {
-  console.log(`[Zenithic] ${message}`);
+export const log = (...args: any[]): void => {
+  console.log(`[Zenithic]`, ...args);
 };
 
 /**

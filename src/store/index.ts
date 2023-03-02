@@ -1,6 +1,6 @@
 import { buildStore } from "./store";
 
-import { StoreConfig, Store } from "../types/store";
+import { StoreConfig } from "../types/store";
 import { Plugin } from "../types/core";
 
 /**

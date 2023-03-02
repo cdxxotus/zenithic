@@ -5,7 +5,7 @@ const defaultConfig = require("../../config");
 let app;
 let store;
 
-const storeProperties = "actions,commit,dispatch,getters,modules,mutations,registerActions,registerGetters,registerModule,registerModules,registerMutations,registerState,state";
+const storeProperties = "actions,commit,dispatch,getters,mutations,registerActions,registerGetters,registerModule,registerMutations,registerState,state";
 
 beforeAll(() => {
   store = createStore();

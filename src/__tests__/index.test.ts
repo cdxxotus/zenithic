@@ -16,20 +16,21 @@ let app;
 let appCount;
 
 const appProperties = [
+  "$el",
   "components",
   "context",
   "directives",
-  "el",
   "filters",
   "getComponent",
   "main",
   "mixins",
   "mount",
+  "mountComponent",
   "registerComponent",
-  "registerContext",
   "registerDirective",
   "registerFilter",
   "router",
+  "setContext",
   "store",
   "unmount",
   "use",

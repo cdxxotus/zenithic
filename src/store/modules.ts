@@ -1,6 +1,6 @@
-import { Module, Store } from "../types/store";
-
 import { buildStore } from "./store";
+
+import { Module, Store } from "../types/store";
 
 export const prepareModule = (moduleName: string, module: Module): Partial<Store> => {
   const config = {

@@ -15,6 +15,7 @@ export type Method = (...args: any[]) => unknown;
 
 export type CompiledComponent = Component & {
   $el: Element;
+  $template: string;
   $render: () => DocumentFragment;
   $destroy: () => void;
   $emit: (key: string, ...args: any[]) => void;
@@ -33,7 +34,7 @@ export type Component = {
   watch?: {[key: string]: () => any };
   beforeMount?: () => any;
   mounted?: () => any;
-  updated?: () => any;
+  updated?: (property: string | symbol, newValue: any, oldValue: any) => any;
   beforeDestroy?:() => any;
   destroyed?: () => any;
   mixins?: Mixins;

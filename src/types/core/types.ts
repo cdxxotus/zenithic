@@ -1,4 +1,4 @@
-import { Component, ComponentsConfig, Components, Props } from "../components";
+import { Component, ComponentsConfig, Components, Props, CompiledComponent } from "../components";
 import { DirectivesConfig, Directives, Directive } from "../directives/types";
 import { FiltersConfig, Filters, Filter } from "../filters/types";
 import { MixinsConfig, Mixins } from "../mixins";
@@ -7,7 +7,7 @@ import { StoreConfig, Store } from "../store";
 import { UtilsConfig, Utils } from "../utils";
 
 export type ZenithicApp = {
-  el: Element | null;
+  $el: Element | null;
   main: Component | null;
   router: Router | null;
   store: Store | null;
@@ -19,12 +19,13 @@ export type ZenithicApp = {
   context: Context | null;
   use: (plugin: Plugin) => void;
   mount: (selectorOrElement: string | Element, component: Component, props: { [key: string]: any }) => void;
+  mountComponent: (selectorOrElement: string | Element, component: Component, props: { [key: string]: any }) => CompiledComponent;
   unmount: () => void;
   registerComponent: (name: string, component: Component) => void;
   getComponent: (name: string) => Component;
   registerDirective: (name: string, directive: Directive) => void;
   registerFilter: (name: string, filter: Filter) => void;
-  registerContext: (context: { [key: string]: any }) => void;
+  setContext: (context: { [key: string]: any }) => void;
 };
 
 export type Context = { [key: string]: any };
