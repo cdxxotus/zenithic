@@ -2,7 +2,7 @@ import { History } from "../types/router";
 
 /**
  * Creates a history object that can be used to manage the browser's history.
- * @returns A history object.
+ * @returns {History} A history object.
  */
 export const createHistory = () => {
   // Get the history manager

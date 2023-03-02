@@ -1,24 +1,24 @@
-import { prepareStore } from "./store";
+import { Module, Store } from "../types/store";
 
-import { StoreConfig, Modules } from "../types/store";
+import { buildStore } from "./store";
 
-/**
- * Creates all store modules.
- *
- * @param {StoreConfig} [config={}] Store configuration.
- * @returns {Modules} All store modules.
- */
-export const createModules = (config?: StoreConfig): Modules => {
-  const modules = config.modules || {};
-  const modulesNames = Object.keys(modules) as Array<keyof Modules>;
-  const allModules = {};
+export const prepareModule = (moduleName: string, module: Module): Partial<Store> => {
+  const config = {
+    initialState: {},
+    actions: {},
+    getters: {},
+    mutations: {},
+    modules: {
+      [moduleName]: module
+    }
+  };
 
-  modulesNames.forEach((moduleName) => {
-    const module = modules[moduleName];
-    const moduleStore = prepareStore(module);
+  const store = buildStore(config);
 
-    allModules[moduleName] = moduleStore;
-  });
-
-  return allModules;
+  return {
+    state: store.state,
+    actions: store.actions,
+    getters: store.getters,
+    mutations: store.mutations,
+  }
 }

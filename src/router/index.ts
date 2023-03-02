@@ -9,6 +9,7 @@ import { Plugin } from "../types/core";
  * Creates a new router plugin based on the given configuration.
  *
  * @param config The configuration to use.
+ * @returns {Plugin}
  */
 export const createRouter = (config?: RouterConfig): Plugin => {
   const router = prepareRouter(config);

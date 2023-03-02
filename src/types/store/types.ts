@@ -197,12 +197,11 @@ export type StoreConfig = {
 /**
  * A store.
  */
-export type Store = Omit<StoreConfig, "initialState"> & {
+export type Store = Omit<StoreConfig, "initialState" | "modules"> & {
   state: State;
   registerActions: (actions: Actions) => void;
   registerGetters: (getters: Getters) => void;
   registerMutations: (mutations: Mutations) => void;
-  registerModules: (modules: Modules) => void;
   registerModule: (moduleName: string, module: Module) => void;
   registerState: (state: State) => void;
   dispatch: (actionName: string, ...params: any[]) => Promise<unknown>;

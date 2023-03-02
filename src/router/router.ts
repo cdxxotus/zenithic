@@ -4,6 +4,7 @@ import { RouterConfig, History, Route, RouterListenCallback, Router } from "../t
  * `prepareRouter` is a function that returns a `Router` instance with
  * which is used to manage routes in a web application.
  * @param config Router configuration
+ * @returns {Router}
  */
 export const prepareRouter = (config?: RouterConfig): Router => {
   let history: History;
