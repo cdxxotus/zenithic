@@ -98,17 +98,20 @@ This component has a single data property (message) and a template that referenc
 
 ### Usage
 
-To use the Button component in another component, import it:
+To use the Button component in another component, register it it:
 
 ```js
 import Button from "./Button.js";
+app.register("Button", Button);
 ```
 
 Then use it in the template:
 
 ```js
-<Button @button-clicked="handleButtonClick" label="Click me!" />
+<Button @button-clicked="handleButtonClick" label="'Click me!'" />
 ```
+
+Note that you hace to encapsulate string in quotes if you want to pass it as a prop. If not, the property is considered as a property name (methods, data...) of the parent component.
 
 And listen for the emitted event:
 
@@ -541,7 +544,12 @@ To access the route parameter in the component, you need to define a prop with t
 
 ```js
 const Product = {
-  props: ["id"],
+  props: {
+    id: {
+      type: String,
+      required: true,
+    }
+  },
   // ...
 };
 ```

@@ -118,13 +118,21 @@ const getPropertyNameFromStringWithFilters = (str: string) =>
 
 /**
  * Returns an object containing the properties of an element.
+ * @param {CompiledComponent} compiledComponent - The compiled component.
  * @param {Element} el - The element to get the properties from.
  * @returns {object} An object containing the properties of the element.
  */
-const componentPropsFromElement = (el: Element) => {
+const componentPropsFromElement = (
+  compiledComponent: CompiledComponent,
+  el: Element
+) => {
   return Array.from(el.attributes).reduce(
     (acc, v) => {
-      return { ...acc, [v.name]: v.value };
+      const match = v.value.match(/"(.*)"|'(.*)'/);
+      return {
+        ...acc,
+        [v.name]: match ? match[1] ?? match[2] : compiledComponent[v.value],
+      };
     },
     { children: el.innerHTML }
   );
@@ -148,7 +156,10 @@ const makeComponentRenderFn = (
     // Replace values in the template string with component properties and children.
     const { children, template, context } = compiledComponent;
     const { components } = app;
-    const componentsNames = Object.keys(components || {}).reduce((acc, c) => [...acc, c.toLowerCase()], []);
+    const componentsNames = Object.keys(components || {}).reduce(
+      (acc, c) => [...acc, c.toLowerCase()],
+      []
+    );
 
     const templateWithReplacedProperties = template
       .replace(/\{\{(.+?)\}\}/gms, (_match, property) => {
@@ -222,7 +233,7 @@ const makeComponentRenderFn = (
       // Mount child components.
       Array.from(element.children).forEach((child) => {
         if (componentsNames.includes(child.tagName.toLowerCase())) {
-          const props = componentPropsFromElement(child);
+          const props = componentPropsFromElement(compiledComponent, child);
           const mountPoint = document.createDocumentFragment();
           app.mountComponent(
             mountPoint,
@@ -262,13 +273,13 @@ const getFiltersFromValue = (
 
   return strSplitted.reduce((acc, filter) => {
     const trimedFilter = filter.trim();
-    const match = trimedFilter.match(/\(([^()]+)\)/g);
+    const match = trimedFilter.match(/\(([^()]+)\)/);
 
     const filterArgs = match
-      ? match[0].split(",").reduce((acc, v) => {
-          const matchString = v.match(/"(.*?)"|'(.*?)'/g);
-          if (matchString[1]) {
-            return [...acc, matchString[1]];
+      ? match[1].split(",").reduce((acc, v) => {
+          const matchString = v.match(/"(.*?)"|'(.*?)'/);
+          if (matchString[2] || matchString[1]) {
+            return [...acc, matchString[1] ?? matchString[2]];
           } else if (Number.isNaN(v.trim())) {
             [...acc, compiledComponent[v.trim()]];
           } else {
@@ -278,7 +289,7 @@ const getFiltersFromValue = (
       : [];
 
     const filterName = match
-      ? trimedFilter.replace(filterArgs[0], "").replace("()", "")
+      ? trimedFilter.replace(match[0], "")
       : trimedFilter;
 
     const fn = (val: any) => app.filters[filterName](val, ...filterArgs);
@@ -637,7 +648,9 @@ const createApp = (): ZenithicApp => {
      * @param component The component to register.
      */
     registerComponent(name: string, component: Component) {
-      Object.assign((this as ZenithicApp).components, { [name.toLowerCase()]: component });
+      Object.assign((this as ZenithicApp).components, {
+        [name.toLowerCase()]: component,
+      });
     },
 
     /**

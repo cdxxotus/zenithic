@@ -47,7 +47,7 @@ test("app.registerComponent()", () => {
   }
 
   const App = {
-    template: `<div><Custom text="test"></Custom></div>`
+    template: `<div><Custom text="'test'"></Custom></div>`
   }
 
   app.registerComponent("Custom", Custom);
