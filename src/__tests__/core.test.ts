@@ -1,16 +1,18 @@
 import { CompiledComponent } from "../types/components";
+import { ZenithicApp } from "../types/core";
 
 const { createZenithic } = require("../../src");
 const { createApp } = require("../core");
 const { Button } = require("../components/Button");
 const { DatePicker } = require("../components/DatePicker");
 
-let app;
+let app: ZenithicApp;
 let doc;
 let mountPoint;
 
-beforeAll(() => {
-  app = createApp({ components: ["button"] });
+beforeEach(() => {
+  window.document.querySelector('body').innerHTML = '';
+  app = createZenithic({ components: ["Button"] });
   doc = document.createElement("div");
   mountPoint = document.createElement("div");
   mountPoint.setAttribute("id", "app");
@@ -19,6 +21,7 @@ beforeAll(() => {
 });
 
 test("createApp", () => {
+  const app2 = createApp();
   expect(typeof app).toBe("object");
 });
 
@@ -28,13 +31,34 @@ test("app.mount()", () => {
 });
 
 test("app.registerComponent()", () => {
-  expect(Object.keys(app.components).includes("DatePicker")).toBeFalsy();
+  expect(Object.keys(app.components).includes("datepicker")).toBeFalsy();
+
   app.registerComponent("DatePicker", DatePicker);
-  expect(Object.keys(app.components).includes("DatePicker")).toBeTruthy();
+  expect(Object.keys(app.components).includes("datepicker")).toBeTruthy();
+
+  const Custom = {
+    template: `<div>{{ text }}</div>`,
+    props: {
+      text: {
+        type: String,
+        required: true,
+      }
+    }
+  }
+
+  const App = {
+    template: `<div><Custom text="test"></Custom></div>`
+  }
+
+  app.registerComponent("Custom", Custom);
+  
+  app.mount("#app", App);
+  expect(doc.querySelector("#app").textContent).toBe("test");
+
 });
 
 test("app.getComponent()", () => {
-  expect(typeof app.getComponent("DatePicker")).toBe("object");
+  expect(typeof app.getComponent("Button")).toBe("object");
 });
 
 test("app.registerDirective()", () => {
@@ -49,7 +73,6 @@ test("app.registerDirective()", () => {
     }
   };
 
-  app = createZenithic();
   app.registerDirective("directive1", {
     parseValue(str: string) {
       return this[str];

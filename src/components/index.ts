@@ -18,15 +18,15 @@ export const createComponents = (config?: ComponentsConfig): Plugin => {
     install: (app) => {
       if (config) {
         if (config.includes("Button"))
-          Object.assign(app.components, { Button });
+          Object.assign(app.components, { button: Button });
         if (config.includes("DatePicker"))
-          Object.assign(app.components, { DatePicker });
-        if (config.includes("Input")) Object.assign(app.components, { Input });
-        if (config.includes("List")) Object.assign(app.components, { List });
+          Object.assign(app.components, { datepicker: DatePicker });
+        if (config.includes("Input")) Object.assign(app.components, { input: Input });
+        if (config.includes("List")) Object.assign(app.components, { list: List });
         if (config.includes("Select"))
-          Object.assign(app.components, { Select });
+          Object.assign(app.components, { select: Select });
         if (config.includes("Textarea"))
-          Object.assign(app.components, { Textarea });
+          Object.assign(app.components, { textarea: Textarea });
       }
     },
   };

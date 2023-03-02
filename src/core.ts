@@ -148,7 +148,7 @@ const makeComponentRenderFn = (
     // Replace values in the template string with component properties and children.
     const { children, template, context } = compiledComponent;
     const { components } = app;
-    const componentsNames = Object.keys(components || {});
+    const componentsNames = Object.keys(components || {}).reduce((acc, c) => [...acc, c.toLowerCase()], []);
 
     const templateWithReplacedProperties = template
       .replace(/\{\{(.+?)\}\}/gms, (_match, property) => {
@@ -221,12 +221,12 @@ const makeComponentRenderFn = (
 
       // Mount child components.
       Array.from(element.children).forEach((child) => {
-        if (componentsNames.includes(child.tagName)) {
+        if (componentsNames.includes(child.tagName.toLowerCase())) {
           const props = componentPropsFromElement(child);
           const mountPoint = document.createDocumentFragment();
           app.mountComponent(
             mountPoint,
-            components[child.tagName],
+            components[child.tagName.toLowerCase()],
             Object.assign({}, context, props)
           );
           element.replaceChild(mountPoint.firstChild, child);
@@ -581,7 +581,7 @@ const createApp = (): ZenithicApp => {
 
       // assign mounted properties to computed data.
       component.computed = component.computed ?? {};
-      Object.assign(component.computed, props, this.context);
+      Object.assign(component.computed, props ?? {}, this.context);
 
       // compile the component into an object with render function.
       const compiledComponent: CompiledComponent = compileComponent(
@@ -613,7 +613,7 @@ const createApp = (): ZenithicApp => {
     mount(
       selectorOrElement: string | Element,
       component: Component,
-      props: { [key: string]: any }
+      props?: { [key: string]: any }
     ) {
       const compiledComponent = this.mountComponent(
         selectorOrElement,
@@ -637,7 +637,7 @@ const createApp = (): ZenithicApp => {
      * @param component The component to register.
      */
     registerComponent(name: string, component: Component) {
-      Object.assign((this as ZenithicApp).components, { [name]: component });
+      Object.assign((this as ZenithicApp).components, { [name.toLowerCase()]: component });
     },
 
     /**
@@ -646,7 +646,7 @@ const createApp = (): ZenithicApp => {
      * @returns {Component} The component, or undefined if it is not found.
      */
     getComponent(name: string) {
-      return (this as ZenithicApp).components[name];
+      return (this as ZenithicApp).components[name.toLowerCase()];
     },
 
     /**

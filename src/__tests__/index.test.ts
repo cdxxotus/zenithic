@@ -96,7 +96,7 @@ test("getComponents", () => {
   const components = getComponents();
   expect(typeof components).toBe("object");
   expect(Object.keys(components).sort().toString()).toBe(
-    defaultConfig.default.components.sort().toString()
+    defaultConfig.default.components.sort().reduce((acc, v) => [...acc, v.toLowerCase()], []).toString()
   );
 });
 

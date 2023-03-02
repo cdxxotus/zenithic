@@ -6,7 +6,7 @@ let app;
 let components;
 
 beforeAll(() => {
-    components = createComponents();
+  components = createComponents();
 });
 
 beforeEach(() => {
@@ -33,12 +33,17 @@ test("app.use(components) with no components in app.config but in createComponen
 
   components = createComponents(["Button", "Input"]);
   app.use(components);
-  expect(Object.keys(app.components).sort().toString()).toBe("Button,Input");
+  expect(Object.keys(app.components).sort().toString()).toBe("button,input");
 });
 
 test("app.use(components) with components in app.config", () => {
   app = createZenithic();
-  expect(Object.keys(app.components).sort().toString()).toBe(defaultConfig.default.components.sort().toString());
+  expect(Object.keys(app.components).sort().toString()).toBe(
+    defaultConfig.default.components
+      .sort()
+      .reduce((acc, c) => [...acc, c.toLowerCase()], [])
+      .toString()
+  );
 });
 
 export {};
