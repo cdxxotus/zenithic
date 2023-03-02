@@ -109,8 +109,17 @@ test("app.registerFilter()", () => {
 });
 
 test("app.setContext()", () => {
+  const TestComponent = {
+    template: `
+        <div>{{ prop1 }}</div>
+        `,
+  };
+
   app.setContext({ prop1: "noob" });
   expect(app.context.prop1).toBe("noob");
+  
+  app.mount('#app', TestComponent);
+  expect(doc.querySelector("#app").textContent).toBe("noob");
 });
 
 test("app.unmount()", () => {
