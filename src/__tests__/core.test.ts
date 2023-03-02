@@ -128,7 +128,18 @@ test("app.unmount()", () => {
 });
 
 test("app.mount() - pass component props", () => {
-
+  const Custom = {
+    template: `<div>{{ text }}</div>`,
+    props: {
+      text: {
+        type: String,
+        required: true,
+      }
+    }
+  }
+  
+  app.mount('#app', Custom, { text: 'test'});
+  expect(doc.querySelector("#app").textContent).toBe("test"); 
 });
 
 test("app: update component data by clicking on a button", () => {
