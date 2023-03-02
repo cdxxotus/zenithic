@@ -51,7 +51,7 @@ test("app.registerDirective()", () => {
 
   app = createZenithic();
   app.registerDirective("directive1", {
-    parseValue(str) {
+    parseValue(str: string) {
       return this[str];
     },
     beforeMount(el, binding) {
@@ -65,8 +65,24 @@ test("app.registerDirective()", () => {
 });
 
 test("app.registerFilter()", () => {
-  app.registerFilter("filter1", () => {});
+  app = createZenithic();
+  const filter1 = (value: string[]) => value.filter(v => v !== "vue" && v!== "react").toString()
+  app.registerFilter("filter1", filter1);
   expect(Object.keys(app.filters).includes("filter1")).toBeTruthy();
+
+  const TestComponent = {
+    template: `
+        <div>{{ frameworks | filter1 }}</div>
+        `,
+    data() {
+      return {
+        frameworks: ["react", "vue", "zenithic"],
+      };
+    }
+  };
+
+  app.mount("#app", TestComponent, {});
+  expect(doc.querySelector("#app").textContent).toBe("zenithic");
 });
 
 test("app.setContext()", () => {
@@ -77,6 +93,10 @@ test("app.setContext()", () => {
 test("app.unmount()", () => {
   app.unmount();
   expect(doc.querySelector("#app").textContent).toBe("");
+});
+
+test("app.mount() - pass component props", () => {
+
 });
 
 test("app: update component data by clicking on a button", () => {

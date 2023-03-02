@@ -257,26 +257,32 @@ const getFiltersFromValue = (
   if (!app) throw new Error("App is invalid");
   if (!compiledComponent) throw new Error("Component is invalid");
   if (!isString(str)) throw new TypeError("Invalid string");
-    
+
   const [, ...strSplitted] = (str as string).split("|");
 
   return strSplitted.reduce((acc, filter) => {
-    const filterArgs = filter
-      .match(/\(([^()]+)\)/g)[0]
-      .split(",")
-      .reduce((acc, v) => {
-        const matchString = v.match(/"(.*?)"|'(.*?)'/g);
-        if (matchString[1]) {
-          return [...acc, matchString[1]];
-        } else if (Number.isNaN(v.trim())) {
-          [...acc, compiledComponent[v.trim()]];
-        } else {
-          [...acc, Number(v.trim())];
-        }
-      }, []);
+    const trimedFilter = filter.trim();
+    const match = trimedFilter.match(/\(([^()]+)\)/g);
 
-    const filterName = filter.replace(filterArgs[0], "");
+    const filterArgs = match
+      ? match[0].split(",").reduce((acc, v) => {
+          const matchString = v.match(/"(.*?)"|'(.*?)'/g);
+          if (matchString[1]) {
+            return [...acc, matchString[1]];
+          } else if (Number.isNaN(v.trim())) {
+            [...acc, compiledComponent[v.trim()]];
+          } else {
+            [...acc, Number(v.trim())];
+          }
+        }, [])
+      : [];
+
+    const filterName = match
+      ? trimedFilter.replace(filterArgs[0], "").replace("()", "")
+      : trimedFilter;
+
     const fn = (val: any) => app.filters[filterName](val, ...filterArgs);
+
     return [...acc, fn];
   }, []);
 };
@@ -658,7 +664,7 @@ const createApp = (): ZenithicApp => {
      * @param filter The filter to register.
      */
     registerFilter(name: string, filter: Filter) {
-      Object.assign((this as ZenithicApp).filters, { [name]: filter });
+      (this as ZenithicApp).filters[name] = filter;
     },
 
     /**
@@ -666,7 +672,7 @@ const createApp = (): ZenithicApp => {
      * @param context The context.
      */
     setContext(context: { [key: string]: any }) {
-      this.context = context;
+      (this as ZenithicApp).context = context;
     },
   };
 
