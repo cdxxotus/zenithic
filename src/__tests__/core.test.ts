@@ -53,6 +53,7 @@ test("app.registerComponent()", async () => {
   app.registerComponent("Custom", Custom);
 
   await app.mount("#app", App);
+
   expect(doc.querySelector("#app").textContent).toBe("test");
 });
 

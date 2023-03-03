@@ -128,7 +128,7 @@ const getPropertyNameFromStringWithFilters = (str: string) =>
 const componentPropsFromElement = (
   compiledComponent: CompiledComponent,
   el: Element
-) => {
+): { [key: string]: any } => {
   return Array.from(el.attributes).reduce(
     (acc, v) => {
       const match = v.value.match(/"(.*)"|'(.*)'/);
@@ -165,26 +165,32 @@ const makeComponentRenderFn = (
         []
       );
 
-      const templateWithReplacedProperties = $template
-        .replace(/\{\{(.+?)\}\}/gms, (_match, property) => {
-          if (property.trim() === "children") return children;
-          const filters = getFiltersFromValue(
-            app,
-            compiledComponent,
-            property.trim()
-          );
-          const value =
-            compiledComponent[
-              getPropertyNameFromStringWithFilters(property.trim())
-            ];
-          return filters.length > 0
-            ? filters.reduce((acc, filter) => filter(acc), value)
-            : value;
-        })
-        .trim();
-
       // Create a new element from the template.
-      const element = makeElementFromString(templateWithReplacedProperties);
+      const element = makeElementFromString($template);
+      const elChildren = Array.from(element.children);
+      elChildren.push(element)
+      elChildren.forEach((c) => {
+        if (c.textContent.match(/\{\{(.+?)\}\}/gms)) {
+          c.textContent = c.textContent.replace(
+            /\{\{(.+?)\}\}/gms,
+            (_match, property) => {
+              if (property.trim() === "children") return children;
+              const filters = getFiltersFromValue(
+                app,
+                compiledComponent,
+                property.trim()
+              );
+              const value =
+                compiledComponent[
+                  getPropertyNameFromStringWithFilters(property.trim())
+                ];
+              return filters.length > 0
+                ? filters.reduce((acc, filter) => filter(acc), value)
+                : value;
+            }
+          );
+        }
+      });
 
       // Set up directives
       Object.keys(app.directives || {}).forEach((directive) => {
@@ -242,7 +248,7 @@ const makeComponentRenderFn = (
           if (componentsNames.includes(child.tagName.toLowerCase())) {
             const props = componentPropsFromElement(compiledComponent, child);
             const mountPoint = document.createDocumentFragment();
-            await app.mountComponent(
+            const childComp = await app.mountComponent(
               mountPoint,
               components[child.tagName.toLowerCase()],
               Object.assign({}, context, props)
@@ -533,7 +539,7 @@ const compileComponent = (
       const compiledComponent = this as unknown as CompiledComponent;
       preparedComponent.updated?.call(this, key, value, oldValue);
       log("component updated", { key, value, oldValue });
-      this.render().then(el => compiledComponent.$el = el);
+      this.render().then((el) => (compiledComponent.$el = el));
     }
   }
 
@@ -699,7 +705,7 @@ const createApp = (): ZenithicApp => {
       (this as ZenithicApp).compiledComponents.forEach((cc) => {
         cc.$destroy();
       });
-      (this as ZenithicApp).main?.$el?.parentElement.removeChild(this.main?.$el);
+      (this as ZenithicApp).main?.$el?.parentElement.removeChild(this.main.$el);
       (this as ZenithicApp).$el = null;
       (this as ZenithicApp).main = null;
     },
