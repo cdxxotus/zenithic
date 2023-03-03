@@ -24,16 +24,18 @@ const watch = (
   if (!isFunction(handler))
     throw new Error("The handler function must be a function.");
 
-  // TODO: fixme
-  // Object.defineProperty(obj, key, {
-  //   get() {
-  //     this[key];
-  //   },
-  //   set(newValue) {
-  //     handler(newValue, this[key]);
-  //     this[key] = newValue;
-  //   },
-  // });
+  const copyObj = Object.assign({}, obj);
+  Object.defineProperty(obj, key, {
+    get() {
+      return Reflect.get(copyObj, key);
+    },
+    set(newValue) {
+      const oldValue = obj[key];
+      Reflect.set(copyObj, key, newValue);
+      handler(newValue, oldValue);
+      return newValue;
+    },
+  });
 };
 
 /**
@@ -162,7 +164,7 @@ const makeComponentRenderFn = (
         (acc, c) => [...acc, c.toLowerCase()],
         []
       );
-  
+
       const templateWithReplacedProperties = template
         .replace(/\{\{(.+?)\}\}/gms, (_match, property) => {
           if (property.trim() === "children") return children;
@@ -180,10 +182,10 @@ const makeComponentRenderFn = (
             : value;
         })
         .trim();
-  
+
       // Create a new element from the template.
       const element = makeElementFromString(templateWithReplacedProperties);
-  
+
       // Set up directives
       Object.keys(app.directives || {}).forEach((directive) => {
         const nodes = Array.from(element.querySelectorAll("*"));
@@ -191,7 +193,7 @@ const makeComponentRenderFn = (
         const nodesWithThisDirective = nodes.filter((n: Element) => {
           return hasDirective(n, directive);
         });
-  
+
         if (nodesWithThisDirective.length > 0) {
           // iterate directive methods
           Object.keys(app.directives[directive])
@@ -199,21 +201,24 @@ const makeComponentRenderFn = (
             .forEach((method) => {
               const methodCopy = compiledComponent[method];
               compiledComponent[method] = () => {
-                if (method !== "beforeMount") methodCopy.call(compiledComponent);
-  
+                if (method !== "beforeMount")
+                  methodCopy.call(compiledComponent);
+
                 // iterate nodes with this directive
                 nodesWithThisDirective.forEach((el: Element) => {
-                  const attributes = Array.from(el.attributes).map((a) => a.name);
+                  const attributes = Array.from(el.attributes).map(
+                    (a) => a.name
+                  );
                   const completeDirective =
                     attributes.find((a) => a === `v-${directive}`) ||
                     attributes.find((a) => a.includes(`v-${directive}:`));
-  
+
                   const filters = getFiltersFromValue(
                     app,
                     compiledComponent,
                     el.getAttribute(completeDirective)
                   );
-  
+
                   const binding = getDirectiveBinding(
                     filters,
                     app.directives[directive].parseValue,
@@ -221,7 +226,7 @@ const makeComponentRenderFn = (
                     el,
                     compiledComponent
                   );
-  
+
                   app.directives[directive][method].call(
                     compiledComponent,
                     el,
@@ -231,22 +236,21 @@ const makeComponentRenderFn = (
               };
             });
         }
-  
+
         // Mount child components.
-        Array.from(element.children).forEach((child) => {
+        Array.from(element.children).forEach(async (child) => {
           if (componentsNames.includes(child.tagName.toLowerCase())) {
             const props = componentPropsFromElement(compiledComponent, child);
             const mountPoint = document.createDocumentFragment();
-            app.mountComponent(
+            await app.mountComponent(
               mountPoint,
               components[child.tagName.toLowerCase()],
               Object.assign({}, context, props)
             );
-            element.replaceChild(mountPoint.firstChild, child);
+            if (child && mountPoint.firstElementChild) child.replaceWith(mountPoint.firstElementChild)
           }
         });
       });
-  
       res(element);
     });
   };
@@ -436,15 +440,19 @@ const compileComponent = (
       compiledComponent.$data = reactive(compiledComponent, obj.data());
 
       for (const key in compiledComponent.$data) {
-        const getter = () => compiledComponent.$data[key];
-        const setter = (newValue: any) =>
-          (compiledComponent.$data[key] = newValue);
+        const getter = () => Reflect.get(compiledComponent.$data, key);
+        const setter = (newValue: any) => Reflect.set(compiledComponent.$data, key, newValue);
         defineProperty(compiledComponent, key, getter, setter);
       }
 
       // Set up the computed properties
       for (const key in compiledComponent.computed) {
-        const getter = () => compiledComponent.computed[key].call(compiledComponent, compiledComponent, app);
+        const getter = () =>
+          compiledComponent.computed[key].call(
+            compiledComponent,
+            compiledComponent,
+            app
+          );
         defineProperty(compiledComponent, key, getter, null);
       }
 
@@ -499,20 +507,19 @@ const compileComponent = (
     }
 
     render() {
+      const compiledComponent = this as unknown as CompiledComponent;
       return new Promise(async (res, rej) => {
-        const compiledComponent = this as unknown as CompiledComponent;
-        const oldEl = this.$el as Element;
-        const parentNode = oldEl?.parentElement;
-  
         // render the component
         makeComponentRenderFn(app, compiledComponent)()
-          .then(newEl => {
-            (this.$el as Element) = newEl;
-            if (parentNode) parentNode.replaceChild(newEl, oldEl);
-            res(this.$el);
+          .then((newEl) => {
+            const oldEl = compiledComponent.$el as Element;
+            const parentNode = oldEl?.parentElement;
+            (compiledComponent.$el as Element) = newEl;
+            if (parentNode && oldEl) parentNode.replaceChild(newEl, oldEl);
+            res(compiledComponent.$el);
           })
           .catch(rej);
-      })
+      });
     }
 
     updated(key: string, value: any, oldValue: any) {
@@ -589,6 +596,7 @@ const createApp = (): ZenithicApp => {
       props: { [key: string]: any }
     ) {
       return new Promise(async (res, rej) => {
+        const app = this;
         const mountPoint =
           typeof selectorOrElement === "string"
             ? querySelector(selectorOrElement)
@@ -599,13 +607,34 @@ const createApp = (): ZenithicApp => {
           return;
         }
 
-        // assign mounted properties to computed data.
+        // assign component properties, component context and app context to computed data.
         component.computed = component.computed ?? {};
-        const computedProps = Object.keys(props).reduce((acc, v) => {
+        const computedProps = Object.keys(props ?? {}).reduce((acc, v) => {
           acc[v] = () => props[v];
           return acc;
         }, {});
-        Object.assign(component.computed, computedProps ?? {}, this.context);
+
+        const computedAppContext = Object.keys(app.context ?? {}).reduce(
+          (acc, v) => {
+            acc[v] = () => app.context[v];
+            return acc;
+          },
+          {}
+        );
+
+        const computedComponentContext = Object.keys(
+          component.context ?? {}
+        ).reduce((acc, v) => {
+          acc[v] = () => component[v];
+          return acc;
+        }, {});
+
+        Object.assign(
+          component.computed,
+          computedProps,
+          computedAppContext,
+          computedComponentContext
+        );
 
         // compile the component into an object with render function.
         const compiledComponent: CompiledComponent = compileComponent(
@@ -641,15 +670,12 @@ const createApp = (): ZenithicApp => {
       props?: { [key: string]: any }
     ) {
       return new Promise(async (res, rej) => {
-        this.mountComponent(
-          selectorOrElement,
-          component,
-          props
-        ).then(compiledComponent => {
+        this.mountComponent(selectorOrElement, component, props)
+          .then((compiledComponent) => {
             this.$el = compiledComponent.$el;
             res(this);
-        })
-        .catch(rej);
+          })
+          .catch(rej);
       });
     },
 

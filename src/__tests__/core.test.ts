@@ -11,7 +11,7 @@ let doc;
 let mountPoint;
 
 beforeEach(() => {
-  window.document.querySelector('body').innerHTML = '';
+  window.document.querySelector("body").innerHTML = "";
   app = createZenithic({ components: ["Button"] });
   doc = document.createElement("div");
   mountPoint = document.createElement("div");
@@ -25,12 +25,12 @@ test("createApp", () => {
   expect(typeof app).toBe("object");
 });
 
-test("app.mount()", () => {
-  app.mount("#app", Button, { text: "Hello noob" });
+test("app.mount()", async () => {
+  await app.mount("#app", Button, { text: "Hello noob" });
   expect(doc.querySelector("#app").textContent).toBe("Hello noob");
 });
 
-test("app.registerComponent()", () => {
+test("app.registerComponent()", async () => {
   expect(Object.keys(app.components).includes("datepicker")).toBeFalsy();
 
   app.registerComponent("DatePicker", DatePicker);
@@ -42,26 +42,25 @@ test("app.registerComponent()", () => {
       text: {
         type: String,
         required: true,
-      }
-    }
-  }
+      },
+    },
+  };
 
   const App = {
-    template: `<div><Custom text="'test'"></Custom></div>`
-  }
+    template: `<div><Custom text="'test'"></Custom></div>`,
+  };
 
   app.registerComponent("Custom", Custom);
-  
-  app.mount("#app", App);
-  expect(doc.querySelector("#app").textContent).toBe("test");
 
+  await app.mount("#app", App);
+  expect(doc.querySelector("#app").textContent).toBe("test");
 });
 
 test("app.getComponent()", () => {
   expect(typeof app.getComponent("Button")).toBe("object");
 });
 
-test("app.registerDirective()", () => {
+test("app.registerDirective()", async () => {
   const TestComponent = {
     template: `
         <div v-directive1="hometown">My hometown is:</div>
@@ -70,7 +69,7 @@ test("app.registerDirective()", () => {
       return {
         hometown: "Annecy",
       };
-    }
+    },
   };
 
   app.registerDirective("directive1", {
@@ -79,17 +78,18 @@ test("app.registerDirective()", () => {
     },
     beforeMount(el, binding) {
       el.textContent = el.textContent + " " + binding.value;
-    }
+    },
   });
   expect(Object.keys(app.directives).includes("directive1")).toBeTruthy();
 
-  app.mount("#app", TestComponent, {});
+  await app.mount("#app", TestComponent, {});
   expect(doc.querySelector("#app").textContent).toBe("My hometown is: Annecy");
 });
 
-test("app.registerFilter()", () => {
+test("app.registerFilter()", async () => {
   app = createZenithic();
-  const filter1 = (value: string[]) => value.filter(v => v !== "vue" && v!== "react").toString()
+  const filter1 = (value: string[]) =>
+    value.filter((v) => v !== "vue" && v !== "react").toString();
   app.registerFilter("filter1", filter1);
   expect(Object.keys(app.filters).includes("filter1")).toBeTruthy();
 
@@ -101,14 +101,14 @@ test("app.registerFilter()", () => {
       return {
         frameworks: ["react", "vue", "zenithic"],
       };
-    }
+    },
   };
 
-  app.mount("#app", TestComponent, {});
+  await app.mount("#app", TestComponent, {});
   expect(doc.querySelector("#app").textContent).toBe("zenithic");
 });
 
-test("app.setContext()", () => {
+test("app.setContext()", async () => {
   const TestComponent = {
     template: `
         <div>{{ prop1 }}</div>
@@ -117,8 +117,8 @@ test("app.setContext()", () => {
 
   app.setContext({ prop1: "noob" });
   expect(app.context.prop1).toBe("noob");
-  
-  app.mount('#app', TestComponent);
+
+  await app.mount("#app", TestComponent);
   expect(doc.querySelector("#app").textContent).toBe("noob");
 });
 
@@ -127,26 +127,26 @@ test("app.unmount()", () => {
   expect(doc.querySelector("#app").textContent).toBe("");
 });
 
-test("app.mount() - pass component props", () => {
+test("app.mount() - pass component props", async () => {
   const Custom = {
     template: `<div>{{ text }}</div>`,
     props: {
       text: {
         type: String,
         required: true,
-      }
-    }
-  }
-  
-  app.mount('#app', Custom, { text: 'test'});
-  expect(doc.querySelector("#app").textContent).toBe("test"); 
+      },
+    },
+  };
+
+  await app.mount("#app", Custom, { text: "test" });
+  expect(doc.querySelector("#app").textContent).toBe("test");
 });
 
-test("app: update component data by clicking on a button", () => {
+test("app: update component data by clicking on a button", (callback) => {
   const TestComponent = {
     template: `
-        <div id="clickMe" v-on:click="increment">{{ count }}</div>
-        `,
+          <div id="clickMe" v-on:click="increment">{{ count }}</div>
+          `,
     data() {
       return {
         count: 0,
@@ -160,14 +160,17 @@ test("app: update component data by clicking on a button", () => {
   };
 
   app = createZenithic({ components: [], directives: ["on"] });
-  app.mount("#app", TestComponent, {});
+  app.mount("#app", TestComponent, {}).then(() => {
+    expect(doc.querySelector("#app").textContent).toBe("0");
 
-  expect(doc.querySelector("#app").textContent).toBe("0");
+    const clickMe = window.document.querySelector("#clickMe") as HTMLDivElement;
+    clickMe.click();
 
-  const clickMe = window.document.querySelector("#clickMe") as HTMLDivElement;
-  clickMe.click();
-
-  expect(doc.querySelector("#app").textContent).toBe("1");
+    setTimeout(() => {
+      expect(doc.querySelector("#app").textContent).toBe("1");
+      callback();
+    }, 0);
+  });
 });
 
 export {};

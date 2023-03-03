@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "webpack --mode development",
     "build": "webpack --mode production",
-    "test": "jest"
+    "test": "jest --runInBand --verbose"
   },
   "keywords": [
     "zenithic",
