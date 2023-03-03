@@ -37,7 +37,7 @@ export type Component = {
   updated?: (property: string | symbol, newValue: any, oldValue: any) => any;
   beforeDestroy?:() => any;
   destroyed?: () => any;
-  mixins?: Mixins;
+  mixins?: string[];
   context?: { [key: string]: any };
 };
 

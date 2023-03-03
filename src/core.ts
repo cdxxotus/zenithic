@@ -24,15 +24,16 @@ const watch = (
   if (!isFunction(handler))
     throw new Error("The handler function must be a function.");
 
-  Object.defineProperty(obj, key, {
-    get() {
-      this[key];
-    },
-    set(newValue) {
-      handler(newValue, this[key]);
-      this[key] = newValue;
-    },
-  });
+  // TODO: fixme
+  // Object.defineProperty(obj, key, {
+  //   get() {
+  //     this[key];
+  //   },
+  //   set(newValue) {
+  //     handler(newValue, this[key]);
+  //     this[key] = newValue;
+  //   },
+  // });
 };
 
 /**
@@ -147,107 +148,107 @@ const componentPropsFromElement = (
 const makeComponentRenderFn = (
   app: ZenithicApp,
   compiledComponent: CompiledComponent
-): (() => Element) => {
+): (() => Promise<Element>) => {
   /**
    * Generates the virtual DOM element for the component.
    * @returns {Element} The virtual DOM element.
    */
   const vdom = () => {
-    // Replace values in the template string with component properties and children.
-    const { children, template, context } = compiledComponent;
-    const { components } = app;
-    const componentsNames = Object.keys(components || {}).reduce(
-      (acc, c) => [...acc, c.toLowerCase()],
-      []
-    );
-
-    const templateWithReplacedProperties = template
-      .replace(/\{\{(.+?)\}\}/gms, (_match, property) => {
-        if (property.trim() === "children") return children;
-        const filters = getFiltersFromValue(
-          app,
-          compiledComponent,
-          property.trim()
-        );
-        const value =
-          compiledComponent[
-            getPropertyNameFromStringWithFilters(property.trim())
-          ];
-        return filters.length > 0
-          ? filters.reduce((acc, filter) => filter(acc), value)
-          : value;
-      })
-      .trim();
-
-    // Create a new element from the template.
-    const element = makeElementFromString(templateWithReplacedProperties);
-
-    // Set up directives
-    Object.keys(app.directives || {}).forEach((directive) => {
-      const nodes = Array.from(element.querySelectorAll("*"));
-      nodes.push(element);
-      const nodesWithThisDirective = nodes.filter((n: Element) => {
-        return hasDirective(n, directive);
-      });
-
-      if (nodesWithThisDirective.length > 0) {
-        // iterate directive methods
-        Object.keys(app.directives[directive])
-          .filter((m) => m !== "parseValue")
-          .forEach((method) => {
-            const methodCopy = compiledComponent[method];
-            compiledComponent[method] = () => {
-              if (method !== "beforeMount") methodCopy.call(compiledComponent);
-
-              // iterate nodes with this directive
-              nodesWithThisDirective.forEach((el: Element) => {
-                const attributes = Array.from(el.attributes).map((a) => a.name);
-                const completeDirective =
-                  attributes.find((a) => a === `v-${directive}`) ||
-                  attributes.find((a) => a.includes(`v-${directive}:`));
-
-                const filters = getFiltersFromValue(
-                  app,
-                  compiledComponent,
-                  el.getAttribute(completeDirective)
-                );
-
-                const binding = getDirectiveBinding(
-                  filters,
-                  app.directives[directive].parseValue,
-                  completeDirective,
-                  el,
-                  compiledComponent
-                );
-
-                app.directives[directive][method].call(
-                  compiledComponent,
-                  el,
-                  binding
-                );
-              });
-            };
-          });
-      }
-
-      // Mount child components.
-      Array.from(element.children).forEach((child) => {
-        if (componentsNames.includes(child.tagName.toLowerCase())) {
-          const props = componentPropsFromElement(compiledComponent, child);
-          const mountPoint = document.createDocumentFragment();
-          app.mountComponent(
-            mountPoint,
-            components[child.tagName.toLowerCase()],
-            Object.assign({}, context, props)
+    return new Promise((res, rej) => {
+      // Replace values in the template string with component properties and children.
+      const { children, template, context } = compiledComponent;
+      const { components } = app;
+      const componentsNames = Object.keys(components || {}).reduce(
+        (acc, c) => [...acc, c.toLowerCase()],
+        []
+      );
+  
+      const templateWithReplacedProperties = template
+        .replace(/\{\{(.+?)\}\}/gms, (_match, property) => {
+          if (property.trim() === "children") return children;
+          const filters = getFiltersFromValue(
+            app,
+            compiledComponent,
+            property.trim()
           );
-          element.replaceChild(mountPoint.firstChild, child);
+          const value =
+            compiledComponent[
+              getPropertyNameFromStringWithFilters(property.trim())
+            ];
+          return filters.length > 0
+            ? filters.reduce((acc, filter) => filter(acc), value)
+            : value;
+        })
+        .trim();
+  
+      // Create a new element from the template.
+      const element = makeElementFromString(templateWithReplacedProperties);
+  
+      // Set up directives
+      Object.keys(app.directives || {}).forEach((directive) => {
+        const nodes = Array.from(element.querySelectorAll("*"));
+        nodes.push(element);
+        const nodesWithThisDirective = nodes.filter((n: Element) => {
+          return hasDirective(n, directive);
+        });
+  
+        if (nodesWithThisDirective.length > 0) {
+          // iterate directive methods
+          Object.keys(app.directives[directive])
+            .filter((m) => m !== "parseValue")
+            .forEach((method) => {
+              const methodCopy = compiledComponent[method];
+              compiledComponent[method] = () => {
+                if (method !== "beforeMount") methodCopy.call(compiledComponent);
+  
+                // iterate nodes with this directive
+                nodesWithThisDirective.forEach((el: Element) => {
+                  const attributes = Array.from(el.attributes).map((a) => a.name);
+                  const completeDirective =
+                    attributes.find((a) => a === `v-${directive}`) ||
+                    attributes.find((a) => a.includes(`v-${directive}:`));
+  
+                  const filters = getFiltersFromValue(
+                    app,
+                    compiledComponent,
+                    el.getAttribute(completeDirective)
+                  );
+  
+                  const binding = getDirectiveBinding(
+                    filters,
+                    app.directives[directive].parseValue,
+                    completeDirective,
+                    el,
+                    compiledComponent
+                  );
+  
+                  app.directives[directive][method].call(
+                    compiledComponent,
+                    el,
+                    binding
+                  );
+                });
+              };
+            });
         }
+  
+        // Mount child components.
+        Array.from(element.children).forEach((child) => {
+          if (componentsNames.includes(child.tagName.toLowerCase())) {
+            const props = componentPropsFromElement(compiledComponent, child);
+            const mountPoint = document.createDocumentFragment();
+            app.mountComponent(
+              mountPoint,
+              components[child.tagName.toLowerCase()],
+              Object.assign({}, context, props)
+            );
+            element.replaceChild(mountPoint.firstChild, child);
+          }
+        });
       });
+  
+      res(element);
     });
-
-    compiledComponent.beforeMount?.();
-
-    return element;
   };
 
   return vdom.bind(this);
@@ -443,7 +444,7 @@ const compileComponent = (
 
       // Set up the computed properties
       for (const key in compiledComponent.computed) {
-        const getter = () => compiledComponent.computed[key];
+        const getter = () => compiledComponent.computed[key].call(compiledComponent, compiledComponent, app);
         defineProperty(compiledComponent, key, getter, null);
       }
 
@@ -498,16 +499,20 @@ const compileComponent = (
     }
 
     render() {
-      const compiledComponent = this as unknown as CompiledComponent;
-      const oldEl = this.$el as Element;
-      const parentNode = oldEl?.parentElement;
-
-      // render the component
-      const newEl = makeComponentRenderFn(app, compiledComponent)();
-      (this.$el as Element) = newEl;
-
-      if (parentNode) parentNode.replaceChild(newEl, oldEl);
-      return;
+      return new Promise(async (res, rej) => {
+        const compiledComponent = this as unknown as CompiledComponent;
+        const oldEl = this.$el as Element;
+        const parentNode = oldEl?.parentElement;
+  
+        // render the component
+        makeComponentRenderFn(app, compiledComponent)()
+          .then(newEl => {
+            (this.$el as Element) = newEl;
+            if (parentNode) parentNode.replaceChild(newEl, oldEl);
+            res(this.$el);
+          })
+          .catch(rej);
+      })
     }
 
     updated(key: string, value: any, oldValue: any) {
@@ -583,36 +588,45 @@ const createApp = (): ZenithicApp => {
       component: Component,
       props: { [key: string]: any }
     ) {
-      const mountPoint =
-        typeof selectorOrElement === "string"
-          ? querySelector(selectorOrElement)
-          : selectorOrElement;
+      return new Promise(async (res, rej) => {
+        const mountPoint =
+          typeof selectorOrElement === "string"
+            ? querySelector(selectorOrElement)
+            : selectorOrElement;
 
-      if (!mountPoint) return null;
+        if (!mountPoint) {
+          rej("Invalid mount point.");
+          return;
+        }
 
-      // assign mounted properties to computed data.
-      component.computed = component.computed ?? {};
-      Object.assign(component.computed, props ?? {}, this.context);
+        // assign mounted properties to computed data.
+        component.computed = component.computed ?? {};
+        const computedProps = Object.keys(props).reduce((acc, v) => {
+          acc[v] = () => props[v];
+          return acc;
+        }, {});
+        Object.assign(component.computed, computedProps ?? {}, this.context);
 
-      // compile the component into an object with render function.
-      const compiledComponent: CompiledComponent = compileComponent(
-        this,
-        component
-      );
+        // compile the component into an object with render function.
+        const compiledComponent: CompiledComponent = compileComponent(
+          this,
+          component
+        );
 
-      // @Lifecycle:beforeMount
-      compiledComponent.beforeMount?.();
+        // render the component.
+        await compiledComponent.render?.();
 
-      // render the component.
-      compiledComponent.render?.();
+        // @Lifecycle:beforeMount
+        compiledComponent.beforeMount?.();
 
-      // mount the component to the DOM
-      fillFragmentOrElement(compiledComponent.$el, mountPoint);
+        // mount the component to the DOM
+        fillFragmentOrElement(compiledComponent.$el, mountPoint);
 
-      // @Lifecycle:mounted
-      compiledComponent.mounted?.();
+        // @Lifecycle:mounted
+        compiledComponent.mounted?.();
 
-      return compiledComponent;
+        res(compiledComponent);
+      });
     },
 
     /**
@@ -626,12 +640,17 @@ const createApp = (): ZenithicApp => {
       component: Component,
       props?: { [key: string]: any }
     ) {
-      const compiledComponent = this.mountComponent(
-        selectorOrElement,
-        component,
-        props
-      );
-      this.$el = compiledComponent.$el;
+      return new Promise(async (res, rej) => {
+        this.mountComponent(
+          selectorOrElement,
+          component,
+          props
+        ).then(compiledComponent => {
+            this.$el = compiledComponent.$el;
+            res(this);
+        })
+        .catch(rej);
+      });
     },
 
     /**
