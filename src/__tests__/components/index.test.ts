@@ -50,7 +50,7 @@ test("app.use(components) with components in app.config", () => {
   );
 });
 
-test("app.mountComponent() with a complex custom component", async () => {
+test("app.mountComponent() with a complex custom component", (callback) => {
   app = createZenithic();
   window.document.querySelector("body").innerHTML = "";
   const doc = document.createElement("div");
@@ -63,7 +63,7 @@ test("app.mountComponent() with a complex custom component", async () => {
   const destroyed = jest.fn();
   const Custom: Component = {
     mixins: ["draggable"],
-    template: `<div>{{ text }}</div>`,
+    template: `<div id="here" v-on:click="increaseAmount">{{ text }}</div>`,
     props: {
       rate: {
         type: Number,
@@ -77,21 +77,24 @@ test("app.mountComponent() with a complex custom component", async () => {
     data() {
       return {
         amount: 1000,
-        amountWatched: 0,
+        amountChanged: 0,
         previousAmount: 0,
         copyAmount: 0,
       };
     },
     computed: {
-      text: (compiledComponent: CompiledComponent, _app: ZenithicApp) => `${
-        compiledComponent.amount * compiledComponent.rate
-      } ${compiledComponent.currency}`,
+      text: (compiledComponent: CompiledComponent, _app: ZenithicApp) =>
+        `${compiledComponent.amount * compiledComponent.rate} ${
+          compiledComponent.currency
+        }`,
     },
     methods: {
-      increaseAmount: () => ((this as CompiledComponent).amount += 1000),
+      increaseAmount() {
+        (this as CompiledComponent).amount += 1000;
+      },
     },
     watch: {
-      amount: () => {
+      amount() {
         (this as CompiledComponent).amountChanged++;
       },
     },
@@ -118,8 +121,53 @@ test("app.mountComponent() with a complex custom component", async () => {
     },
   };
 
-  await app.mount("#app", Custom, { rate: 3, currency: "EUR" }).catch(error);
-  expect(doc.querySelector("#app").textContent).toBe("3000 EUR");
+  const appElement = doc.querySelector("#app");
+  app
+    .mount("#app", Custom, { rate: 3, currency: "EUR" })
+    .then((mountedApp) => {
+      // test computed
+      expect(appElement.textContent).toBe("3000 EUR");
+
+      // test beforeMount
+      expect(
+        appElement.firstElementChild.getAttribute("addedBeforeMount")
+      ).toBeTruthy();
+
+      // test mounted
+      expect(appElement.firstElementChild.getAttribute("mounted")).toBeTruthy();
+
+      (appElement.querySelector("#here") as HTMLDivElement).click();
+      setTimeout(() => {
+        // test methods
+        expect(appElement.textContent).toBe("6000 EUR");
+
+        // test watch
+        expect(mountedApp.main.amountChanged).toBe(1);
+
+        // test updated
+        expect(mountedApp.main.previousAmount).toBe(1000);
+        expect(mountedApp.main.copyAmount).toBe(2000);
+
+        // test context
+        expect(mountedApp.main.itsacontextprop).toBeTruthy();
+
+        // test mixins
+        /// expect().to()
+        /////
+
+        // test unmount
+        app.unmount();
+        expect(appElement.textContent).toBe("");
+
+        // test beforeDestroy
+        expect(beforeDestroy).toHaveBeenCalledTimes(1);
+
+        // test destroyed
+        expect(destroyed).toHaveBeenCalledTimes(1);
+
+        callback();
+      }, 0);
+    });
 });
 
 export {};

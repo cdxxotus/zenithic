@@ -17,6 +17,7 @@ let appCount;
 
 const appProperties = [
   "$el",
+  "compiledComponents",
   "components",
   "context",
   "directives",

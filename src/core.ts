@@ -158,14 +158,14 @@ const makeComponentRenderFn = (
   const vdom = () => {
     return new Promise((res, rej) => {
       // Replace values in the template string with component properties and children.
-      const { children, template, context } = compiledComponent;
+      const { children, $template, context } = compiledComponent;
       const { components } = app;
       const componentsNames = Object.keys(components || {}).reduce(
         (acc, c) => [...acc, c.toLowerCase()],
         []
       );
 
-      const templateWithReplacedProperties = template
+      const templateWithReplacedProperties = $template
         .replace(/\{\{(.+?)\}\}/gms, (_match, property) => {
           if (property.trim() === "children") return children;
           const filters = getFiltersFromValue(
@@ -201,8 +201,8 @@ const makeComponentRenderFn = (
             .forEach((method) => {
               const methodCopy = compiledComponent[method];
               compiledComponent[method] = () => {
-                if (method !== "beforeMount")
-                  methodCopy.call(compiledComponent);
+                // if (method !== "beforeMount")
+                methodCopy?.call(compiledComponent);
 
                 // iterate nodes with this directive
                 nodesWithThisDirective.forEach((el: Element) => {
@@ -247,7 +247,8 @@ const makeComponentRenderFn = (
               components[child.tagName.toLowerCase()],
               Object.assign({}, context, props)
             );
-            if (child && mountPoint.firstElementChild) child.replaceWith(mountPoint.firstElementChild)
+            if (child && mountPoint.firstElementChild)
+              child.replaceWith(mountPoint.firstElementChild);
           }
         });
       });
@@ -370,10 +371,14 @@ const prepareComponent = (comp: Component) => {
 
   const component: Component = Object.assign(comp, dataFn);
 
+  // TODO: support mixin other props, like beforeMount...
   // Add computed properties, methods, and watchers from mixins
-  Object.keys(component.mixins || {}).forEach((mixinKey) => {
+  Object.keys(component.mixins ?? {}).forEach((mixinKey) => {
     if (component.mixins[mixinKey].computed) {
       Object.assign(component.computed, component.mixins[mixinKey].computed);
+    }
+    if (component.mixins[mixinKey].methods) {
+      Object.assign(component.methods, component.mixins[mixinKey].methods);
     }
     if (component.mixins[mixinKey].watch) {
       Object.assign(component.watch, component.mixins[mixinKey].watch);
@@ -427,11 +432,14 @@ const compileComponent = (
     destroyed() {}
 
     constructor(obj: Component) {
-      // Assign the component properties to the Compiled Component Instance
-      Object.assign(this, obj);
-
       // Set up the compiled component object
       const compiledComponent = this as unknown as CompiledComponent;
+
+      // Set up lifecyle events
+      compiledComponent.beforeMount = obj.beforeMount;
+      compiledComponent.mounted = obj.mounted;
+      compiledComponent.beforeDestroy = obj.beforeDestroy;
+      compiledComponent.destroyed = obj.destroyed;
 
       // Set template
       compiledComponent.$template = component.template.trim();
@@ -441,18 +449,16 @@ const compileComponent = (
 
       for (const key in compiledComponent.$data) {
         const getter = () => Reflect.get(compiledComponent.$data, key);
-        const setter = (newValue: any) => Reflect.set(compiledComponent.$data, key, newValue);
+        const setter = (newValue: any) =>
+          Reflect.set(compiledComponent.$data, key, newValue);
         defineProperty(compiledComponent, key, getter, setter);
       }
 
       // Set up the computed properties
-      for (const key in compiledComponent.computed) {
+      compiledComponent.computed = obj.computed;
+      for (const key in obj.computed) {
         const getter = () =>
-          compiledComponent.computed[key].call(
-            compiledComponent,
-            compiledComponent,
-            app
-          );
+          obj.computed[key].call(compiledComponent, compiledComponent, app);
         defineProperty(compiledComponent, key, getter, null);
       }
 
@@ -460,6 +466,7 @@ const compileComponent = (
       for (const key in obj.methods) {
         this[key] = obj.methods[key].bind(compiledComponent);
       }
+
       Object.keys(component.mixins || {}).forEach((mixinKey) => {
         if (component.mixins[mixinKey].methods) {
           Object.keys(component.mixins[mixinKey].methods || {}).forEach(
@@ -506,7 +513,7 @@ const compileComponent = (
       this.destroyed.call(this);
     }
 
-    render() {
+    render(): Promise<Element> {
       const compiledComponent = this as unknown as CompiledComponent;
       return new Promise(async (res, rej) => {
         // render the component
@@ -523,8 +530,10 @@ const compileComponent = (
     }
 
     updated(key: string, value: any, oldValue: any) {
+      const compiledComponent = this as unknown as CompiledComponent;
+      preparedComponent.updated?.call(this, key, value, oldValue);
       log("component updated", { key, value, oldValue });
-      this.render();
+      this.render().then(el => compiledComponent.$el = el);
     }
   }
 
@@ -572,6 +581,7 @@ const createApp = (): ZenithicApp => {
     components: {},
     utils: {},
     context: {},
+    compiledComponents: [],
 
     /**
      * Adds a plugin to the app instance.
@@ -625,7 +635,7 @@ const createApp = (): ZenithicApp => {
         const computedComponentContext = Object.keys(
           component.context ?? {}
         ).reduce((acc, v) => {
-          acc[v] = () => component[v];
+          acc[v] = () => component.context[v];
           return acc;
         }, {});
 
@@ -641,6 +651,8 @@ const createApp = (): ZenithicApp => {
           this,
           component
         );
+
+        app.compiledComponents.push(compiledComponent);
 
         // render the component.
         await compiledComponent.render?.();
@@ -673,6 +685,7 @@ const createApp = (): ZenithicApp => {
         this.mountComponent(selectorOrElement, component, props)
           .then((compiledComponent) => {
             this.$el = compiledComponent.$el;
+            this.main = compiledComponent;
             res(this);
           })
           .catch(rej);
@@ -683,8 +696,12 @@ const createApp = (): ZenithicApp => {
      * Removes the application's $el from the DOM.
      */
     unmount() {
-      (this as ZenithicApp).$el?.parentNode.removeChild(this.$el);
-      this.$el = null;
+      (this as ZenithicApp).compiledComponents.forEach((cc) => {
+        cc.$destroy();
+      });
+      (this as ZenithicApp).main?.$el?.parentElement.removeChild(this.main?.$el);
+      (this as ZenithicApp).$el = null;
+      (this as ZenithicApp).main = null;
     },
 
     /**

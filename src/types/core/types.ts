@@ -1,4 +1,4 @@
-import { Component, ComponentsConfig, Components, Props, CompiledComponent } from "../components";
+import { Component, ComponentsConfig, Components, CompiledComponent } from "../components";
 import { DirectivesConfig, Directives, Directive } from "../directives/types";
 import { FiltersConfig, Filters, Filter } from "../filters/types";
 import { MixinsConfig, Mixins } from "../mixins";
@@ -8,7 +8,7 @@ import { UtilsConfig, Utils } from "../utils";
 
 export type ZenithicApp = {
   $el: Element | null;
-  main: Component | null;
+  main: CompiledComponent | null;
   router: Router | null;
   store: Store | null;
   mixins: Mixins | null;
@@ -17,6 +17,7 @@ export type ZenithicApp = {
   components: Components | null;
   utils: Utils | null;
   context: Context | null;
+  compiledComponents: CompiledComponent[];
   use: (plugin: Plugin) => void;
   mount: (selectorOrElement: string | Element, component: Component, props?: { [key: string]: any }) => Promise<ZenithicApp>;
   mountComponent: (selectorOrElement: string | Element | DocumentFragment, component: Component, props: { [key: string]: any }) => Promise<CompiledComponent>;
