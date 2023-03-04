@@ -1,6 +1,6 @@
 import { format } from '../../utils/date';
 
-describe('format functoin', () => {
+describe('format function', () => {
   test('formats a date using a format string', () => {
     const date = new Date('2023-03-04T12:34:56Z');
     const formatString = 'YYYY-MM-DD hh:mm:ss';

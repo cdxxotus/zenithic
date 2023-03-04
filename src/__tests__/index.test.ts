@@ -46,84 +46,104 @@ beforeAll(() => {
   appCount = 0;
 });
 
-test("createZenithic with no config argument", () => {
-  app = createZenithic();
-  appCount++;
-  expect(typeof app).toBe("object");
-  expect(Object.keys(app).sort().toString()).toBe(
-    appProperties.sort().toString()
-  );
-});
+describe("createZenithic function", () => {
+  test("with no config argument", () => {
+    app = createZenithic();
+    appCount++;
+    expect(typeof app).toBe("object");
+    expect(Object.keys(app).sort().toString()).toBe(
+      appProperties.sort().toString()
+    );
+  });
+  
+  test("with  config argument", () => {
+    const config = {
+      router: false,
+      store: false,
+      mixins: ["draggable"],
+    };
+    app = createZenithic(config);
+    appCount++;
+    expect(app.store).toBeNull();
+    expect(app.router).toBeNull();
+    expect(Object.keys(app.mixins)).toStrictEqual(["draggable"]);
+  });
+})
 
-test("createZenithic with  config argument", () => {
-  const config = {
-    router: false,
-    store: false,
-    mixins: ["draggable"],
-  };
-  app = createZenithic(config);
-  appCount++;
-  expect(app.store).toBeNull();
-  expect(app.router).toBeNull();
-  expect(Object.keys(app.mixins)).toStrictEqual(["draggable"]);
-});
+describe("getApp function", () => {
+  test("should return an object with strict properties", () => {
+    app = createZenithic();
+    appCount++;
+    const gotApp = getApp();
+    expect(typeof gotApp).toBe("object");
+    expect(Object.keys(app).sort().toString()).toBe(
+      appProperties.sort().toString()
+    );
+  });
+})
 
-test("getApp", () => {
-  app = createZenithic();
-  appCount++;
-  const gotApp = getApp();
-  expect(typeof gotApp).toBe("object");
-  expect(Object.keys(app).sort().toString()).toBe(
-    appProperties.sort().toString()
-  );
-});
+describe("getApps function", () => {
+  test("should return an array of apps created until now", () => {
+    app = createZenithic();
+    appCount++;
+    const apps = getApps();
+    expect(apps.length).toBe(appCount);
+  });
+})
 
-test("getApps", () => {
-  app = createZenithic();
-  appCount++;
-  const apps = getApps();
-  expect(apps.length).toBe(appCount);
-});
+describe("getUtils function", () => {
+  test("should return an object of utils", () => {
+    const utils = getUtils();
+    expect(typeof utils).toBe("object");
+    expect(Object.keys(utils).sort().toString()).toBe(
+      defaultConfig.default.utils.sort().toString()
+    );
+  });
+})
 
-test("getUtils", () => {
-  const utils = getUtils();
-  expect(typeof utils).toBe("object");
-  expect(Object.keys(utils).sort().toString()).toBe(
-    defaultConfig.default.utils.sort().toString()
-  );
-});
+describe("getComponents function", () => {
+  test("should return an object of components", () => {
+    const components = getComponents();
+    expect(typeof components).toBe("object");
+    expect(Object.keys(components).sort().toString()).toBe(
+      defaultConfig.default.components.sort().reduce((acc, v) => [...acc, v.toLowerCase()], []).toString()
+    );
+  });
+})
 
-test("getComponents", () => {
-  const components = getComponents();
-  expect(typeof components).toBe("object");
-  expect(Object.keys(components).sort().toString()).toBe(
-    defaultConfig.default.components.sort().reduce((acc, v) => [...acc, v.toLowerCase()], []).toString()
-  );
-});
+describe("getRouter function", () => {
+  test("should return an object", () => {
+    const router = getRouter();
+    expect(typeof router).toBe("object");
+  });
+})
 
-test("getRouter", () => {
-  const router = getRouter();
-  expect(typeof router).toBe("object");
-});
+describe("getStore function", () => {
+  test("should return an object", () => {
+    const store = getStore();
+    expect(typeof store).toBe("object");
+  });
+})
 
-test("getStore", () => {
-  const store = getStore();
-  expect(typeof store).toBe("object");
-});
+describe("getDirectives function", () => {
+  test("should return an object", () => {
+    const directives = getDirectives();
+    expect(typeof directives).toBe("object");
+  });
+})
 
-test("getDirectives", () => {
-  const directives = getDirectives();
-  expect(typeof directives).toBe("object");
-});
+describe("getFilters function", () => {
+  test("should return an object", () => {
+    const filters = getFilters();
+    expect(typeof filters).toBe("object");
+  });
+})
 
-test("getFilters", () => {
-  const filters = getFilters();
-  expect(typeof filters).toBe("object");
-});
-
-test("getMixins", () => {
-  const mixins = getMixins();
-  expect(typeof mixins).toBe("object");
-});
+describe("getMixins function", () => {
+  test("should return an object", () => {
+    const mixins = getMixins();
+    expect(typeof mixins).toBe("object");
+  });
+})
 
 export {};
