@@ -1,3 +1,5 @@
+import { isNumber } from "./type";
+
 /**
  * Formats a number to a given number of decimal places.
  *
@@ -6,6 +8,7 @@
  * @returns {string} A string representation of the number, formatted to the given number of decimal places.
  */
 export const format = (number: number, decimalPlaces: number) => {
+  if (!isNumber(number) || !isNumber(decimalPlaces)) return NaN.toString();
   let fixed = decimalPlaces;
   fixed = Math.min(20, fixed);
   fixed = Math.max(0, fixed);

@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "webpack --mode development",
     "build": "webpack --mode production",
-    "test": "jest --runInBand --verbose"
+    "test": "TZ=UTC jest --runInBand --verbose"
   },
   "keywords": [
     "zenithic",
