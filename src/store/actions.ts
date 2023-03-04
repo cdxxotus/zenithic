@@ -18,7 +18,7 @@ export const createActions = (config?: StoreConfig): Actions => {
     const moduleActionsNames = Object.keys(moduleActions) as Array<keyof Actions>;
 
     moduleActionsNames.forEach((actionName) => {
-      allActions[`${moduleName}/${actionName}`] = actions[actionName];
+      allActions[`${moduleName}/${actionName}`] = moduleActions[actionName];
     });
   });
 

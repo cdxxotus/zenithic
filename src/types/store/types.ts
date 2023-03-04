@@ -29,14 +29,14 @@ export type Module = Omit<StoreConfig, "modules">;
  *   return name;
  * }
  */
-export type Action = (...params: any[]) => Promise<any>;
+export type Action = (state: State, ...params: any[]) => Promise<any>;
 
 /**
  * A mutation function.
  *
  * @param params Mutation parameters.
  */
-export type Mutation = (...params: any[]) => void;
+export type Mutation = (state: State, ...params: any[]) => void;
 
 /**
  * A getter function.
@@ -49,7 +49,7 @@ export type Mutation = (...params: any[]) => void;
  *   return this.state.name;
  * }
  */
-export type Getter = (getterName: string) => any;
+export type Getter = (state: State) => any;
 
 /**
  * An object of actions.
@@ -187,11 +187,11 @@ export type Modules = { [key: string]: Module };
  * }
  */
 export type StoreConfig = {
-  initialState: State;
-  actions: Actions;
-  mutations: Mutations;
-  modules: Modules;
-  getters: Getters;
+  initialState?: State;
+  actions?: Actions;
+  mutations?: Mutations;
+  modules?: Modules;
+  getters?: Getters;
 };
 
 /**

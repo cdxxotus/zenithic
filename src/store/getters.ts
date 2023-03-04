@@ -19,7 +19,7 @@ export const createGetters = (config?: StoreConfig): Getters => {
     const moduleGettersNames = Object.keys(moduleGetters) as Array<keyof Getters>;
 
     moduleGettersNames.forEach((getterName) => {
-      allGetters[`${moduleName}/${getterName}`] = getters[getterName];
+      allGetters[`${moduleName}/${getterName}`] = moduleGetters[getterName];
     });
   });
 

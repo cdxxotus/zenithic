@@ -45,7 +45,7 @@ export const prepareStore = (config?: StoreConfig | Module): Store => {
         throw new Error("Action not found");
       }
 
-      await action(...params);
+      await action(store.state, ...params);
     },
     commit: function (mutationName, ...params) {
       const mutation = store.mutations[mutationName];
@@ -54,7 +54,7 @@ export const prepareStore = (config?: StoreConfig | Module): Store => {
         throw new Error("Mutation not found");
       }
 
-      mutation(...params);
+      mutation(store.state, ...params);
     },
   };
 

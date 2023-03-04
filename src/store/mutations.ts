@@ -18,7 +18,7 @@ export const createMutations = (config?: StoreConfig) => {
     const moduleMutationsNames = Object.keys(moduleMutations) as Array<keyof Mutations>;
 
     moduleMutationsNames.forEach((mutationName) => {
-      allMutations[`${moduleName}/${mutationName}`] = mutations[mutationName];
+      allMutations[`${moduleName}/${mutationName}`] = moduleMutations[mutationName];
     });
   });
 
