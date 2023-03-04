@@ -23,7 +23,7 @@ beforeEach(() => {
 describe("createApp function", () => {
   test("should return an object", () => {
     const app2 = createApp();
-    expect(typeof app).toBe("object");
+    expect(typeof app2).toBe("object");
   });
 });
 
