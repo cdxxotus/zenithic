@@ -5,9 +5,7 @@ import { RouterConfig, Route } from "../types/router";
  * @returns {Route[]}
  */
 export const createRoutes = (config?: RouterConfig) => {
-  const routes: Route[] = [];
-
-  routes.concat(config?.routes || []);
+  const routes: Route[] = [].concat(...config?.routes ?? []);
 
   return routes;
 };

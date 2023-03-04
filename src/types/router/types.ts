@@ -20,6 +20,8 @@ export type RouterConfig = {
 };
 
 export type Router = {
+  getHistory: () => History | null;
+  getRoutes: () => Route[];
   registerHistory: (history: History) => void,
   registerRoutes: (routes: Route[]) => void,
   navigateTo: (pathname: string) => void,

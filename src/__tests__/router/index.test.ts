@@ -5,7 +5,7 @@ const Button = require("../../components/Button");
 let app;
 let router;
 
-const routerProperties = "listen,navigateTo,registerHistory,registerRoutes";
+const routerProperties = "getHistory,getRoutes,listen,navigateTo,registerHistory,registerRoutes";
 
 beforeAll(() => {
   router = createRouter();

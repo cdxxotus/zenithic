@@ -34,6 +34,8 @@ export const prepareRouter = (config?: RouterConfig): Router => {
   };
 
   return {
+    getHistory: () => history,
+    getRoutes: () => routes,
     registerHistory,
     registerRoutes,
     navigateTo,

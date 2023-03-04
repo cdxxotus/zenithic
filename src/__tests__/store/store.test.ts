@@ -77,7 +77,6 @@ describe("prepareStore function", () => {
     const actionName = "foo";
     const action = jest.fn();
     const store = prepareStore();
-    console.log({store})
     store.registerActions({ [actionName]: action });
 
     await store.dispatch(actionName);
