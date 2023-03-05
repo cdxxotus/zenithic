@@ -193,7 +193,7 @@ const makeComponentRenderFn = (
       });
 
       // Set up directives
-      Object.keys(app.directives || {}).forEach((directive) => {
+      Object.keys(app.directives ?? {}).forEach((directive) => {
         const nodes = Array.from(element.querySelectorAll("*"));
         nodes.push(element);
         const nodesWithThisDirective = nodes.filter((n: Element) => {
@@ -351,10 +351,11 @@ const getDirectiveBinding = (
 /**
  * Prepares a component by adding reactive data from its mixins.
  *
+ * @param {ZenithicApp} app - The Zenithic app.
  * @param {Component} comp - The component to prepare.
  * @returns {Component} - The prepared component.
  */
-const prepareComponent = (comp: Component) => {
+const prepareComponent = (app: ZenithicApp, comp: Component) => {
   let compCopy: Component = { ...comp };
 
   const dataFn = {
@@ -362,13 +363,11 @@ const prepareComponent = (comp: Component) => {
       let returnData = compCopy.data?.() ?? {};
 
       // Add data from mixins
-      Object.keys(this.mixins || {}).forEach((mixinKey) => {
-        if (this.mixins[mixinKey].data) {
-          returnData = {
-            ...this.mixins[mixinKey].data(),
-            ...returnData,
-          };
-        }
+      compCopy.mixins?.forEach((mixinKey) => {
+        returnData = {
+          ...app.mixins[mixinKey]?.data?.(),
+          ...returnData,
+        };
       });
 
       return returnData;
@@ -410,7 +409,7 @@ const compileComponent = (
   component: Component
 ): CompiledComponent => {
   // Define the component object
-  const preparedComponent = prepareComponent(component);
+  const preparedComponent = prepareComponent(app, component);
 
   // Define the Compiled Component Class
   class CompiledComponentInstance {
@@ -428,10 +427,11 @@ const compileComponent = (
       const compiledComponent = this as unknown as CompiledComponent;
 
       // Set up lifecyle events
-      compiledComponent.beforeMount = obj.beforeMount;
-      compiledComponent.mounted = obj.mounted;
-      compiledComponent.beforeDestroy = obj.beforeDestroy;
-      compiledComponent.destroyed = obj.destroyed;
+      if (obj.beforeMount) compiledComponent.beforeMount = obj.beforeMount;
+      if (obj.mounted) compiledComponent.mounted = obj.mounted;
+      if (obj.beforeDestroy)
+        compiledComponent.beforeDestroy = obj.beforeDestroy;
+      if (obj.destroyed) compiledComponent.destroyed = obj.destroyed;
 
       // Set template
       compiledComponent.$template = component.template.trim();
@@ -491,7 +491,7 @@ const compileComponent = (
           if (app.mixins[mixinKey][meth]) {
             const fnCopy = obj[meth];
             compiledComponent[meth] = (...args) => {
-              if (fnCopy) fnCopy.call(compiledComponent, ...args);
+              fnCopy?.call(compiledComponent, ...args);
               app.mixins[mixinKey][meth].call(compiledComponent, ...args);
             };
           }

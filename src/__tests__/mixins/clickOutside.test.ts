@@ -1,6 +1,4 @@
 import { createZenithic } from "../../../src";
-import { createMixins } from "../../mixins";
-import defaultConfig from "../../config";
 import { querySelector } from "../../utils/dom";
 
 let app;
@@ -20,7 +18,7 @@ const Custom = {
 beforeEach(() => {
   app = null;
   window.document.querySelector("body").innerHTML = "";
-  app = createZenithic({ components: ["Button"] });
+  app = createZenithic();
   doc = document.createElement("div");
   mountPoint = document.createElement("div");
   mountPoint.setAttribute("id", "app");

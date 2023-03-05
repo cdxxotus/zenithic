@@ -1,4 +1,5 @@
-import { Mixin } from '../types/mixins';
+import { Mixin } from "../types/mixins";
+import { querySelector } from "../utils/dom";
 
 /**
  * This mixin prepare an element to be dragged around the screen.
@@ -12,6 +13,7 @@ const draggable: Mixin = {
       dragY: 0,
       initialX: 0,
       initialY: 0,
+      draggableHandle: null,
     };
   },
   methods: {
@@ -50,16 +52,28 @@ const draggable: Mixin = {
    * It adds event listeners to the document.
    */
   mounted() {
+   const handle = this.draggableHandleSelector
+      ? querySelector(this.draggableHandleSelector)
+      : this.$el;
+
     document.addEventListener("mousemove", this.handleMouseMove);
     document.addEventListener("mouseup", this.handleMouseUp);
+    handle.addEventListener("mousedown", this.handleMouseDown);
   },
   /**
    * This function is called when the component is destroyed.
    * It removes event listeners from the document.
    */
   beforeDestroy() {
+    const handle = this.draggableHandleSelector
+      ? querySelector(this.draggableHandleSelector)
+      : this.$el;
     document.removeEventListener("mousemove", this.handleMouseMove);
     document.removeEventListener("mouseup", this.handleMouseUp);
+    handle?.removeEventListener(
+      "mousedown",
+      this.handleMouseDown
+    );
   },
 };
 
