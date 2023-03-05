@@ -1,12 +1,12 @@
-const { createZenithic } = require('"../../../src');
-const { createDirectives } = require("../../directives");
-const defaultConfig = require("../../config");
+import { createZenithic } from "../../../src";
+import { createDirectives } from "../../directives";
+import defaultConfig from "../../config";
 
 let app;
 let directives;
 
 beforeAll(() => {
-    directives = createDirectives();
+  directives = createDirectives();
 });
 
 beforeEach(() => {
@@ -19,30 +19,32 @@ describe("createDirectives function", () => {
     expect(Object.keys(directives).includes("install")).toBeTruthy();
     expect(Object.keys(directives).length).toBe(1);
   });
-})
+});
 
 describe("app.use(directivesPlugin) method", () => {
   test("with no directives in app.config or createDirectives.config", () => {
     app = createZenithic({ directives: [] });
     expect(app.directives).toStrictEqual({});
-  
+
     app.use(directives);
     expect(app.directives).toStrictEqual({});
   });
-  
+
   test("with no directives in app.config but in createDirectives.config", () => {
     app = createZenithic({ directives: [] });
     expect(app.directives).toStrictEqual({});
-  
+
     directives = createDirectives(["bind", "show"]);
     app.use(directives);
     expect(Object.keys(app.directives).sort().toString()).toBe("bind,show");
   });
-  
+
   test("with directives in app.config", () => {
     app = createZenithic();
-    expect(Object.keys(app.directives).sort().toString()).toBe(defaultConfig.default.directives.sort().toString());
+    expect(Object.keys(app.directives).sort().toString()).toBe(
+      defaultConfig.directives.sort().toString()
+    );
   });
-})
+});
 
 export {};

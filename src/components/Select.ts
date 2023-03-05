@@ -4,7 +4,7 @@ import { Component, SelectComponent } from "../types/components";
  * A Select component that can be used in Components, Layouts and Pages.
  * @type {SelectComponent}
  */
-export const Select: SelectComponent = {
+export default {
   template: `<select v-model="value" @change="handleChange">
     <option v-for="option in options" :value="option.value" :key="option.value">
       {{ option.label }}
@@ -29,4 +29,4 @@ export const Select: SelectComponent = {
       this.onChange((e.target as HTMLSelectElement).value);
     },
   },
-} satisfies Component;
+} as SelectComponent satisfies Component;

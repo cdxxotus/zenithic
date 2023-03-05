@@ -1,6 +1,6 @@
-const { createZenithic } = require('"../../../src');
-const { createFilters } = require("../../filters");
-const defaultConfig = require("../../config");
+import { createZenithic } from "../../../src";
+import { createFilters } from "../../filters";
+import defaultConfig from "../../config";
 
 let app;
 let filters;
@@ -41,7 +41,7 @@ describe("app.use(filtersPlugin) method", () => {
   
   test("with filters in app.config", () => {
     app = createZenithic();
-    expect(Object.keys(app.filters).sort().toString()).toBe(defaultConfig.default.filters.sort().toString());
+    expect(Object.keys(app.filters).sort().toString()).toBe(defaultConfig.filters.sort().toString());
   });
 })
 

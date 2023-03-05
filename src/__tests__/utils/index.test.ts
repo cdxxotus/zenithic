@@ -1,6 +1,6 @@
-const { createZenithic } = require('"../../../src');
-const { createUtils } = require("../../utils");
-const defaultConfig = require("../../config");
+import { createZenithic } from "../../../src";
+import { createUtils } from "../../utils";
+import defaultConfig from "../../config";
 
 let app;
 let utils;
@@ -41,7 +41,7 @@ describe("app.use(utils) method", () => {
   
   test("with utils in app.config", () => {
     app = createZenithic();
-    const utilsList = defaultConfig.default.utils.sort().toString();
+    const utilsList = defaultConfig.utils.sort().toString();
     expect(Object.keys(app.utils).sort().toString()).toBe(utilsList);
   });
 })

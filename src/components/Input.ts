@@ -4,7 +4,7 @@ import { Component, InputComponent } from "../types/components";
  * An Input component that can be used in Components, Layouts and Pages.
  * @type {InputComponent}
  */
-export const Input: InputComponent = {
+export default {
   template: `<input
     type="text"
     v-model="value"
@@ -30,4 +30,4 @@ export const Input: InputComponent = {
       this.onInput((e.target as HTMLInputElement).value);
     },
   },
-} satisfies Component;
+} as InputComponent satisfies Component;

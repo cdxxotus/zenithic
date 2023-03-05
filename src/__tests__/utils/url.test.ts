@@ -1,4 +1,4 @@
-const { parse, join } = require("../../utils/url");
+import { parse, join } from "../../utils/url";
 
 describe("parse function", () => {
   test("should return a `A` node", () => {

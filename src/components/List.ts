@@ -4,7 +4,7 @@ import { Component, ListComponent } from "../types/components";
  * A List component that can be used in Components, Layouts and Pages.
  * @type {ListComponent}
  */
-export const List: ListComponent = {
+export default {
   template: `<ul>
     <li v-for="item in items" :key="item.id">{{ item.name }}</li>
   </ul>`,
@@ -14,4 +14,4 @@ export const List: ListComponent = {
       required: false,
     },
   },
-} satisfies Component;
+} as ListComponent satisfies Component;

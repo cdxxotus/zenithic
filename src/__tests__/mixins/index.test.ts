@@ -1,6 +1,6 @@
-const { createZenithic } = require('"../../../src');
-const { createMixins } = require("../../mixins");
-const defaultConfig = require("../../config");
+import { createZenithic } from "../../../src";
+import { createMixins } from "../../mixins";
+import defaultConfig from "../../config";
 
 let app;
 let mixins;
@@ -41,7 +41,7 @@ describe("app.use(mixinsPlugin) method", () => {
   
   test("with mixins in app.config", () => {
     app = createZenithic();
-    expect(Object.keys(app.mixins).sort().toString()).toBe(defaultConfig.default.mixins.sort().toString());
+    expect(Object.keys(app.mixins).sort().toString()).toBe(defaultConfig.mixins.sort().toString());
   });
 })
 

@@ -1,9 +1,9 @@
-import { Button } from "./Button";
-import { DatePicker } from "./DatePicker";
-import { Input } from "./Input";
-import { List } from "./List";
-import { Select } from "./Select";
-import { Textarea } from "./Textarea";
+import Button from "./Button";
+import DatePicker from "./DatePicker";
+import Input from "./Input";
+import List from "./List";
+import Select from "./Select";
+import Textarea from "./Textarea";
 
 import { ComponentsConfig } from "../types/components";
 import { Plugin } from "../types/core/types";

@@ -1,6 +1,6 @@
-const { createZenithic } = require('"../../../src');
-const { createRouter } = require("../../router");
-const Button = require("../../components/Button");
+import { createZenithic } from "../../../src";
+import { createRouter } from "../../router";
+import Button from "../../components/Button";
 
 let app;
 let router;

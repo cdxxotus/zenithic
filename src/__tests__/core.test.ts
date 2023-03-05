@@ -1,10 +1,10 @@
+import { createZenithic } from "..";
+import { createApp } from "../core";
+import Button from "../components/Button";
+import DatePicker from "../components/DatePicker";
+
 import { CompiledComponent } from "../types/components";
 import { ZenithicApp } from "../types/core";
-
-const { createZenithic } = require("../../src");
-const { createApp } = require("../core");
-const { Button } = require("../components/Button");
-const { DatePicker } = require("../components/DatePicker");
 
 let app: ZenithicApp;
 let doc;

@@ -4,7 +4,7 @@ import { Component, TextareaComponent } from "../types/components";
  * A Textarea component that can be used in Components, Layouts and Pages.
  * @type {TextareaComponent}
  */
-export const Textarea: TextareaComponent = {
+export default {
   template: `<textarea
     v-model="value"
     @input="handleInput"
@@ -29,4 +29,4 @@ export const Textarea: TextareaComponent = {
       this.onInput((e.target as HTMLTextAreaElement).textContent);
     },
   },
-} satisfies Component;
+} as TextareaComponent satisfies Component;

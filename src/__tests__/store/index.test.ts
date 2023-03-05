@@ -1,6 +1,5 @@
-const { createZenithic } = require('"../../../src');
-const { createStore } = require("../../store");
-const defaultConfig = require("../../config");
+import { createZenithic } from "../../../src";
+import { createStore } from "../../store";
 
 let app;
 let store;

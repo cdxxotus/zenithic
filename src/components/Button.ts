@@ -8,7 +8,7 @@ const template = `
  * A Button component that can be used in Components, Layouts and Pages.
  * @type {ButtonComponent}
  */
-export const Button: ButtonComponent = {
+export default {
   template,
   props: {
     text: {
@@ -16,4 +16,4 @@ export const Button: ButtonComponent = {
       required: true,
     },
   }
-} satisfies Component;
+} as ButtonComponent satisfies Component;

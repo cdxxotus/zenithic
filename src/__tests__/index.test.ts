@@ -1,4 +1,4 @@
-const {
+import {
   createZenithic,
   getApp,
   getApps,
@@ -9,8 +9,9 @@ const {
   getDirectives,
   getFilters,
   getMixins,
-} = require('"../../../src');
-const defaultConfig = require("../config");
+} from '"../../../src';
+
+import defaultConfig from "../config";
 
 let app;
 let appCount;
@@ -58,8 +59,8 @@ describe("createZenithic function", () => {
   
   test("with  config argument", () => {
     const config = {
-      router: false,
-      store: false,
+      router: false as false,
+      store: false as false,
       mixins: ["draggable"],
     };
     app = createZenithic(config);
@@ -96,7 +97,7 @@ describe("getUtils function", () => {
     const utils = getUtils();
     expect(typeof utils).toBe("object");
     expect(Object.keys(utils).sort().toString()).toBe(
-      defaultConfig.default.utils.sort().toString()
+      defaultConfig.utils.sort().toString()
     );
   });
 })
@@ -106,7 +107,7 @@ describe("getComponents function", () => {
     const components = getComponents();
     expect(typeof components).toBe("object");
     expect(Object.keys(components).sort().toString()).toBe(
-      defaultConfig.default.components.sort().reduce((acc, v) => [...acc, v.toLowerCase()], []).toString()
+      defaultConfig.components.sort().reduce((acc, v) => [...acc, v.toLowerCase()], []).toString()
     );
   });
 })
