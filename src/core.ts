@@ -292,12 +292,12 @@ const getFiltersFromValue = (
     const filterArgs = match
       ? match[1].split(",").reduce((acc, v) => {
           const matchString = v.match(/"(.*?)"|'(.*?)'/);
-          if (matchString[2] || matchString[1]) {
+          if (matchString && (matchString[2] || matchString[1])) {
             return [...acc, matchString[1] ?? matchString[2]];
           } else if (Number.isNaN(v.trim())) {
-            [...acc, compiledComponent[v.trim()]];
+            return [...acc, compiledComponent[v.trim()]];
           } else {
-            [...acc, Number(v.trim())];
+            return [...acc, Number(v.trim())];
           }
         }, [])
       : [];
