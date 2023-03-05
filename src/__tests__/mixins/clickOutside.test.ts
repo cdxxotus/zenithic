@@ -1,14 +1,20 @@
 import { createZenithic } from "../../../src";
 import { createMixins } from "../../mixins";
 import defaultConfig from "../../config";
+import { querySelector } from "../../utils/dom";
 
 let app;
 let doc;
 let mountPoint;
 
+const onClickOutside = jest.fn();
+
 const Custom = {
   mixins: ["clickOutside"],
   template: "<div>hello</div>",
+  methods: {
+    onClickOutside,
+  },
 };
 
 beforeEach(() => {
@@ -38,6 +44,20 @@ describe("clickOutside mixin", () => {
 
     app.mount("#app", Custom, {}).then((mountedApp) => {
       expect(mountedApp.main.handleClickOutside).toBeDefined();
+      callback();
+    });
+  });
+
+  test("should trigger onClickOutside method when clicking outside", (callback) => {
+    const outside = document.createElement("div");
+    outside.setAttribute("id", "out");
+    doc.appendChild(outside);
+
+    app = createZenithic();
+
+    app.mount("#app", Custom, {}).then(() => {
+      (querySelector("#out") as HTMLDivElement).click();
+      expect(onClickOutside).toHaveBeenCalled();
       callback();
     });
   });

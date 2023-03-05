@@ -3,6 +3,16 @@ import { Mixin } from '../types/mixins';
 /**
  * Mixin for detecting clicks outside of an element.
  * @type {Mixin}
+ * @example 
+ * const Component = {
+ *   mixins: ["clickOutside"],
+ *   template: `<div>hello</div>`,
+ *   methods: {
+ *     onClickOutside() {
+ *       console.log("User clicked outside");
+ *     }
+ *   }
+ * }
  */
 const clickOutside: Mixin = {
   /**
@@ -25,7 +35,7 @@ const clickOutside: Mixin = {
     handleClickOutside(event) {
       const element = this.$el;
       if (!element.contains(event.target)) {
-        this.onClickOutside(event);
+        this.onClickOutside?.(event);
       }
     },
   },
