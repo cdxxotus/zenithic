@@ -174,17 +174,18 @@ const makeComponentRenderFn = (
         if (c.textContent.match(/\{\{(.+?)\}\}/gms)) {
           c.textContent = c.textContent.replace(
             /\{\{(.+?)\}\}/gms,
-            (_match, property) => {
+            (match, property) => {
               if (property.trim() === "children") return children;
+              const propertyName = getPropertyNameFromStringWithFilters(
+                property.trim()
+              );
               const filters = getFiltersFromValue(
                 app,
                 compiledComponent,
                 property.trim()
               );
-              const value =
-                compiledComponent[
-                  getPropertyNameFromStringWithFilters(property.trim())
-                ];
+              const value = compiledComponent[propertyName];
+              if (!compiledComponent.hasOwnProperty(propertyName)) return match.replace('{{', '((--@@').replace('}}', '@@--))');
               return filters.length > 0
                 ? filters.reduce((acc, filter) => filter(acc), value)
                 : value;

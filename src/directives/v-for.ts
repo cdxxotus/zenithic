@@ -13,14 +13,10 @@ const forDirective: ForDirective = {
    * @returns {object} An object containing the item and items properties
    */
   parseValue(str: string) {
-    const matched = str.match(/(.*) in (.*)/gm);
+    const matched = str.match(/(.*) in (.*)/);
 
     // TODO: index
-    return {
-      itemPropertyName: matched[2],
-      itemsPropertyName: matched[2],
-      items: this[matched[1]],
-    };
+    return this[matched[2]] ?? [];
   },
   /**
    * Called before the element is mounted to the DOM
@@ -33,30 +29,38 @@ const forDirective: ForDirective = {
     const parentEl = el.parentNode;
     if (!parentEl) return;
 
-    const childString = el.innerHTML;
-    let childrenString = "";
+    const str = el.getAttribute('v-for');
+    const matched = str.match(/(.*) in (.*)/);
+    const itemPropertyName = matched[1]
+
+    const copyEl = el.cloneNode(true) as HTMLElement;
+    copyEl.removeAttribute("v-for");
+
+    parentEl.removeChild(el);
 
     // Get the array of items to iterate over
-    const items = binding.value.items;
+    const items = binding.value;
 
     // TODO: support more iterables
 
     // Loop over the array and create a new element for each item
-    items.forEach((_item, key) => {
-      const regexp = new RegExp(`/${binding.value.itemPropertyName}/gm`);
-      const newChildString = childString.replace(
-        regexp,
-        `${binding.value.itemsPropertyName}[${key}]`
+    items.forEach((item) => {
+      const itemEl = copyEl.cloneNode(true) as HTMLElement;
+      itemEl.textContent = itemEl.textContent.replace(
+        /\(\(--@@(.+?)@@--\)\)/gms,
+        (_string, match) => {
+          // TODO: support filters
+          const splittedMatch: string[] = match.trim().split('.');
+          const propertyName = splittedMatch.splice(0, 1);
+          if (propertyName[0] === itemPropertyName) {
+            return splittedMatch.reduce((acc, v) => acc?.[v], item);
+          } else {
+            return match;
+          }
+        }
       );
-      childrenString = childrenString + newChildString;
+      parentEl.appendChild(itemEl);
     });
-
-    // Replace the original element with the new elements
-    parentEl.replaceChild(
-      new DOMParser().parseFromString(childrenString, "text/html").body
-        .firstChild,
-      el
-    );
   },
 };
 

@@ -6,14 +6,18 @@ let doc;
 let mountPoint;
 
 const Custom = {
-  template: "<div>{{ value | limitTo(3) }}</div>",
+  template: `<ul>
+  <li v-for="item in value | orderBy('name')">{{ item.name }}</li>
+</ul>`,
   props: {
     value: {
-        type: Array,
-        required: true,
-    }
-  }
+      type: Array,
+      required: true,
+    },
+  },
 };
+
+const value = [{ name: "james" }, { name: "alex" }, { name: "dani" }];
 
 beforeEach(() => {
   app = null;
@@ -26,22 +30,22 @@ beforeEach(() => {
   window.document.getElementsByTagName("body")[0].appendChild(doc);
 });
 
-describe("limitTo filter", () => {
+describe("orderBy filter", () => {
   test("should not work if not set up in config", (callback) => {
     app = createZenithic({ filters: [] });
 
-    app.mount("#app", Custom, {value: [1, 2, 3, 4 ,5]}).then(() => {
-      expect(querySelector("#app").textContent).toBe("1,2,3,4,5");
+    app.mount("#app", Custom, { value }).then(() => {
+      expect(querySelector("#app").textContent.trim()).toBe("jamesalexdani");
       callback();
     });
   });
 
-  test("should limit the array length to the provided argument", (callback) => {
+  test("should sort the array by the provided argument", (callback) => {
     app = createZenithic();
 
-    app.mount("#app", Custom, {value: [1, 2, 3, 4 ,5]}).then(() => {
-        expect(querySelector("#app").textContent).toBe("1,2,3");
-        callback();
+    app.mount("#app", Custom, { value }).then(() => {
+      expect(querySelector("#app").textContent.trim()).toBe("alexdanijames");
+      callback();
     });
   });
 });

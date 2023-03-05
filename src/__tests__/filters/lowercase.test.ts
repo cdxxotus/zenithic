@@ -15,8 +15,6 @@ const Custom = {
   }
 };
 
-const date = new Date('2023-03-04T12:34:56Z');
-
 beforeEach(() => {
   app = null;
   window.document.querySelector("body").innerHTML = "";
