@@ -20,7 +20,7 @@ beforeEach(() => {
   window.document.getElementsByTagName("body")[0].appendChild(doc);
 });
 
-describe("form mixin", () => {
+describe("focus mixin", () => {
   test("should not trigger mixin lifcecyle events if not included in configuration", (callback) => {
     app = createZenithic({ mixins: [] });
     expect(app.mixins).toStrictEqual({});

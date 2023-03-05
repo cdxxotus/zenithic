@@ -306,6 +306,8 @@ const getFiltersFromValue = (
       ? trimedFilter.replace(match[0], "")
       : trimedFilter;
 
+    if (!app.filters[filterName]) return acc;
+
     const fn = (val: any) => app.filters[filterName](val, ...filterArgs);
 
     return [...acc, fn];
