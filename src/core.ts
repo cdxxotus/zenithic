@@ -168,7 +168,7 @@ const makeComponentRenderFn = (
       // Create a new element from the template.
       const element = makeElementFromString($template);
       const elChildren = Array.from(element.children);
-      elChildren.push(element)
+      elChildren.push(element);
       elChildren.forEach((c) => {
         if (c.textContent.match(/\{\{(.+?)\}\}/gms)) {
           c.textContent = c.textContent.replace(
@@ -349,7 +349,7 @@ const getDirectiveBinding = (
 };
 
 /**
- * Prepares a component by adding reactive data, computed properties, methods, and watchers from its mixins.
+ * Prepares a component by adding reactive data from its mixins.
  *
  * @param {Component} comp - The component to prepare.
  * @returns {Component} - The prepared component.
@@ -376,20 +376,6 @@ const prepareComponent = (comp: Component) => {
   };
 
   const component: Component = Object.assign(comp, dataFn);
-
-  // TODO: support mixin other props, like beforeMount...
-  // Add computed properties, methods, and watchers from mixins
-  Object.keys(component.mixins ?? {}).forEach((mixinKey) => {
-    if (component.mixins[mixinKey].computed) {
-      Object.assign(component.computed, component.mixins[mixinKey].computed);
-    }
-    if (component.mixins[mixinKey].methods) {
-      Object.assign(component.methods, component.mixins[mixinKey].methods);
-    }
-    if (component.mixins[mixinKey].watch) {
-      Object.assign(component.watch, component.mixins[mixinKey].watch);
-    }
-  });
 
   return component;
 };
@@ -470,31 +456,54 @@ const compileComponent = (
 
       // Set up the methods
       for (const key in obj.methods) {
-        this[key] = obj.methods[key].bind(compiledComponent);
+        compiledComponent[key] = obj.methods[key].bind(compiledComponent);
       }
 
-      Object.keys(component.mixins || {}).forEach((mixinKey) => {
-        if (component.mixins[mixinKey].methods) {
-          Object.keys(component.mixins[mixinKey].methods || {}).forEach(
-            (key) => {
-              if (!component.methods[key]) {
-                const fnCopy = component.methods[key].bind({});
-                component.methods[key] = (...args) => {
-                  fnCopy.call(compiledComponent, ...args);
-                  component.mixins[mixinKey].methods[key].call(
-                    compiledComponent,
-                    ...args
-                  );
-                };
-              } else {
-                component.methods[key] =
-                  component.mixins[mixinKey].methods[key].bind(
-                    compiledComponent
-                  );
-              }
+      // Set up mixins
+      (obj.mixins ?? []).forEach((mixinKey) => {
+        if (!app.mixins[mixinKey]) return;
+
+        if (app.mixins[mixinKey]?.methods) {
+          for (const key in app.mixins[mixinKey].methods) {
+            if (obj.methods?.[key]) {
+              const fnCopy = obj.methods[key];
+              compiledComponent[key] = (...args) => {
+                fnCopy.call(compiledComponent, ...args);
+                app.mixins[mixinKey].methods[key].call(
+                  compiledComponent,
+                  ...args
+                );
+              };
+            } else {
+              compiledComponent[key] =
+                app.mixins[mixinKey].methods[key].bind(compiledComponent);
             }
-          );
+          }
         }
+
+        [
+          "beforeMount",
+          "mounted",
+          "updated",
+          "beforeDestroy",
+          "destroyed",
+        ].forEach((meth) => {
+          if (app.mixins[mixinKey][meth]) {
+            const fnCopy = obj[meth];
+            compiledComponent[meth] = (...args) => {
+              if (fnCopy) fnCopy.call(compiledComponent, ...args);
+              app.mixins[mixinKey][meth].call(compiledComponent, ...args);
+            };
+          }
+        });
+
+        if (app.mixins[mixinKey].computed)
+          Object.assign(
+            compiledComponent.computed,
+            app.mixins[mixinKey].computed
+          );
+        if (app.mixins[mixinKey].watch)
+          Object.assign(compiledComponent.watch, app.mixins[mixinKey].watch);
       });
 
       // Set up the watchers
