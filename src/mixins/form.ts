@@ -60,11 +60,12 @@ const form: Mixin = {
         const result = validator(field.value);
         if (!result.isValid) {
           isValid = false;
-          field.isValid = isValid;
           errors.push(result.error);
           (this as CompiledFormMixin).form.errors[fieldName] = errors;
         }
       }
+
+      field.isValid = isValid;
     },
 
     /**

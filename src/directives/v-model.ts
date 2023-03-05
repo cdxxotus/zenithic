@@ -14,7 +14,7 @@ const modelDirective: ModelDirective = {
    * @returns {object} An object with `get` and `set` functions.
    */
   parseValue(str: string) {
-    return { get: () => this[str].toString(), set: (v: string) => this[str] = v };
+    return { get: () => String(this[str]), set: (v: string) => this[str] = v };
   },
   /**
    * Sets the initial value of the element to the current value of the state property,

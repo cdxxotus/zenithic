@@ -1,11 +1,12 @@
 import { querySelector, makeElementFromString } from "./utils/dom";
 import { isFunction, isObject, isString } from "./utils/type";
+import { log } from "./utils/log";
+import { merge } from "./utils/object";
 
 import { Component, CompiledComponent } from "./types/components";
 import { Plugin, ZenithicApp } from "./types/core";
 import { Directive } from "./types/directives";
 import { Filter } from "./types/filters";
-import { log } from "./utils/log";
 
 /**
  * Adds a watcher to a reactive object.
@@ -193,9 +194,10 @@ const makeComponentRenderFn = (
       });
 
       // Set up directives
+      const nodes = Array.from(element.querySelectorAll("*"));
+      nodes.push(element);
+
       Object.keys(app.directives ?? {}).forEach((directive) => {
-        const nodes = Array.from(element.querySelectorAll("*"));
-        nodes.push(element);
         const nodesWithThisDirective = nodes.filter((n: Element) => {
           return hasDirective(n, directive);
         });
@@ -364,10 +366,7 @@ const prepareComponent = (app: ZenithicApp, comp: Component) => {
 
       // Add data from mixins
       compCopy.mixins?.forEach((mixinKey) => {
-        returnData = {
-          ...app.mixins[mixinKey]?.data?.(),
-          ...returnData,
-        };
+        returnData = merge(returnData, app.mixins[mixinKey]?.data?.() ?? {});
       });
 
       return returnData;

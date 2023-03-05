@@ -1,5 +1,8 @@
 import { Component, InputComponent } from "../types/components";
 
+// TODO: fixme
+// v-model should handle parent state
+
 /**
  * An Input component that can be used in Components, Layouts and Pages.
  * @type {InputComponent}
@@ -27,7 +30,7 @@ export default {
   },
   methods: {
     handleInput(e) {
-      this.onInput((e.target as HTMLInputElement).value);
+      this.onInput?.((e.target as HTMLInputElement).value);
     },
   },
 } as InputComponent satisfies Component;
