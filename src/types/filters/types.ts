@@ -14,7 +14,7 @@ export type OrderByFilter = (array: { [key: string]: any }[], sortKey: string, r
 
 export type DateFilter = (date: Date, format: string) => string;
 
-export type CurrencyFilter = (value: number, currencyCode: string) => string;
+export type CurrencyFilter = (value: number, locale: string, currencyCode: string) => string;
 
 export type CapitalizeFilter = (value: string) => string;
 

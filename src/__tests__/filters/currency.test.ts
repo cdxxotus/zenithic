@@ -6,10 +6,10 @@ let doc;
 let mountPoint;
 
 const Custom = {
-  template: "<div>{{ text | capitalize}}</div>",
+  template: "<div>{{ value | currency('fr-FR', 'eur')}}</div>",
   props: {
-    text: {
-        type: String,
+    value: {
+        type: Number,
         required: true,
     }
   }
@@ -26,12 +26,12 @@ beforeEach(() => {
   window.document.getElementsByTagName("body")[0].appendChild(doc);
 });
 
-describe("capitalize filter", () => {
+describe("currency filter", () => {
   test("should not work if not set up in config", (callback) => {
     app = createZenithic({ filters: [] });
 
-    app.mount("#app", Custom, {text: "test"}).then(() => {
-      expect(querySelector("#app").textContent).toBe("test");
+    app.mount("#app", Custom, {value: 100}).then(() => {
+      expect(querySelector("#app").textContent).toBe("100");
       callback();
     });
   });
@@ -39,8 +39,8 @@ describe("capitalize filter", () => {
   test("should capitalize text", (callback) => {
     app = createZenithic();
 
-    app.mount("#app", Custom, {text: "test"}).then(() => {
-        expect(querySelector("#app").textContent).toBe("Test");
+    app.mount("#app", Custom, {value: 100}).then(() => {
+        expect(querySelector("#app").textContent).toBe("100,00 €");
         callback();
     });
   });
