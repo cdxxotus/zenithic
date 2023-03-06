@@ -45,7 +45,13 @@ const Custom = {
 //         destroyed: ["directive", "mixin", "component"],
 //      }
 //   }
-
+//   ---- OR
+//   a property for setting execution order of custom methods
+//   Component = {
+//     lifycleExecutionOrder: {
+//         beforeMount: [method3, "directive", method4, "mixin", method1, method2],
+//      }
+//   }
 };
 
 beforeEach(() => {
