@@ -31,14 +31,13 @@ const forDirective: ForDirective = {
     const matched = str.match(/(.*) in (.*)/);
     const itemPropertyName = matched[1];
 
-    el.removeAttribute("v-for");
     const copyEl =
       el.innerHTML === el.firstElementChild?.outerHTML
         ? el.firstElementChild.cloneNode(true)
         : makeElementFromString(`<div>${el.innerHTML}</div>`);
 
-    while (el.firstChild) el.removeChild(el.firstChild);
-
+    el.innerHTML = '';
+    
     // Get the array of items to iterate over
     const items = Array.from(binding.value);
 

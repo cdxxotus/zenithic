@@ -39,7 +39,7 @@ describe("v-for directive", () => {
     app = createZenithic();
 
     app.mount("#app", Custom, { items: ["first", "second", "third"] }).then((mountedApp) => {
-        expect(mountedApp.main.$el.outerHTML).toBe("<ul><li>first</li><li>second</li><li>third</li></ul>");
+        expect(mountedApp.main.$el.outerHTML).toBe(`<ul v-for="item in items"><li>first</li><li>second</li><li>third</li></ul>`);
         callback();
     });
   });
