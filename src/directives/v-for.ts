@@ -1,3 +1,5 @@
+import { makeElementFromString } from "../utils/dom";
+
 import { Directive, ForDirective } from "../types/directives/types";
 
 /**
@@ -25,41 +27,42 @@ const forDirective: ForDirective = {
    * @param {object} binding - The binding object containing the directive's value and arguments
    */
   beforeMount(el, binding) {
-    // Get the parent element
-    const parentEl = el.parentNode;
-    if (!parentEl) return;
-
-    const str = el.getAttribute('v-for');
+    const str = el.getAttribute("v-for");
     const matched = str.match(/(.*) in (.*)/);
-    const itemPropertyName = matched[1]
+    const itemPropertyName = matched[1];
 
-    const copyEl = el.cloneNode(true) as HTMLElement;
-    copyEl.removeAttribute("v-for");
+    el.removeAttribute("v-for");
+    const copyEl =
+      el.innerHTML === el.firstElementChild?.outerHTML
+        ? el.firstElementChild.cloneNode(true)
+        : makeElementFromString(`<div>${el.innerHTML}</div>`);
 
-    parentEl.removeChild(el);
+    while (el.firstChild) el.removeChild(el.firstChild);
 
     // Get the array of items to iterate over
-    const items = binding.value;
-
-    // TODO: support more iterables
+    const items = Array.from(binding.value);
 
     // Loop over the array and create a new element for each item
     items.forEach((item) => {
       const itemEl = copyEl.cloneNode(true) as HTMLElement;
-      itemEl.textContent = itemEl.textContent.replace(
-        /\(\(--@@(.+?)@@--\)\)/gms,
-        (_string, match) => {
-          // TODO: support filters
-          const splittedMatch: string[] = match.trim().split('.');
-          const propertyName = splittedMatch.splice(0, 1);
-          if (propertyName[0] === itemPropertyName) {
-            return splittedMatch.reduce((acc, v) => acc?.[v], item);
-          } else {
-            return match;
+      const itemElChildren = Array.from(itemEl.children);
+      itemElChildren.push(itemEl);
+      itemElChildren.forEach((iec) => {
+        iec.textContent = iec.textContent.replace(
+          /\(\(--@@(.+?)@@--\)\)/gms,
+          (_string, match) => {
+            // TODO: support filters
+            const splittedMatch: string[] = match.trim().split(".");
+            const propertyName = splittedMatch.splice(0, 1);
+            if (propertyName[0] === itemPropertyName) {
+              return splittedMatch.reduce((acc, v) => acc?.[v], item);
+            } else {
+              return match;
+            }
           }
-        }
-      );
-      parentEl.appendChild(itemEl);
+        );
+      });
+      el.appendChild(itemEl);
     });
   },
 };
