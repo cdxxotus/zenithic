@@ -185,7 +185,8 @@ const makeComponentRenderFn = (
                 property.trim()
               );
               const value = compiledComponent[propertyName];
-              if (!compiledComponent.hasOwnProperty(propertyName)) return match.replace('{{', '((--@@').replace('}}', '@@--))');
+              if (!compiledComponent.hasOwnProperty(propertyName))
+                return match.replace("{{", "((--@@").replace("}}", "@@--))");
               return filters.length > 0
                 ? filters.reduce((acc, filter) => filter(acc), value)
                 : value;
@@ -547,10 +548,15 @@ const compileComponent = (
     }
 
     updated(key: string, value: any, oldValue: any) {
+      if (value === oldValue) return;
       const compiledComponent = this as unknown as CompiledComponent;
       preparedComponent.updated?.call(this, key, value, oldValue);
       log("component updated", { key, value, oldValue });
-      this.render().then((el) => (compiledComponent.$el = el));
+      this.render().then((el) => {
+        compiledComponent.$el = el;
+        compiledComponent.beforeMount?.();
+        compiledComponent.mounted?.();
+      });
     }
   }
 
