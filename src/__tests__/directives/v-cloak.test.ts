@@ -18,11 +18,34 @@ const Custom = {
   mounted() {
     this.displayBeforeMounted = this.$el.style.display;
   },
-  // TODO: we may need new lifecyle events
-  // @ beforeMountAfterDirectivesAndMixins
-  // @ mountedAfterDirectivesAndMixins
-  // @ beforeDestroyAfterDirectivesAndMixins
-  // @ destroyedAfterDirectivesAndMixins
+
+//   TODO: we may need new lifecyle events
+//   -----------
+//   @ beforeMountAfterDirectivesAndMixins
+//   @ mountedAfterDirectivesAndMixins
+//   @ beforeDestroyAfterDirectivesAndMixins
+//   @ destroyedAfterDirectivesAndMixins
+//   ---- OR
+//   an object of "lastCall" events to be executed at the end
+//   Component = {
+//     lastCall: {
+//         beforeMount() {},
+//         mounted() {},
+//         beforeDestroy() {},
+//         destroyed() {},
+//     }
+//   }
+//   ---- OR
+//   a property for setting execution order
+//   Component = {
+//     lifycleExecutionOrder: {
+//         beforeMount: ["directive", "mixin", "component"],
+//         mounted: ["component", "directive", "mixin"],
+//         beforeDestroy: ["mixin", "directive", "component"],
+//         destroyed: ["directive", "mixin", "component"],
+//      }
+//   }
+
 };
 
 beforeEach(() => {
