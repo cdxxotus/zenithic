@@ -10,7 +10,7 @@ const Custom = {
   </div>`,
   data() {
     return {
-      shouldIf: true,
+      shouldIf: false,
     };
   },
 };
@@ -36,22 +36,22 @@ describe("v-if directive", () => {
     });
   });
 
-  test("should show if true", (callback) => {
-    app = createZenithic();
-
-    app.mount("#app", Custom).then((mountedApp) => {
-        expect(mountedApp.main.$el.textContent.trim()).toBe(`showIf`);
-        callback();
-    });
-  });
-
   test("should hide if false", (callback) => {
     app = createZenithic();
 
     app.mount("#app", Custom).then((mountedApp) => {
-      mountedApp.main.shouldIf = false;
+        expect(mountedApp.main.$el.textContent.trim()).toBe(``);
+        callback();
+    });
+  });
+
+  test("should show if true", (callback) => {
+    app = createZenithic();
+
+    app.mount("#app", Custom).then((mountedApp) => {
+      mountedApp.main.shouldIf = true;
       setTimeout(() => {
-      expect(mountedApp.main.$el.textContent.trim()).toBe(``);
+      expect(mountedApp.main.$el.textContent.trim()).toBe(`showIf`);
         callback();
       }, 0);
     });
