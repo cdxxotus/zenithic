@@ -1,4 +1,3 @@
-![visitors](https://visitor-badge.glitch.me/badge?page_id=danielfebrero.zenithic)
 
 # Zenithic
 
@@ -27,7 +26,7 @@ The framework has a core library size of 30KB and no dependencies, and it suppor
 
 ## Progress
 
-![](https://geps.dev/progress/69)
+![](https://geps.dev/progress/90)
 
 ## Features
 
